@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.travelxp.controller.AdminController">
+    <top>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="12" right="12" bottom="12" left="12" />
+            </padding>
+            <Label text="Admin Console" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+            <Button text="Back" onAction="#handleBack" />
+            <Label fx:id="statusLabel" />
+        </HBox>
+    </top>
+    <center>
+        <TabPane fx:id="adminTabs" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab text="Users">
+                    <BorderPane>
+                        <center>
+                            <TableView fx:id="usersTable" prefHeight="240">
+                                <columns>
+                                    <TableColumn fx:id="userIdColumn" text="ID" prefWidth="60" />
+                                    <TableColumn fx:id="userUsernameColumn" text="Username" prefWidth="120" />
+                                    <TableColumn fx:id="userEmailColumn" text="Email" prefWidth="160" />
+                                    <TableColumn fx:id="userFullNameColumn" text="Full Name" prefWidth="160" />
+                                    <TableColumn fx:id="userLevelColumn" text="Level" prefWidth="100" />
+                                </columns>
+                            </TableView>
+                        </center>
+                        <bottom>
+                            <VBox spacing="8">
+                                <padding>
+                                    <Insets top="10" right="10" bottom="10" left="10" />
+                                </padding>
+                                <GridPane hgap="8" vgap="8">
+                                    <columnConstraints>
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                    </columnConstraints>
+                                    <children>
+                                        <Label text="Username" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                                        <TextField fx:id="userUsernameField" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                                        <Label text="Email" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+                                        <TextField fx:id="userEmailField" GridPane.rowIndex="0" GridPane.columnIndex="3" />
+
+                                        <Label text="Full Name" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                                        <TextField fx:id="userFullNameField" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                                        <Label text="Password" GridPane.rowIndex="1" GridPane.columnIndex="2" />
+                                        <TextField fx:id="userPasswordField" GridPane.rowIndex="1" GridPane.columnIndex="3" />
+                                    </children>
+                                </GridPane>
+                                <HBox spacing="8">
+                                    <Button text="Save User" onAction="#handleUserSave" />
+                                    <Button text="Delete User" onAction="#handleUserDelete" />
+                                    <Button text="Reset" onAction="#handleUserReset" />
+                                </HBox>
+                            </VBox>
+                        </bottom>
+                    </BorderPane>
+                </Tab>
+
+                <Tab text="Properties">
+                    <BorderPane>
+                        <center>
+                            <TableView fx:id="propertiesTable" prefHeight="240">
+                                <columns>
+                                    <TableColumn fx:id="propertyIdColumn" text="ID" prefWidth="60" />
+                                    <TableColumn fx:id="propertyTitleColumn" text="Title" prefWidth="160" />
+                                    <TableColumn fx:id="propertyCityColumn" text="City" prefWidth="120" />
+                                    <TableColumn fx:id="propertyPriceColumn" text="Price" prefWidth="100" />
+                                    <TableColumn fx:id="propertyActiveColumn" text="Active" prefWidth="80" />
+                                </columns>
+                            </TableView>
+                        </center>
+                        <bottom>
+                            <VBox spacing="8">
+                                <padding>
+                                    <Insets top="10" right="10" bottom="10" left="10" />
+                                </padding>
+                                <GridPane hgap="8" vgap="8">
+                                    <columnConstraints>
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                    </columnConstraints>
+                                    <children>
+                                        <Label text="Owner" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                                        <ComboBox fx:id="propertyOwnerCombo" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                                        <Label text="Title" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+                                        <TextField fx:id="propertyTitleField" GridPane.rowIndex="0" GridPane.columnIndex="3" />
+
+                                        <Label text="City" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                                        <TextField fx:id="propertyCityField" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                                        <Label text="Country" GridPane.rowIndex="1" GridPane.columnIndex="2" />
+                                        <TextField fx:id="propertyCountryField" GridPane.rowIndex="1" GridPane.columnIndex="3" />
+
+                                        <Label text="Address" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                                        <TextField fx:id="propertyAddressField" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                                        <Label text="Type" GridPane.rowIndex="2" GridPane.columnIndex="2" />
+                                        <TextField fx:id="propertyTypeField" GridPane.rowIndex="2" GridPane.columnIndex="3" />
+
+                                        <Label text="Price/Night" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                                        <TextField fx:id="propertyPriceField" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+                                        <Label text="Max Guests" GridPane.rowIndex="3" GridPane.columnIndex="2" />
+                                        <TextField fx:id="propertyGuestsField" GridPane.rowIndex="3" GridPane.columnIndex="3" />
+
+                                        <Label text="Bedrooms" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+                                        <TextField fx:id="propertyBedroomsField" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+                                        <Label text="Bathrooms" GridPane.rowIndex="4" GridPane.columnIndex="2" />
+                                        <TextField fx:id="propertyBathroomsField" GridPane.rowIndex="4" GridPane.columnIndex="3" />
+
+                                        <Label text="Amenities" GridPane.rowIndex="5" GridPane.columnIndex="0" />
+                                        <TextField fx:id="propertyAmenitiesField" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.columnSpan="3" />
+
+                                        <CheckBox fx:id="propertyActiveCheck" text="Active" GridPane.rowIndex="6" GridPane.columnIndex="0" />
+                                    </children>
+                                </GridPane>
+                                <HBox spacing="8">
+                                    <Button text="Create Property" onAction="#handlePropertyCreate" />
+                                    <Button text="Save Property" onAction="#handlePropertySave" />
+                                    <Button text="Delete Property" onAction="#handlePropertyDelete" />
+                                    <Button text="Reset" onAction="#handlePropertyReset" />
+                                </HBox>
+                            </VBox>
+                        </bottom>
+                    </BorderPane>
+                </Tab>
+
+                <Tab text="Bookings">
+                    <BorderPane>
+                        <center>
+                            <TableView fx:id="bookingsTable" prefHeight="240">
+                                <columns>
+                                    <TableColumn fx:id="bookingIdColumn" text="ID" prefWidth="60" />
+                                    <TableColumn fx:id="bookingPropertyColumn" text="Property" prefWidth="160" />
+                                    <TableColumn fx:id="bookingGuestColumn" text="Guest" prefWidth="140" />
+                                    <TableColumn fx:id="bookingDatesColumn" text="Dates" prefWidth="180" />
+                                    <TableColumn fx:id="bookingStatusColumn" text="Status" prefWidth="100" />
+                                </columns>
+                            </TableView>
+                        </center>
+                        <bottom>
+                            <VBox spacing="8">
+                                <padding>
+                                    <Insets top="10" right="10" bottom="10" left="10" />
+                                </padding>
+                                <GridPane hgap="8" vgap="8">
+                                    <columnConstraints>
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                    </columnConstraints>
+                                    <children>
+                                        <Label text="Property" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                                        <ComboBox fx:id="bookingPropertyCombo" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                                        <Label text="Guest" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+                                        <ComboBox fx:id="bookingGuestCombo" GridPane.rowIndex="0" GridPane.columnIndex="3" />
+
+                                        <Label text="Check-in" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                                        <DatePicker fx:id="bookingCheckInPicker" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                                        <Label text="Check-out" GridPane.rowIndex="1" GridPane.columnIndex="2" />
+                                        <DatePicker fx:id="bookingCheckOutPicker" GridPane.rowIndex="1" GridPane.columnIndex="3" />
+
+                                        <Label text="Guests" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                                        <Spinner fx:id="bookingGuestsSpinner" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                                        <Label text="Status" GridPane.rowIndex="2" GridPane.columnIndex="2" />
+                                        <TextField fx:id="bookingStatusField" GridPane.rowIndex="2" GridPane.columnIndex="3" />
+
+                                        <Label text="Requests" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                                        <TextArea fx:id="bookingRequestsArea" prefRowCount="2" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="3" />
+                                    </children>
+                                </GridPane>
+                                <HBox spacing="8">
+                                    <Button text="Create Booking" onAction="#handleBookingCreate" />
+                                    <Button text="Update Booking" onAction="#handleBookingUpdate" />
+                                    <Button text="Delete Booking" onAction="#handleBookingDelete" />
+                                    <Button text="Reset" onAction="#handleBookingReset" />
+                                </HBox>
+                            </VBox>
+                        </bottom>
+                    </BorderPane>
+                </Tab>
+
+                <Tab text="Trips">
+                    <BorderPane>
+                        <center>
+                            <TableView fx:id="tripsTable" prefHeight="240">
+                                <columns>
+                                    <TableColumn fx:id="tripIdColumn" text="ID" prefWidth="60" />
+                                    <TableColumn fx:id="tripNameColumn" text="Name" prefWidth="150" />
+                                    <TableColumn fx:id="tripUserColumn" text="User" prefWidth="140" />
+                                    <TableColumn fx:id="tripDatesColumn" text="Dates" prefWidth="160" />
+                                    <TableColumn fx:id="tripStatusColumn" text="Status" prefWidth="100" />
+                                </columns>
+                            </TableView>
+                        </center>
+                        <bottom>
+                            <VBox spacing="8">
+                                <padding>
+                                    <Insets top="10" right="10" bottom="10" left="10" />
+                                </padding>
+                                <GridPane hgap="8" vgap="8">
+                                    <columnConstraints>
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                    </columnConstraints>
+                                    <children>
+                                        <Label text="User" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                                        <ComboBox fx:id="tripUserCombo" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                                        <Label text="Name" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+                                        <TextField fx:id="tripNameField" GridPane.rowIndex="0" GridPane.columnIndex="3" />
+
+                                        <Label text="Start" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                                        <DatePicker fx:id="tripStartPicker" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                                        <Label text="End" GridPane.rowIndex="1" GridPane.columnIndex="2" />
+                                        <DatePicker fx:id="tripEndPicker" GridPane.rowIndex="1" GridPane.columnIndex="3" />
+
+                                        <Label text="Status" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                                        <TextField fx:id="tripStatusField" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                                    </children>
+                                </GridPane>
+                                <HBox spacing="8">
+                                    <Button text="Create Trip" onAction="#handleTripCreate" />
+                                    <Button text="Update Trip" onAction="#handleTripUpdate" />
+                                    <Button text="Delete Trip" onAction="#handleTripDelete" />
+                                    <Button text="Reset" onAction="#handleTripReset" />
+                                </HBox>
+                            </VBox>
+                        </bottom>
+                    </BorderPane>
+                </Tab>
+
+                <Tab text="Activities">
+                    <BorderPane>
+                        <center>
+                            <TableView fx:id="activitiesTable" prefHeight="240">
+                                <columns>
+                                    <TableColumn fx:id="activityIdColumn" text="ID" prefWidth="60" />
+                                    <TableColumn fx:id="activityTripColumn" text="Trip" prefWidth="140" />
+                                    <TableColumn fx:id="activityTitleColumn" text="Title" prefWidth="150" />
+                                    <TableColumn fx:id="activityDateColumn" text="Date" prefWidth="120" />
+                                    <TableColumn fx:id="activityLocationColumn" text="Location" prefWidth="140" />
+                                    <TableColumn fx:id="activityXpColumn" text="XP" prefWidth="80" />
+                                </columns>
+                            </TableView>
+                        </center>
+                        <bottom>
+                            <VBox spacing="8">
+                                <padding>
+                                    <Insets top="10" right="10" bottom="10" left="10" />
+                                </padding>
+                                <GridPane hgap="8" vgap="8">
+                                    <columnConstraints>
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                    </columnConstraints>
+                                    <children>
+                                        <Label text="Trip" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                                        <ComboBox fx:id="activityTripCombo" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                                        <Label text="Title" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+                                        <TextField fx:id="activityTitleField" GridPane.rowIndex="0" GridPane.columnIndex="3" />
+
+                                        <Label text="Date" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                                        <DatePicker fx:id="activityDatePicker" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                                        <Label text="Location" GridPane.rowIndex="1" GridPane.columnIndex="2" />
+                                        <TextField fx:id="activityLocationField" GridPane.rowIndex="1" GridPane.columnIndex="3" />
+
+                                        <Label text="Cost" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                                        <TextField fx:id="activityCostField" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                                        <Label text="XP" GridPane.rowIndex="2" GridPane.columnIndex="2" />
+                                        <Spinner fx:id="activityXpSpinner" GridPane.rowIndex="2" GridPane.columnIndex="3" />
+
+                                        <Label text="Description" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                                        <TextArea fx:id="activityDescriptionArea" prefRowCount="2" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="3" />
+                                    </children>
+                                </GridPane>
+                                <HBox spacing="8">
+                                    <Button text="Create Activity" onAction="#handleActivityCreate" />
+                                    <Button text="Save Activity" onAction="#handleActivitySave" />
+                                    <Button text="Delete Activity" onAction="#handleActivityDelete" />
+                                    <Button text="Reset" onAction="#handleActivityReset" />
+                                </HBox>
+                            </VBox>
+                        </bottom>
+                    </BorderPane>
+                </Tab>
+
+                <Tab text="Milestones">
+                    <BorderPane>
+                        <center>
+                            <TableView fx:id="milestonesTable" prefHeight="240">
+                                <columns>
+                                    <TableColumn fx:id="milestoneIdColumn" text="ID" prefWidth="60" />
+                                    <TableColumn fx:id="milestoneTripColumn" text="Trip" prefWidth="140" />
+                                    <TableColumn fx:id="milestoneTitleColumn" text="Title" prefWidth="150" />
+                                    <TableColumn fx:id="milestoneStatusColumn" text="Status" prefWidth="120" />
+                                    <TableColumn fx:id="milestoneXpColumn" text="XP" prefWidth="80" />
+                                </columns>
+                            </TableView>
+                        </center>
+                        <bottom>
+                            <VBox spacing="8">
+                                <padding>
+                                    <Insets top="10" right="10" bottom="10" left="10" />
+                                </padding>
+                                <GridPane hgap="8" vgap="8">
+                                    <columnConstraints>
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                    </columnConstraints>
+                                    <children>
+                                        <Label text="Trip" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                                        <ComboBox fx:id="milestoneTripCombo" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                                        <Label text="Title" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+                                        <TextField fx:id="milestoneTitleField" GridPane.rowIndex="0" GridPane.columnIndex="3" />
+
+                                        <Label text="XP" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                                        <Spinner fx:id="milestoneXpSpinner" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                                        <Label text="Completed" GridPane.rowIndex="1" GridPane.columnIndex="2" />
+                                        <CheckBox fx:id="milestoneCompletedCheck" GridPane.rowIndex="1" GridPane.columnIndex="3" />
+
+                                        <Label text="Description" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                                        <TextArea fx:id="milestoneDescriptionArea" prefRowCount="2" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.columnSpan="3" />
+                                    </children>
+                                </GridPane>
+                                <HBox spacing="8">
+                                    <Button text="Create Milestone" onAction="#handleMilestoneCreate" />
+                                    <Button text="Save Milestone" onAction="#handleMilestoneSave" />
+                                    <Button text="Delete Milestone" onAction="#handleMilestoneDelete" />
+                                    <Button text="Reset" onAction="#handleMilestoneReset" />
+                                </HBox>
+                            </VBox>
+                        </bottom>
+                    </BorderPane>
+                </Tab>
+
+                <Tab text="Services">
+                    <BorderPane>
+                        <center>
+                            <TableView fx:id="servicesTable" prefHeight="240">
+                                <columns>
+                                    <TableColumn fx:id="serviceIdColumn" text="ID" prefWidth="60" />
+                                    <TableColumn fx:id="serviceNameColumn" text="Name" prefWidth="150" />
+                                    <TableColumn fx:id="servicePriceColumn" text="Price" prefWidth="100" />
+                                    <TableColumn fx:id="serviceDescColumn" text="Description" prefWidth="220" />
+                                </columns>
+                            </TableView>
+                        </center>
+                        <bottom>
+                            <VBox spacing="8">
+                                <padding>
+                                    <Insets top="10" right="10" bottom="10" left="10" />
+                                </padding>
+                                <GridPane hgap="8" vgap="8">
+                                    <columnConstraints>
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                    </columnConstraints>
+                                    <children>
+                                        <Label text="Name" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                                        <TextField fx:id="serviceNameField" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                                        <Label text="Price" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+                                        <TextField fx:id="servicePriceField" GridPane.rowIndex="0" GridPane.columnIndex="3" />
+
+                                        <Label text="Description" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                                        <TextArea fx:id="serviceDescArea" prefRowCount="2" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.columnSpan="3" />
+                                    </children>
+                                </GridPane>
+                                <HBox spacing="8">
+                                    <Button text="Create Service" onAction="#handleServiceCreate" />
+                                    <Button text="Save Service" onAction="#handleServiceSave" />
+                                    <Button text="Delete Service" onAction="#handleServiceDelete" />
+                                    <Button text="Reset" onAction="#handleServiceReset" />
+                                </HBox>
+                            </VBox>
+                        </bottom>
+                    </BorderPane>
+                </Tab>
+
+                <Tab text="Booking Services">
+                    <BorderPane>
+                        <center>
+                            <TableView fx:id="bookingServicesTable" prefHeight="240">
+                                <columns>
+                                    <TableColumn fx:id="bookingServiceIdColumn" text="ID" prefWidth="60" />
+                                    <TableColumn fx:id="bookingServiceBookingColumn" text="Booking" prefWidth="140" />
+                                    <TableColumn fx:id="bookingServiceServiceColumn" text="Service" prefWidth="150" />
+                                    <TableColumn fx:id="bookingServiceQtyColumn" text="Qty" prefWidth="60" />
+                                    <TableColumn fx:id="bookingServicePriceColumn" text="Price" prefWidth="100" />
+                                </columns>
+                            </TableView>
+                        </center>
+                        <bottom>
+                            <VBox spacing="8">
+                                <padding>
+                                    <Insets top="10" right="10" bottom="10" left="10" />
+                                </padding>
+                                <GridPane hgap="8" vgap="8">
+                                    <columnConstraints>
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                    </columnConstraints>
+                                    <children>
+                                        <Label text="Booking" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                                        <ComboBox fx:id="bookingServiceBookingCombo" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                                        <Label text="Service" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+                                        <ComboBox fx:id="bookingServiceServiceCombo" GridPane.rowIndex="0" GridPane.columnIndex="3" />
+
+                                        <Label text="Quantity" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                                        <Spinner fx:id="bookingServiceQtySpinner" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                                        <Label text="Price at Booking" GridPane.rowIndex="1" GridPane.columnIndex="2" />
+                                        <TextField fx:id="bookingServicePriceField" GridPane.rowIndex="1" GridPane.columnIndex="3" />
+                                    </children>
+                                </GridPane>
+                                <HBox spacing="8">
+                                    <Button text="Create Booking Service" onAction="#handleBookingServiceCreate" />
+                                    <Button text="Save Booking Service" onAction="#handleBookingServiceSave" />
+                                    <Button text="Delete Booking Service" onAction="#handleBookingServiceDelete" />
+                                    <Button text="Reset" onAction="#handleBookingServiceReset" />
+                                </HBox>
+                            </VBox>
+                        </bottom>
+                    </BorderPane>
+                </Tab>
+
+                <Tab text="Offers">
+                    <BorderPane>
+                        <center>
+                            <TableView fx:id="offersTable" prefHeight="240">
+                                <columns>
+                                    <TableColumn fx:id="offerIdColumn" text="ID" prefWidth="60" />
+                                    <TableColumn fx:id="offerPropertyColumn" text="Property" prefWidth="160" />
+                                    <TableColumn fx:id="offerTitleColumn" text="Title" prefWidth="150" />
+                                    <TableColumn fx:id="offerDiscountColumn" text="Discount %" prefWidth="100" />
+                                    <TableColumn fx:id="offerDatesColumn" text="Dates" prefWidth="180" />
+                                    <TableColumn fx:id="offerActiveColumn" text="Active" prefWidth="80" />
+                                </columns>
+                            </TableView>
+                        </center>
+                        <bottom>
+                            <VBox spacing="8">
+                                <padding>
+                                    <Insets top="10" right="10" bottom="10" left="10" />
+                                </padding>
+                                <GridPane hgap="8" vgap="8">
+                                    <columnConstraints>
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                    </columnConstraints>
+                                    <children>
+                                        <Label text="Property" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                                        <ComboBox fx:id="offerPropertyCombo" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                                        <Label text="Title" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+                                        <TextField fx:id="offerTitleField" GridPane.rowIndex="0" GridPane.columnIndex="3" />
+
+                                        <Label text="Discount %" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                                        <TextField fx:id="offerDiscountField" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                                        <Label text="Active" GridPane.rowIndex="1" GridPane.columnIndex="2" />
+                                        <CheckBox fx:id="offerActiveCheck" GridPane.rowIndex="1" GridPane.columnIndex="3" />
+
+                                        <Label text="Start Date" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                                        <DatePicker fx:id="offerStartDatePicker" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                                        <Label text="End Date" GridPane.rowIndex="2" GridPane.columnIndex="2" />
+                                        <DatePicker fx:id="offerEndDatePicker" GridPane.rowIndex="2" GridPane.columnIndex="3" />
+
+                                        <Label text="Description" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                                        <TextArea fx:id="offerDescriptionArea" prefRowCount="2" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="3" />
+                                    </children>
+                                </GridPane>
+                                <HBox spacing="8">
+                                    <Button text="Create Offer" onAction="#handleOfferCreate" />
+                                    <Button text="Save Offer" onAction="#handleOfferSave" />
+                                    <Button text="Delete Offer" onAction="#handleOfferDelete" />
+                                    <Button text="Reset" onAction="#handleOfferReset" />
+                                </HBox>
+                            </VBox>
+                        </bottom>
+                    </BorderPane>
+                </Tab>
+
+                <Tab text="Reviews">
+                    <BorderPane>
+                        <center>
+                            <TableView fx:id="reviewsTable" prefHeight="240">
+                                <columns>
+                                    <TableColumn fx:id="reviewIdColumn" text="ID" prefWidth="60" />
+                                    <TableColumn fx:id="reviewPropertyColumn" text="Property" prefWidth="150" />
+                                    <TableColumn fx:id="reviewReviewerColumn" text="Reviewer" prefWidth="140" />
+                                    <TableColumn fx:id="reviewRatingColumn" text="Rating" prefWidth="80" />
+                                    <TableColumn fx:id="reviewCommentColumn" text="Comment" prefWidth="200" />
+                                </columns>
+                            </TableView>
+                        </center>
+                        <bottom>
+                            <VBox spacing="8">
+                                <padding>
+                                    <Insets top="10" right="10" bottom="10" left="10" />
+                                </padding>
+                                <GridPane hgap="8" vgap="8">
+                                    <columnConstraints>
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                    </columnConstraints>
+                                    <children>
+                                        <Label text="Booking" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                                        <ComboBox fx:id="reviewBookingCombo" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                                        <Label text="Property" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+                                        <Label fx:id="reviewPropertyLabel" GridPane.rowIndex="0" GridPane.columnIndex="3" />
+
+                                        <Label text="Reviewer" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                                        <Label fx:id="reviewUserLabel" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                                        <Label text="Rating" GridPane.rowIndex="1" GridPane.columnIndex="2" />
+                                        <Spinner fx:id="reviewRatingSpinner" GridPane.rowIndex="1" GridPane.columnIndex="3" />
+
+                                        <Label text="Comment" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                                        <TextArea fx:id="reviewCommentArea" prefRowCount="2" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.columnSpan="3" />
+                                    </children>
+                                </GridPane>
+                                <HBox spacing="8">
+                                    <Button text="Create Review" onAction="#handleReviewCreate" />
+                                    <Button text="Save Review" onAction="#handleReviewSave" />
+                                    <Button text="Delete Review" onAction="#handleReviewDelete" />
+                                    <Button text="Reset" onAction="#handleReviewReset" />
+                                </HBox>
+                            </VBox>
+                        </bottom>
+                    </BorderPane>
+                </Tab>
+
+                <Tab text="Comments">
+                    <BorderPane>
+                        <center>
+                            <TableView fx:id="commentsTable" prefHeight="240">
+                                <columns>
+                                    <TableColumn fx:id="commentIdColumn" text="ID" prefWidth="60" />
+                                    <TableColumn fx:id="commentReviewColumn" text="Review" prefWidth="120" />
+                                    <TableColumn fx:id="commentUserColumn" text="User" prefWidth="140" />
+                                    <TableColumn fx:id="commentSnippetColumn" text="Comment" prefWidth="220" />
+                                    <TableColumn fx:id="commentCreatedColumn" text="Created" prefWidth="140" />
+                                </columns>
+                            </TableView>
+                        </center>
+                        <bottom>
+                            <VBox spacing="8">
+                                <padding>
+                                    <Insets top="10" right="10" bottom="10" left="10" />
+                                </padding>
+                                <GridPane hgap="8" vgap="8">
+                                    <columnConstraints>
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                        <ColumnConstraints minWidth="120" />
+                                        <ColumnConstraints minWidth="220" />
+                                    </columnConstraints>
+                                    <children>
+                                        <Label text="Review" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                                        <ComboBox fx:id="commentReviewCombo" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                                        <Label text="User" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+                                        <ComboBox fx:id="commentUserCombo" GridPane.rowIndex="0" GridPane.columnIndex="3" />
+
+                                        <Label text="Comment" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                                        <TextArea fx:id="commentTextArea" prefRowCount="2" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.columnSpan="3" />
+                                    </children>
+                                </GridPane>
+                                <HBox spacing="8">
+                                    <Button text="Create Comment" onAction="#handleCommentCreate" />
+                                    <Button text="Save Comment" onAction="#handleCommentSave" />
+                                    <Button text="Delete Comment" onAction="#handleCommentDelete" />
+                                    <Button text="Reset" onAction="#handleCommentReset" />
+                                </HBox>
+                            </VBox>
+                        </bottom>
+                    </BorderPane>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </center>
+</BorderPane>

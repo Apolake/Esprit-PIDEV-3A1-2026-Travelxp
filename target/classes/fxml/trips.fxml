@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.travelxp.controller.TripController">
+    <top>
+        <VBox spacing="8">
+            <padding>
+                <Insets top="12" right="12" bottom="12" left="12" />
+            </padding>
+            <Label text="Trips" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+            <HBox spacing="8">
+                <TextField fx:id="tripNameField" promptText="Trip name" />
+                <DatePicker fx:id="tripStartDatePicker" promptText="Start date" />
+                <DatePicker fx:id="tripEndDatePicker" promptText="End date" />
+                <Button fx:id="createTripButton" text="Create Trip" onAction="#handleCreateTrip" />
+                <Button text="Back" onAction="#handleBack" />
+            </HBox>
+        </VBox>
+    </top>
+    <center>
+        <SplitPane dividerPositions="0.25">
+            <VBox spacing="10">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10" />
+                </padding>
+                <Label text="Your Trips" style="-fx-font-weight: bold;" />
+                <ListView fx:id="tripsListView" prefWidth="200" />
+            </VBox>
+            <ScrollPane fitToWidth="true" fitToHeight="true">
+                <content>
+                    <VBox spacing="15">
+                        <padding>
+                            <Insets top="10" right="10" bottom="10" left="10" />
+                        </padding>
+                        <Label fx:id="tripTitleLabel" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                        <HBox spacing="10">
+                            <Label fx:id="tripDateLabel" />
+                            <Label fx:id="tripStatusLabel" />
+                            <Label fx:id="tripXpLabel" style="-fx-text-fill: #00a699; -fx-font-weight: bold;" />
+                        </HBox>
+
+                        <TitledPane text="Bookings" expanded="true">
+                            <content>
+                                <VBox spacing="8">
+                                    <padding>
+                                        <Insets top="10" right="10" bottom="10" left="10" />
+                                    </padding>
+                                    <HBox spacing="8">
+                                        <ComboBox fx:id="bookingSelector" promptText="Select a booking" prefWidth="250" />
+                                        <Button fx:id="addBookingButton" text="Add to Trip" onAction="#handleAddBooking" />
+                                    </HBox>
+                                    <TableView fx:id="tripBookingsTable" prefHeight="200" VBox.vgrow="ALWAYS">
+                                        <columns>
+                                            <TableColumn fx:id="bookingPropertyColumn" text="Property" prefWidth="160" />
+                                            <TableColumn fx:id="bookingDatesColumn" text="Dates" prefWidth="180" />
+                                            <TableColumn fx:id="bookingStatusColumn" text="Status" prefWidth="100" />
+                                        </columns>
+                                    </TableView>
+                                </VBox>
+                            </content>
+                        </TitledPane>
+
+                        <TitledPane text="Activities" expanded="true">
+                            <content>
+                                <VBox spacing="8">
+                                    <padding>
+                                        <Insets top="10" right="10" bottom="10" left="10" />
+                                    </padding>
+                                    <GridPane hgap="8" vgap="8">
+                                        <columnConstraints>
+                                            <ColumnConstraints minWidth="120" />
+                                            <ColumnConstraints minWidth="220" />
+                                            <ColumnConstraints minWidth="120" />
+                                            <ColumnConstraints minWidth="120" />
+                                        </columnConstraints>
+                                        <children>
+                                            <Label text="Title" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                                            <TextField fx:id="activityTitleField" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+                                            <Label text="Date" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                                            <DatePicker fx:id="activityDatePicker" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+                                            <Label text="Location" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+                                            <TextField fx:id="activityLocationField" GridPane.rowIndex="0" GridPane.columnIndex="3" />
+
+                                            <Label text="Cost" GridPane.rowIndex="1" GridPane.columnIndex="2" />
+                                            <TextField fx:id="activityCostField" promptText="0.00" GridPane.rowIndex="1" GridPane.columnIndex="3" />
+
+                                            <Label text="XP" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                                            <Spinner fx:id="activityXpSpinner" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+                                            <Label text="Description" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                                            <TextArea fx:id="activityDescriptionArea" prefRowCount="2" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="3" />
+                                        </children>
+                                    </GridPane>
+                                    <Button fx:id="addActivityButton" text="Add Activity" onAction="#handleAddActivity" />
+                                    <TableView fx:id="activitiesTable" prefHeight="220" VBox.vgrow="ALWAYS">
+                                        <columns>
+                                            <TableColumn fx:id="activityTitleColumn" text="Title" prefWidth="150" />
+                                            <TableColumn fx:id="activityDateColumn" text="Date" prefWidth="120" />
+                                            <TableColumn fx:id="activityLocationColumn" text="Location" prefWidth="150" />
+                                            <TableColumn fx:id="activityXpColumn" text="XP" prefWidth="80" />
+                                        </columns>
+                                    </TableView>
+                                </VBox>
+                            </content>
+                        </TitledPane>
+
+                        <TitledPane text="Milestones" expanded="true">
+                            <content>
+                                <VBox spacing="8">
+                                    <padding>
+                                        <Insets top="10" right="10" bottom="10" left="10" />
+                                    </padding>
+                                    <GridPane hgap="8" vgap="8">
+                                        <columnConstraints>
+                                            <ColumnConstraints minWidth="120" />
+                                            <ColumnConstraints minWidth="250" />
+                                        </columnConstraints>
+                                        <children>
+                                            <Label text="Title" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                                            <TextField fx:id="milestoneTitleField" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+                                            <Label text="XP" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                                            <Spinner fx:id="milestoneXpSpinner" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+                                            <Label text="Description" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                                            <TextArea fx:id="milestoneDescriptionArea" prefRowCount="2" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                                        </children>
+                                    </GridPane>
+                                    <HBox spacing="8">
+                                        <Button fx:id="addMilestoneButton" text="Add Milestone" onAction="#handleAddMilestone" />
+                                        <Button fx:id="completeMilestoneButton" text="Mark Selected Complete" onAction="#handleCompleteMilestone" />
+                                    </HBox>
+                                    <TableView fx:id="milestonesTable" prefHeight="200" VBox.vgrow="ALWAYS">
+                                        <columns>
+                                            <TableColumn fx:id="milestoneTitleColumn" text="Title" prefWidth="200" />
+                                            <TableColumn fx:id="milestoneStatusColumn" text="Status" prefWidth="100" />
+                                            <TableColumn fx:id="milestoneXpColumn" text="XP" prefWidth="80" />
+                                        </columns>
+                                    </TableView>
+                                </VBox>
+                            </content>
+                        </TitledPane>
+                    </VBox>
+                </content>
+            </ScrollPane>
+        </SplitPane>
+    </center>
+</BorderPane>

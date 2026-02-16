@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.travelxp.controller.ReviewCommentsController">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10" />
+    </padding>
+    <top>
+        <HBox spacing="10">
+            <Label text="Reviews & Comments" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+        </HBox>
+    </top>
+    <center>
+        <SplitPane dividerPositions="0.45">
+            <VBox spacing="8">
+                <Label text="Reviews" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+                <TableView fx:id="reviewsTable" prefHeight="500">
+                    <columns>
+                        <TableColumn fx:id="propertyColumn" text="Property" prefWidth="180" />
+                        <TableColumn fx:id="reviewerColumn" text="Reviewer" prefWidth="160" />
+                        <TableColumn fx:id="ratingColumn" text="Rating" prefWidth="80" />
+                    </columns>
+                </TableView>
+            </VBox>
+            <VBox spacing="8">
+                <Label text="Comments" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+                <ListView fx:id="commentsList" prefHeight="350" />
+                <Label text="Add Comment" />
+                <TextArea fx:id="commentInput" prefRowCount="3" wrapText="true" />
+                <Button fx:id="addCommentButton" text="Post Comment" onAction="#handleAddComment" />
+            </VBox>
+        </SplitPane>
+    </center>
+</BorderPane>
