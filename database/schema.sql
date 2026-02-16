@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 10, 2026 at 09:58 AM
+-- Generation Time: Feb 16, 2026 at 09:28 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -57,6 +57,24 @@ INSERT INTO `achievements` (`id`, `name`, `description`, `icon`, `xp_reward`, `a
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `activities`
+--
+
+CREATE TABLE `activities` (
+  `id` bigint(20) NOT NULL,
+  `trip_id` bigint(20) NOT NULL,
+  `title` varchar(150) NOT NULL,
+  `description` text DEFAULT NULL,
+  `activity_date` date NOT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `cost` decimal(10,2) DEFAULT 0.00,
+  `xp_reward` int(11) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `bookings`
 --
 
@@ -73,6 +91,47 @@ CREATE TABLE `bookings` (
   `xp_earned` int(11) DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `bookings`
+--
+
+INSERT INTO `bookings` (`id`, `property_id`, `guest_id`, `check_in_date`, `check_out_date`, `total_price`, `number_of_guests`, `status`, `special_requests`, `xp_earned`, `created_at`, `updated_at`) VALUES
+(1, 1, 2, '2026-02-19', '2026-02-28', 1080.00, 1, 'CONFIRMED', '', 108, '2026-02-10 08:17:26', '2026-02-10 08:17:26'),
+(2, 1, 5, '2026-02-10', '2026-02-19', 1080.00, 1, 'CONFIRMED', '', 108, '2026-02-10 08:37:55', '2026-02-10 08:37:55'),
+(3, 2, 2, '2026-02-18', '2026-02-28', 2500.00, 3, 'CONFIRMED', '', 250, '2026-02-11 08:41:00', '2026-02-11 08:41:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `booking_services`
+--
+
+CREATE TABLE `booking_services` (
+  `id` bigint(20) NOT NULL,
+  `booking_id` bigint(20) NOT NULL,
+  `service_id` bigint(20) NOT NULL,
+  `quantity` int(11) DEFAULT 1,
+  `price_at_booking` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `offers`
+--
+
+CREATE TABLE `offers` (
+  `id` bigint(20) NOT NULL,
+  `property_id` bigint(20) NOT NULL,
+  `title` varchar(150) NOT NULL,
+  `description` text DEFAULT NULL,
+  `discount_percentage` decimal(5,2) NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `is_active` tinyint(1) DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -103,6 +162,14 @@ CREATE TABLE `properties` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `properties`
+--
+
+INSERT INTO `properties` (`id`, `owner_id`, `title`, `description`, `property_type`, `address`, `city`, `country`, `latitude`, `longitude`, `bedrooms`, `bathrooms`, `max_guests`, `price_per_night`, `amenities`, `images`, `is_active`, `created_at`, `updated_at`) VALUES
+(1, 2, 'Ocean View Apartment', 'Apartment with a stunning sea view', 'APARTMENT', '123 Beach Road', 'Djerba', 'Tunisia', NULL, NULL, 2, 1, 4, 120.00, NULL, NULL, 1, '2026-02-10 09:13:02', '2026-02-10 09:13:02'),
+(2, 3, 'Desert Oasis Villa', 'Luxury villa near the desert', 'VILLA', '45 Sahara Street', 'Douz', 'Tunisia', NULL, NULL, 3, 2, 6, 250.00, NULL, NULL, 1, '2026-02-10 09:13:02', '2026-02-10 09:13:02');
+
 -- --------------------------------------------------------
 
 --
@@ -117,6 +184,34 @@ CREATE TABLE `reviews` (
   `rating` int(11) NOT NULL CHECK (`rating` >= 1 and `rating` <= 5),
   `comment` text DEFAULT NULL,
   `xp_earned` int(11) DEFAULT 10,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `review_comments`
+--
+
+CREATE TABLE `review_comments` (
+  `id` bigint(20) NOT NULL,
+  `review_id` bigint(20) NOT NULL,
+  `user_id` bigint(20) NOT NULL,
+  `comment` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `services`
+--
+
+CREATE TABLE `services` (
+  `id` bigint(20) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL,
+  `price` decimal(10,2) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -193,7 +288,11 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `full_name`, `phone`, `profile_picture`, `bio`, `experience_points`, `level_id`, `created_at`, `updated_at`) VALUES
 (1, 'yassinerd', 'yassine.raddadi.1@gmail.com', '53959532', 'Yassine Raddadi', NULL, NULL, 'hahaha', 2000, 1, '2026-02-04 10:59:01', '2026-02-10 07:40:59'),
-(2, 'test', 'test@test.com', '1234', 'test test', NULL, NULL, NULL, 0, 1, '2026-02-10 07:48:58', '2026-02-10 07:48:58');
+(2, 'test', 'test@test.com', '1234', 'test test', NULL, NULL, NULL, 508, 3, '2026-02-10 07:48:58', '2026-02-11 08:41:01'),
+(3, 'testuser1', 'test1@travelxp.com', 'password123', 'Test User One', NULL, NULL, NULL, 0, 1, '2026-02-10 09:13:02', '2026-02-10 09:13:02'),
+(4, 'testuser2', 'test2@travelxp.com', 'password123', 'Test User Two', NULL, NULL, NULL, 0, 1, '2026-02-10 09:13:02', '2026-02-10 09:13:02'),
+(5, 'test2', 'test2', '1234', 'test2 test2', NULL, NULL, NULL, 208, 2, '2026-02-10 08:20:38', '2026-02-10 08:37:55'),
+(6, '', '', '', '', NULL, NULL, NULL, 0, 1, '2026-02-10 08:39:45', '2026-02-10 08:39:45');
 
 -- --------------------------------------------------------
 
@@ -207,6 +306,14 @@ CREATE TABLE `user_achievements` (
   `achievement_id` bigint(20) NOT NULL,
   `earned_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user_achievements`
+--
+
+INSERT INTO `user_achievements` (`id`, `user_id`, `achievement_id`, `earned_at`) VALUES
+(1, 2, 1, '2026-02-10 08:17:26'),
+(2, 5, 1, '2026-02-10 08:37:55');
 
 -- --------------------------------------------------------
 
@@ -248,6 +355,14 @@ ALTER TABLE `achievements`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `activities`
+--
+ALTER TABLE `activities`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_activity_trip` (`trip_id`),
+  ADD KEY `idx_activity_date` (`activity_date`);
+
+--
 -- Indexes for table `bookings`
 --
 ALTER TABLE `bookings`
@@ -256,6 +371,23 @@ ALTER TABLE `bookings`
   ADD KEY `idx_guest` (`guest_id`),
   ADD KEY `idx_status` (`status`),
   ADD KEY `idx_dates` (`check_in_date`,`check_out_date`);
+
+--
+-- Indexes for table `booking_services`
+--
+ALTER TABLE `booking_services`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_booking_service` (`booking_id`,`service_id`),
+  ADD KEY `idx_booking_service_booking` (`booking_id`),
+  ADD KEY `idx_booking_service_service` (`service_id`);
+
+--
+-- Indexes for table `offers`
+--
+ALTER TABLE `offers`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_offer_property` (`property_id`),
+  ADD KEY `idx_offer_dates` (`start_date`,`end_date`);
 
 --
 -- Indexes for table `properties`
@@ -275,6 +407,20 @@ ALTER TABLE `reviews`
   ADD KEY `idx_property` (`property_id`),
   ADD KEY `idx_reviewer` (`reviewer_id`),
   ADD KEY `idx_rating` (`rating`);
+
+--
+-- Indexes for table `review_comments`
+--
+ALTER TABLE `review_comments`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_review_comment_review` (`review_id`),
+  ADD KEY `idx_review_comment_user` (`user_id`);
+
+--
+-- Indexes for table `services`
+--
+ALTER TABLE `services`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `trips`
@@ -338,21 +484,51 @@ ALTER TABLE `achievements`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
+-- AUTO_INCREMENT for table `activities`
+--
+ALTER TABLE `activities`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `booking_services`
+--
+ALTER TABLE `booking_services`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `offers`
+--
+ALTER TABLE `offers`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `properties`
 --
 ALTER TABLE `properties`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `review_comments`
+--
+ALTER TABLE `review_comments`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `services`
+--
+ALTER TABLE `services`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
@@ -377,13 +553,13 @@ ALTER TABLE `trip_milestones`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `user_achievements`
 --
 ALTER TABLE `user_achievements`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `user_levels`
@@ -396,11 +572,30 @@ ALTER TABLE `user_levels`
 --
 
 --
+-- Constraints for table `activities`
+--
+ALTER TABLE `activities`
+  ADD CONSTRAINT `activities_ibfk_1` FOREIGN KEY (`trip_id`) REFERENCES `trips` (`id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `bookings`
 --
 ALTER TABLE `bookings`
   ADD CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `properties` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `bookings_ibfk_2` FOREIGN KEY (`guest_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `booking_services`
+--
+ALTER TABLE `booking_services`
+  ADD CONSTRAINT `booking_services_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `booking_services_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `offers`
+--
+ALTER TABLE `offers`
+  ADD CONSTRAINT `offers_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `properties` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `properties`
@@ -415,6 +610,13 @@ ALTER TABLE `reviews`
   ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`reviewer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `reviews_ibfk_3` FOREIGN KEY (`property_id`) REFERENCES `properties` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `review_comments`
+--
+ALTER TABLE `review_comments`
+  ADD CONSTRAINT `review_comments_ibfk_1` FOREIGN KEY (`review_id`) REFERENCES `reviews` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `review_comments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `trips`
