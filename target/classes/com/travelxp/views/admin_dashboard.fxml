@@ -61,7 +61,8 @@
                         <Region HBox.hgrow="ALWAYS" />
                         <HBox spacing="10">
                            <children>
-                              <Button onAction="#handleRefresh" text="Refresh" styleClass="button" />
+                              <Button onAction="#handleCreateUser" text="+ Create User" styleClass="button" />
+                              <Button onAction="#handleRefresh" text="Refresh" styleClass="secondary-button" />
                            </children>
                         </HBox>
                      </children>
