@@ -109,6 +109,8 @@ public class AdminDashboardController {
 
     private void handleEditUser(UserViewModel model) {
         Dialog<User> dialog = new Dialog<>();
+        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+        ThemeManager.applyThemeToNode(dialog.getDialogPane());
         dialog.setTitle("Edit User: " + model.getUsername());
         dialog.setHeaderText("Modify user details and role.");
 
@@ -122,6 +124,9 @@ public class AdminDashboardController {
         TextField emailField = new TextField(model.getEmail());
         DatePicker birthdayPicker = new DatePicker(model.getBirthday());
         TextArea bioArea = new TextArea(model.getBio());
+        bioArea.setPrefHeight(100);
+        bioArea.setWrapText(true);
+        
         ComboBox<String> roleCombo = new ComboBox<>(FXCollections.observableArrayList("USER", "ADMIN"));
         roleCombo.setValue(model.getRole());
 
@@ -169,6 +174,8 @@ public class AdminDashboardController {
         }
 
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.getDialogPane().getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+        ThemeManager.applyThemeToNode(confirm.getDialogPane());
         confirm.setTitle("Delete User");
         confirm.setHeaderText("Are you sure you want to delete " + model.getUsername() + "?");
         confirm.setContentText("This action cannot be undone.");
@@ -188,6 +195,8 @@ public class AdminDashboardController {
 
     private void handleResetPassword(UserViewModel model) {
         TextInputDialog dialog = new TextInputDialog();
+        dialog.getDialogPane().getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+        ThemeManager.applyThemeToNode(dialog.getDialogPane());
         dialog.setTitle("Reset Password");
         dialog.setHeaderText("Set a temporary password for " + model.getUsername());
         dialog.setContentText("New Password:");
@@ -239,6 +248,8 @@ public class AdminDashboardController {
 
     private void showAlert(Alert.AlertType type, String title, String header, String content) {
         Alert alert = new Alert(type);
+        alert.getDialogPane().getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+        ThemeManager.applyThemeToNode(alert.getDialogPane());
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);

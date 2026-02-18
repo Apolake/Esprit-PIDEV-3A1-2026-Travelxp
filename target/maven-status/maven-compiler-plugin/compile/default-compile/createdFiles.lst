@@ -1,3 +1,4 @@
+com\travelxp\models\UserViewModel.class
 com\travelxp\controllers\LoginController.class
 com\travelxp\models\Gamification.class
 com\travelxp\UserSession.class
@@ -8,10 +9,12 @@ com\travelxp\utils\MyDB.class
 com\travelxp\controllers\RegisterController.class
 com\travelxp\controllers\EditProfileController.class
 com\travelxp\services\UserService.class
+com\travelxp\controllers\AdminDashboardController.class
 com\travelxp\utils\ThemeManager.class
 com\travelxp\controllers\DashboardController.class
 com\travelxp\services\GamificationService.class
 com\travelxp\Main.class
+com\travelxp\controllers\AdminDashboardController$1.class
 com\travelxp\controllers\ProfileController.class
 com\travelxp\controllers\TasksController.class
 com\travelxp\utils\PasswordUtil.class

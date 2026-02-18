@@ -1,6 +1,7 @@
 package com.travelxp.utils;
 
 import javafx.animation.FadeTransition;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.util.Duration;
 
@@ -19,11 +20,15 @@ public class ThemeManager {
         ft.setToValue(1.0);
         ft.play();
 
+        applyThemeToNode(scene.getRoot());
+    }
+
+    public static void applyThemeToNode(Parent root) {
         if (isDark) {
-            scene.getRoot().getStyleClass().remove("light-theme");
+            root.getStyleClass().remove("light-theme");
         } else {
-            if (!scene.getRoot().getStyleClass().contains("light-theme")) {
-                scene.getRoot().getStyleClass().add("light-theme");
+            if (!root.getStyleClass().contains("light-theme")) {
+                root.getStyleClass().add("light-theme");
             }
         }
     }

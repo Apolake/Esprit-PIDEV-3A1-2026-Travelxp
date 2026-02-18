@@ -35,7 +35,7 @@
 /* ScrollPane fix for transparency */
 .scroll-pane {
     -fx-background-color: transparent;
-    -fx-background: transparent; /* This is crucial for JavaFX ScrollPane */
+    -fx-background: transparent;
     -fx-border-color: transparent;
 }
 
@@ -173,6 +173,10 @@
     -fx-text-fill: -fx-text-main;
 }
 
+.text-area .viewport {
+    -fx-background-color: transparent;
+}
+
 .text-field:focused, .password-field:focused, .text-area:focused, .date-picker:focused {
     -fx-border-color: -fx-accent-solid;
     -fx-border-width: 2px;
@@ -266,15 +270,27 @@
     -fx-background-color: -fx-primary-bg;
 }
 
+.dialog-pane .button {
+    -fx-background-color: -fx-accent;
+    -fx-text-fill: white;
+}
+
 .dialog-pane > .content.label {
     -fx-text-fill: -fx-text-main;
 }
 
 .dialog-pane .header-panel {
     -fx-background-color: -fx-secondary-bg;
+    -fx-padding: 20;
 }
 
 .dialog-pane .header-panel .label {
     -fx-text-fill: -fx-accent-solid;
-    -fx-font-size: 18px;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.dialog-pane .button-bar {
+    -fx-background-color: -fx-secondary-bg;
+    -fx-padding: 15;
 }

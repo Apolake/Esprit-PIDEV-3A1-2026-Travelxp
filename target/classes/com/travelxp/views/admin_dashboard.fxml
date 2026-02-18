@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.layout.Region?>
+
+<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.travelxp.controllers.AdminDashboardController" styleClass="root">
+   <left>
+      <VBox styleClass="sidebar" prefWidth="280">
+         <children>
+            <VBox alignment="CENTER" spacing="10">
+               <padding>
+                  <Insets top="40" bottom="40"/>
+               </padding>
+               <children>
+                  <Label text="ADMIN PANEL" styleClass="sidebar-title" />
+                  <Line endX="100" styleClass="sidebar-divider" strokeWidth="1"/>
+               </children>
+            </VBox>
+            
+            <VBox spacing="5" VBox.vgrow="ALWAYS">
+               <children>
+                  <Button maxWidth="Infinity" styleClass="nav-button, nav-button-active" text="Users">
+                     <graphic>
+                        <Region style="-fx-shape: 'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'; -fx-background-color: -fx-accent; -fx-min-width: 18px; -fx-min-height: 18px; -fx-max-width: 18px; -fx-max-height: 18px;"/>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+            
+            <VBox spacing="10" alignment="BOTTOM_CENTER">
+               <padding>
+                  <Insets bottom="30" left="20" right="20"/>
+               </padding>
+               <children>
+                  <Button onAction="#handleLogout" maxWidth="Infinity" styleClass="secondary-button" text="Logout" style="-fx-text-fill: #CF6679; -fx-border-color: #CF6679;" />
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </left>
+   
+   <center>
+      <StackPane styleClass="center-bg">
+         <children>
+            <VBox spacing="25">
+               <padding>
+                  <Insets top="50" right="40" bottom="50" left="40"/>
+               </padding>
+               <children>
+                  <HBox alignment="CENTER_LEFT">
+                     <children>
+                        <VBox spacing="5">
+                           <children>
+                              <Label styleClass="title" text="User Management" />
+                              <Label text="View and manage all system users." styleClass="header-text" />
+                           </children>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <HBox spacing="10">
+                           <children>
+                              <Button onAction="#handleRefresh" text="Refresh" styleClass="button" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </HBox>
+                  
+                  <TableView fx:id="userTable" VBox.vgrow="ALWAYS" styleClass="card">
+                    <columns>
+                      <TableColumn fx:id="idCol" prefWidth="50" text="ID" />
+                      <TableColumn fx:id="usernameCol" prefWidth="120" text="Username" />
+                      <TableColumn fx:id="emailCol" prefWidth="180" text="Email" />
+                      <TableColumn fx:id="roleCol" prefWidth="80" text="Role" />
+                      <TableColumn fx:id="xpCol" prefWidth="60" text="XP" />
+                      <TableColumn fx:id="levelCol" prefWidth="60" text="Lvl" />
+                      <TableColumn fx:id="titleCol" prefWidth="100" text="Title" />
+                      <TableColumn fx:id="actionsCol" prefWidth="250" text="Actions" />
+                    </columns>
+                  </TableView>
+               </children>
+            </VBox>
+            <Button onAction="#toggleTheme" styleClass="theme-toggle-button" StackPane.alignment="TOP_RIGHT">
+               <graphic>
+                  <Region styleClass="theme-icon" />
+               </graphic>
+               <StackPane.margin>
+                  <Insets top="20" right="20" />
+               </StackPane.margin>
+            </Button>
+         </children>
+      </StackPane>
+   </center>
+</BorderPane>
