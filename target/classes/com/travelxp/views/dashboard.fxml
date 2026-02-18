@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
+
+<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.travelxp.controllers.DashboardController">
+   <left>
+      <VBox spacing="15.0" style="-fx-background-color: #2C3E50; -fx-pref-width: 250;">
+         <children>
+            <Label text="TRAVELXP" textFill="WHITE" style="-fx-font-size: 24px; -fx-font-weight: bold;">
+               <VBox.margin>
+                  <Insets bottom="30.0" left="20.0" top="30.0" />
+               </VBox.margin>
+            </Label>
+            <Button maxWidth="Infinity" style="-fx-background-color: #34495E; -fx-text-fill: white; -fx-alignment: BASELINE_LEFT;" text="DASHBOARD">
+               <padding>
+                  <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+               </padding>
+            </Button>
+            <Button onAction="#handleEditProfile" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: BASELINE_LEFT;" text="EDIT PROFILE">
+               <padding>
+                  <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+               </padding>
+            </Button>
+            <Button onAction="#handleChangePassword" maxWidth="Infinity" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: BASELINE_LEFT;" text="CHANGE PASSWORD">
+               <padding>
+                  <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+               </padding>
+            </Button>
+            <StackPane VBox.vgrow="ALWAYS" />
+            <Button onAction="#handleLogout" maxWidth="Infinity" style="-fx-background-color: #C0392B; -fx-text-fill: white;" text="LOGOUT">
+               <VBox.margin>
+                  <Insets bottom="20.0" left="20.0" right="20.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <VBox spacing="30.0" style="-fx-background-color: #F8F9FA;">
+         <padding>
+            <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+         </padding>
+         <children>
+            <Label fx:id="welcomeLabel" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;" text="Welcome back, User!" />
+            
+            <HBox spacing="30.0">
+               <children>
+                  <!-- Profile Summary Card -->
+                  <VBox spacing="20.0" styleClass="card" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="title" text="Profile Summary" />
+                        <HBox spacing="20.0" alignment="CENTER_LEFT">
+                           <children>
+                              <ImageView fx:id="profileImageView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
+                              <VBox spacing="10.0">
+                                 <children>
+                                    <Label fx:id="emailLabel" text="email@example.com" style="-fx-font-size: 16px;" />
+                                    <Label fx:id="birthdayLabel" text="Jan 1, 1990" style="-fx-text-fill: #7F8C8D;" />
+                                    <Label fx:id="bioLabel" text="Bio goes here..." wrapText="true" maxWidth="400.0" style="-fx-font-style: italic;" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            
+            <!-- Gamification Card -->
+            <VBox spacing="20.0" styleClass="card">
+               <children>
+                  <HBox alignment="CENTER_LEFT" spacing="20.0">
+                      <children>
+                          <Label styleClass="title" text="Your Journey" />
+                          <Label fx:id="titleLabel" style="-fx-background-color: #F1C40F; -fx-text-fill: white; -fx-padding: 5 15; -fx-background-radius: 20; -fx-font-weight: bold;" text="Novice" />
+                      </children>
+                  </HBox>
+                  
+                  <HBox alignment="CENTER_LEFT" spacing="20.0">
+                     <children>
+                        <VBox alignment="CENTER" style="-fx-background-color: #3498DB; -fx-background-radius: 50; -fx-min-width: 80; -fx-min-height: 80;">
+                            <children>
+                                <Label text="LEVEL" style="-fx-text-fill: white; -fx-font-size: 12px;" />
+                                <Label fx:id="levelLabel" text="1" style="-fx-text-fill: white; -fx-font-size: 36px; -fx-font-weight: bold;" />
+                            </children>
+                        </VBox>
+                        
+                        <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <HBox alignment="CENTER_LEFT">
+                                  <Label text="Experience Points" style="-fx-font-weight: bold;" />
+                                  <StackPane HBox.hgrow="ALWAYS" />
+                                  <Label fx:id="xpLabel" text="0 / 100 XP" />
+                              </HBox>
+                              <ProgressBar fx:id="xpProgressBar" maxWidth="Infinity" progress="0.0" style="-fx-accent: #2ECC71; -fx-control-inner-background: #ECF0F1;" />
+                              <Label text="Complete more actions to level up!" style="-fx-text-fill: #95A5A6; -fx-font-size: 12px;" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

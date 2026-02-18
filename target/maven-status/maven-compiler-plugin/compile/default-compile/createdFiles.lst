@@ -1,6 +1,9 @@
 com\travelxp\controllers\LoginController.class
+com\travelxp\models\Gamification.class
 com\travelxp\services\UserService.class
 com\travelxp\UserSession.class
+com\travelxp\controllers\DashboardController.class
+com\travelxp\services\GamificationService.class
 com\travelxp\Main.class
 com\travelxp\models\User.class
 com\travelxp\controllers\ProfileController.class

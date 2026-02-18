@@ -83,3 +83,18 @@
 .date-picker > .arrow-button > .arrow {
     -fx-background-color: #3498DB;
 }
+
+.progress-bar {
+    -fx-pref-height: 20px;
+    -fx-accent: #2ECC71;
+}
+
+.progress-bar .track {
+    -fx-background-color: #ECF0F1;
+    -fx-background-radius: 10px;
+}
+
+.progress-bar .bar {
+    -fx-background-color: linear-gradient(to right, #2ECC71, #27AE60);
+    -fx-background-radius: 10px;
+}
