@@ -95,7 +95,7 @@ public class EditProfileController {
 
     @FXML
     private void handleCancel(ActionEvent event) {
-        changeScene(event, "/com/travelxp/views/profile.fxml");
+        changeScene(event, "/com/travelxp/views/dashboard.fxml");
     }
 
     private boolean validateInput(String email, LocalDate birthday, String bio) {
