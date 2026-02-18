@@ -7,29 +7,45 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Circle?>
 
-<StackPane alignment="CENTER" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.travelxp.controllers.LoginController">
+<StackPane alignment="CENTER" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.travelxp.controllers.LoginController" styleClass="root">
    <children>
-      <VBox alignment="CENTER" maxWidth="400.0" spacing="20.0" styleClass="card">
+      <VBox alignment="CENTER" maxWidth="450.0" spacing="35.0" styleClass="card">
          <children>
-            <Label text="LOGIN" styleClass="title" />
-            <VBox spacing="10.0">
+            <VBox alignment="CENTER" spacing="10">
                <children>
-                  <Label text="Email" />
-                  <TextField fx:id="emailField" promptText="Enter your email" />
+                  <Label text="TRAVELXP" styleClass="title" style="-fx-font-size: 36px;" />
+                  <Label text="Your journey starts here." styleClass="header-text" />
                </children>
             </VBox>
-            <VBox spacing="10.0">
+            
+            <VBox spacing="15.0">
                <children>
-                  <Label text="Password" />
-                  <PasswordField fx:id="passwordField" promptText="Enter your password" />
+                  <VBox spacing="8.0">
+                     <children>
+                        <Label text="Email Address" style="-fx-font-weight: bold; -fx-text-fill: #B0B0B0;" />
+                        <TextField fx:id="emailField" promptText="Enter your email" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="8.0">
+                     <children>
+                        <Label text="Password" style="-fx-font-weight: bold; -fx-text-fill: #B0B0B0;" />
+                        <PasswordField fx:id="passwordField" promptText="Enter your password" />
+                     </children>
+                  </VBox>
                </children>
             </VBox>
-            <Button fx:id="loginButton" maxWidth="Infinity" onAction="#handleLogin" text="LOGIN" />
-            <Button onAction="#handleRegisterRedirect" maxWidth="Infinity" styleClass="secondary-button" text="REGISTER" />
+            
+            <VBox spacing="15.0">
+               <children>
+                  <Button fx:id="loginButton" maxWidth="Infinity" onAction="#handleLogin" text="Login" />
+                  <Button onAction="#handleRegisterRedirect" maxWidth="Infinity" styleClass="secondary-button" text="Create New Account" />
+               </children>
+            </VBox>
          </children>
          <padding>
-            <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+            <Insets bottom="60.0" left="60.0" right="60.0" top="60.0" />
          </padding>
       </VBox>
    </children>
