@@ -1,446 +1,278 @@
-📄 PROJECT REQUIREMENTS DOCUMENT
-Project: Secure User Management Desktop Application
+Project: User Management + Gamification Desktop App
 
-1️⃣ SYSTEM OVERVIEW
+Platform: JavaFX Full-Screen Desktop | JDK 25 | Maven | MySQL | JDBC
+
+1️⃣ OVERVIEW
 1.1 Purpose
 
-Develop a secure, full-screen JavaFX desktop application for managing user accounts with:
+Enhance the existing user management system with:
 
-User Registration
+Dashboard: Summary view for the user after login
 
-User Login
+Gamification Engine: Tracks experience points (XP), user levels, and titles based on actions (e.g., logging in, updating profile, completing profile fields)
 
-View Profile
+Goal: Encourage user engagement and visually display achievements.
 
-Modify Email
+2️⃣ NEW MODULES
+2.1 Dashboard Module
 
-Modify Password
+Purpose: Full-screen view showing:
 
-Modify Birthday
+Welcome message with username
 
-Modify Bio
+User profile summary (bio, birthday, profile image)
 
-Change Profile Image
+Gamification stats: XP, level, title
 
-Delete Account
+Recent activity (optional: last profile updates or logins)
 
-Logout
+Quick buttons: Edit Profile, Change Password, Logout
 
-System must implement secure password hashing and proper JDBC usage.
+Functional Requirements:
 
-2️⃣ TECHNOLOGY STACK
-Component	Technology
-Language	Java (JDK 25)
-Build Tool	Maven
-UI	JavaFX
-Database	MySQL
-DB Access	JDBC
-Password Security	BCrypt
-Don't use DAO layer
-3️⃣ DATABASE DESIGN
-3.1 Database Name
+Load dynamically after login
 
-travelxp
-password: blank(nothing ,empty)
+Fetch gamification stats from database
 
-3.2 Users Table
-CREATE TABLE users (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    birthday DATE NOT NULL,
-    bio TEXT,
-    profile_image VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+Update dashboard in real-time when profile is updated or XP changes
+
+UI Requirements:
+
+Full-screen pane (BorderPane preferred)
+
+Left sidebar for navigation (Profile, Dashboard, Logout)
+
+Center: Gamification panel + profile summary
+
+Top: Welcome header
+
+Dark theme, rounded cards, soft shadows
+
+2.2 Gamification Engine
+
+Purpose: Track user activity and assign experience points (XP), levels, and titles.
+
+Entities in Database:
+
+gamification table
+CREATE TABLE gamification (
+    user_id INT PRIMARY KEY,
+    xp INT DEFAULT 0,
+    level INT DEFAULT 1,
+    title VARCHAR(50) DEFAULT 'Novice',
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-4️⃣ PROJECT STRUCTURE 
-com.travelxp
-│
-├── Main.java
-│
-├── utils
-│   ├── MyDB.java
-│   └── PasswordUtil.java
-│
-├── models
-│   └── User.java
-│
-├── services
-│   └── UserService.java
-│
-├── controllers
-│   ├── LoginController.java
-│   ├── RegisterController.java
-│   ├── ProfileController.java
-│   ├── EditProfileController.java
-│   └── ChangePasswordController.java
-│
-├── views
-│   ├── login.fxml
-│   ├── register.fxml
-│   ├── profile.fxml
-│   ├── edit_profile.fxml
-│   └── change_password.fxml
-│
-└── resources
-    └── style.css
 
-5️⃣ DATABASE CONNECTION REQUIREMENTS
-MyDB Class
+Rules & Features:
 
-Singleton pattern
+Experience Points (XP)
 
-Uses JDBC DriverManager
+Earned by user actions:
 
-Loads DB credentials from properties file
+Login: +10 XP
 
-Returns single Connection instance
+Complete profile fields: +5 XP each (bio, birthday, image)
 
-Responsibilities:
+Change password/email: +5 XP
 
-Establish connection
+Levels
 
-Provide getConnection()
+Level thresholds (example):
 
-Handle driver loading
+Level 1: 0 XP
 
-6️⃣ SERVICE LAYER REQUIREMENTS (JDBC INSIDE SERVICE)
-UserService Responsibilities
+Level 2: 50 XP
 
-All SQL must be written inside this class using:
+Level 3: 120 XP
 
-PreparedStatement
+Level 4: 200 XP
 
-ResultSet
+Level 5+: +100 XP per level
 
-Proper exception handling
+Level calculated dynamically based on XP
 
-Transactions where necessary
+Titles
 
-6.1 Methods Required in UserService
-registerUser(User user)
+Assign a title based on level:
 
-Must:
+Level 1–2: Novice
 
-Validate uniqueness (email + username)
+Level 3–4: Explorer
 
-Hash password
+Level 5–6: Traveler
 
-Insert into database
+Level 7+: Adventurer
 
-Return success/failure
+Service Responsibilities (GamificationService.java)
 
-Uses:
+addXp(int userId, int points)
 
-INSERT INTO users(username,email,password_hash,birthday,bio,profile_image)
-VALUES(?,?,?,?,?,?)
+calculateLevel(int xp) → int
 
-login(String email, String password)
+getTitle(int level) → String
 
-Must:
+updateGamification(User user, int xpGained)
 
-Fetch stored password_hash
+getGamificationByUserId(int userId) → returns XP, Level, Title
 
-Compare using BCrypt
+Direct JDBC Usage:
 
-Return User object if valid
+No DAO folder; all database interaction in GamificationService
 
-Return null if invalid
+Use PreparedStatement, handle exceptions, maintain security
 
-Uses:
+3️⃣ NEW UI COMPONENTS
+3.1 Dashboard.fxml
 
-SELECT * FROM users WHERE email = ?
+Layout: BorderPane
 
-updateEmail(int userId, String newEmail)
+Left Sidebar: Navigation Buttons
 
-Must:
+Top: Welcome Label
 
-Check uniqueness
+Center: Two main cards:
 
-Validate format
+Profile Summary Card
 
-Update DB
+Gamification Card
 
-UPDATE users SET email = ? WHERE id = ?
+Gamification Card displays:
 
-updatePassword(int userId, String currentPassword, String newPassword)
+XP bar (ProgressBar)
 
-Must:
+Current Level
 
-Fetch stored hash
+Title
 
-Verify current password
+Optional: Achievements icons
 
-Hash new password
+3.2 ProgressBar Logic
 
-Update DB
+Visual representation of XP towards next level
 
-UPDATE users SET password_hash = ? WHERE id = ?
+Label: “XP: 120 / 200”
 
-updateBirthday(int userId, LocalDate birthday)
+4️⃣ USER ACTIONS TRIGGERING XP
+Action	XP Awarded
+Login	10 XP
+Update Profile Bio	5 XP
+Upload Profile Image	5 XP
+Update Birthday	5 XP
+Change Email or Password	5 XP
 
-Validation:
+XP awarded once per unique action
 
-Cannot be future date
+5️⃣ DATABASE UPDATES
 
-updateBio(int userId, String bio)
+Add gamification table (see above)
 
-Validation:
+Populate a new record on user registration with default XP, Level, Title
 
-Max 500 characters
+Update XP and Level in GamificationService after user actions
 
-updateProfileImage(int userId, String imagePath)
+6️⃣ SERVICE LAYER UPDATES
 
-Store file path only.
+UserService.java updates:
 
-getUserById(int userId)
+After registration: initialize gamification row
 
-Returns full User object.
+After profile updates: call GamificationService.addXp()
 
-deleteUser(int userId, String password)
+GamificationService.java handles all gamification DB updates.
 
-Must:
+UserService Example Triggers:
 
-Verify password
+// After updating bio
+userService.updateBio(userId, newBio);
+gamificationService.addXp(userId, 5);
 
-Delete record
+7️⃣ DASHBOARD LOGIC
 
-DELETE FROM users WHERE id = ?
+On login: load Dashboard.fxml
 
-7️⃣ PASSWORD SECURITY REQUIREMENTS
-Mandatory BCrypt Usage
+Fetch current user profile + gamification stats
 
-Library: jbcrypt
+Display: username, profile image, bio, birthday, XP, Level, Title
 
-Cost factor: minimum 10
+Update XP bar dynamically after any profile change
 
-Required methods:
+Provide buttons for Edit Profile / Change Password / Logout
 
-BCrypt.hashpw(password, BCrypt.gensalt(12))
-BCrypt.checkpw(rawPassword, storedHash)
+8️⃣ VALIDATION & SECURITY
 
+Continue using BCrypt for passwords
 
-Rules:
+PreparedStatement for all queries
 
-Never store plain password
+Validate XP changes (no negative XP)
 
-Never compare plain text
+Handle exceptions gracefully
 
-Never log password
+Ensure gamification table is consistent with users table
 
-8️⃣ UI REQUIREMENTS (JavaFX)
-8.1 Application Behavior
+9️⃣ UI DESIGN & THEME
 
-Full-screen mode enabled on start
+Maintain existing dark theme (#121212 background)
 
-Resizable disabled
+Accent for gamification card (#C9A227)
 
-Dark theme
+Rounded corners and shadows for cards
 
-Smooth transitions
+Use ProgressBar for XP visually
 
-Professional layout
+Display Level and Title clearly
 
-8.2 UI Theme
+🔟 DEVELOPMENT PHASES
 
-Background: #121212
-Cards: #1E1E1E
-Accent: Gold (#C9A227)
-Text: White
-Rounded corners: 12px
-Soft drop shadows
+Add gamification table in DB
 
-8.3 SCREENS REQUIRED
-1️⃣ Login Screen
+Update UserService to trigger XP on actions
 
-Components:
+Create GamificationService
 
-TextField (Email)
+Update registration to initialize gamification row
 
-PasswordField
+Build Dashboard.fxml layout (Profile + Gamification)
 
-Login Button
+Controller wiring (DashboardController.java)
 
-Register Button
+Update UI after profile actions
 
-Behavior:
+Test XP calculations and Level/Title assignment
 
-Validate input
+Validate XP cannot exceed integer limits
 
-Call UserService.login()
+Polish UI, transitions, and full-screen layout
 
-2️⃣ Register Screen
+1️⃣1️⃣ COMPLETION CRITERIA
 
-Components:
+System is complete when:
 
-Username
+User logs in → Dashboard loads
 
-Email
+XP is awarded for user actions
 
-Password
+Level and Title update dynamically
 
-Confirm Password
+ProgressBar accurately shows XP progress
 
-DatePicker (Birthday)
+No crashes or SQL errors
 
-TextArea (Bio)
+Full-screen JavaFX dashboard functional
 
-Image Upload Button
+User profile info displayed correctly
 
-Register Button
-
-Back Button
-
-Validations performed before service call.
-
-3️⃣ Profile Screen
-
-Displays:
-
-Profile Image
-
-Username
-
-Email
-
-Birthday
-
-Bio
-
-Created Date
-
-Buttons:
-
-Edit Profile
-
-Change Password
-
-Delete Account
-
-Logout
-
-4️⃣ Edit Profile Screen
-
-Editable:
-
-Email
-
-Birthday
-
-Bio
-
-Profile Image
-
-5️⃣ Change Password Screen
-
-Fields:
-
-Current Password
-
-New Password
-
-Confirm Password
-
-9️⃣ VALIDATION RULES
-Field	Rule
-Username	3–50 chars
-Email	Valid format
-Password	8+ chars, 1 letter, 1 number
-Birthday	Not future
-Bio	Max 500 chars
-🔟 NON-FUNCTIONAL REQUIREMENTS
-
-Use PreparedStatement only
-
-No SQL injection
-
-No duplicated DB logic
-
-Handle SQLExceptions
-
-Clean service-based architecture
-
-MVC separation respected
-
-Proper alert dialogs for errors
-
-1️⃣1️⃣ MAVEN REQUIREMENTS
-
-Must include:
-
-JavaFX modules
-
-MySQL Connector/J
-
-jbcrypt
-
-JavaFX plugin configured for JDK 25.
-
-1️⃣2️⃣ ERROR HANDLING REQUIREMENTS
-
-System must handle:
-
-Duplicate email
-
-Duplicate username
-
-Wrong password
-
-DB connection failure
-
-Invalid inputs
-
-Empty fields
-
-Using JavaFX Alert dialogs.
-
-1️⃣3️⃣ DEVELOPMENT ORDER
-
-Setup MySQL
-
-Create schema
-
-Setup Maven
-
-Create MyDB
-
-Create User model
-
-Create PasswordUtil
-
-Implement UserService (JDBC inside)
-
-Build UI (FXML)
-
-Connect Controllers
-
-Add validation
-
-Test security
-
-FINAL ARCHITECTURE SUMMARY
-
-✔ Clean MVC
-✔ JDBC inside Service
-✔ No DAO layer
-✔ Secure password hashing
-✔ Full-screen modern UI
-✔ Professional structure
-✔ Production-ready foundation
+All password/security rules maintained
 
 If you want next, Your Majesty, I can now provide:
 
-Full pom.xml
+Full GamificationService.java with JDBC
 
-Complete MyDB class
+Updated UserService.java with XP triggers
 
-Complete UserService with all JDBC code
+Dashboard.fxml layout + controller
 
-Complete BCrypt utility
+CSS for XP bars and gamification cards
 
-Full starter JavaFX layout
-
-Step-by-step implementation guide
+Example progress bar updates for XP

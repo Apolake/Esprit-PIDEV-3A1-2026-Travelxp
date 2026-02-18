@@ -10,9 +10,11 @@ import java.time.LocalDateTime;
 
 public class UserService {
     private final Connection connection;
+    private final GamificationService gamificationService;
 
     public UserService() {
         this.connection = MyDB.getInstance().getConnection();
+        this.gamificationService = new GamificationService();
     }
 
     public boolean registerUser(User user) throws SQLException {
@@ -22,7 +24,7 @@ public class UserService {
         }
 
         String sql = "INSERT INTO users(username, email, password_hash, birthday, bio, profile_image) VALUES(?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, user.getUsername());
             pstmt.setString(2, user.getEmail());
             pstmt.setString(3, PasswordUtil.hashPassword(user.getPasswordHash())); // Using field as raw password during reg
@@ -31,7 +33,16 @@ public class UserService {
             pstmt.setString(6, user.getProfileImage());
             
             int affectedRows = pstmt.executeUpdate();
-            return affectedRows > 0;
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        user.setId(generatedKeys.getInt(1));
+                        gamificationService.createGamification(user.getId()); // Initialize gamification
+                    }
+                }
+                return true;
+            }
+            return false;
         }
     }
 
@@ -57,7 +68,9 @@ public class UserService {
                 if (rs.next()) {
                     String storedHash = rs.getString("password_hash");
                     if (PasswordUtil.checkPassword(password, storedHash)) {
-                        return mapResultSetToUser(rs);
+                        User user = mapResultSetToUser(rs);
+                        gamificationService.addXp(user.getId(), 10); // Login XP
+                        return user;
                     }
                 }
             }
@@ -82,7 +95,9 @@ public class UserService {
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, newEmail);
             pstmt.setInt(2, userId);
-            return pstmt.executeUpdate() > 0;
+            boolean success = pstmt.executeUpdate() > 0;
+            if (success) gamificationService.addXp(userId, 5); // Email Update XP
+            return success;
         }
     }
 
@@ -93,7 +108,9 @@ public class UserService {
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
                 pstmt.setString(1, PasswordUtil.hashPassword(newPassword));
                 pstmt.setInt(2, userId);
-                return pstmt.executeUpdate() > 0;
+                boolean success = pstmt.executeUpdate() > 0;
+                if (success) gamificationService.addXp(userId, 5); // Password Update XP
+                return success;
             }
         }
         return false;
@@ -107,7 +124,9 @@ public class UserService {
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setDate(1, Date.valueOf(birthday));
             pstmt.setInt(2, userId);
-            return pstmt.executeUpdate() > 0;
+            boolean success = pstmt.executeUpdate() > 0;
+            if (success) gamificationService.addXp(userId, 5); // Birthday Update XP
+            return success;
         }
     }
 
@@ -119,7 +138,9 @@ public class UserService {
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, bio);
             pstmt.setInt(2, userId);
-            return pstmt.executeUpdate() > 0;
+            boolean success = pstmt.executeUpdate() > 0;
+            if (success) gamificationService.addXp(userId, 5); // Bio Update XP
+            return success;
         }
     }
 
@@ -128,7 +149,9 @@ public class UserService {
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, imagePath);
             pstmt.setInt(2, userId);
-            return pstmt.executeUpdate() > 0;
+            boolean success = pstmt.executeUpdate() > 0;
+            if (success) gamificationService.addXp(userId, 5); // Image Update XP
+            return success;
         }
     }
 
