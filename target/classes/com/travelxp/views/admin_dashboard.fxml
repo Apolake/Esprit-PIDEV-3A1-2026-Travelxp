@@ -71,8 +71,10 @@
                   <TableView fx:id="userTable" VBox.vgrow="ALWAYS" styleClass="card">
                     <columns>
                       <TableColumn fx:id="idCol" prefWidth="50" text="ID" />
-                      <TableColumn fx:id="usernameCol" prefWidth="120" text="Username" />
-                      <TableColumn fx:id="emailCol" prefWidth="180" text="Email" />
+                      <TableColumn fx:id="usernameCol" prefWidth="100" text="Username" />
+                      <TableColumn fx:id="emailCol" prefWidth="150" text="Email" />
+                      <TableColumn fx:id="bioCol" prefWidth="150" text="Bio" />
+                      <TableColumn fx:id="imageCol" prefWidth="100" text="Image Path" />
                       <TableColumn fx:id="roleCol" prefWidth="80" text="Role" />
                       <TableColumn fx:id="xpCol" prefWidth="60" text="XP" />
                       <TableColumn fx:id="levelCol" prefWidth="60" text="Lvl" />
