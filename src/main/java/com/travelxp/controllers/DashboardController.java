@@ -14,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -37,6 +38,10 @@ public class DashboardController {
 
     @FXML
     public void initialize() {
+        // Apply circular clip
+        Circle clip = new Circle(60, 60, 60); // Center X, Y, Radius
+        profileImageView.setClip(clip);
+        
         User user = Main.getSession().getUser();
         if (user != null) {
             updateProfileUI(user);

@@ -41,8 +41,12 @@ public class LoginController {
         try {
             User user = userService.login(email, password);
             if (user != null) {
-                Main.setSession(new UserSession(user));
-                changeScene(event, "/com/travelxp/views/dashboard.fxml");
+                Main.setSession(new com.travelxp.UserSession(user));
+                if ("ADMIN".equals(user.getRole())) {
+                    changeScene(event, "/com/travelxp/views/admin_dashboard.fxml");
+                } else {
+                    changeScene(event, "/com/travelxp/views/dashboard.fxml");
+                }
             } else {
                 showAlert("Error", "Login failed", "Invalid email or password.");
             }

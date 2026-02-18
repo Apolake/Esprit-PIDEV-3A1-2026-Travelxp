@@ -30,6 +30,11 @@ public class TasksController {
     }
 
     @FXML
+    private void handleChangePassword(ActionEvent event) {
+        changeScene(event, "/com/travelxp/views/change_password.fxml");
+    }
+
+    @FXML
     private void toggleTheme(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         ThemeManager.toggleTheme(stage.getScene());

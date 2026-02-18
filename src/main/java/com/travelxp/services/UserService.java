@@ -180,6 +180,50 @@ public class UserService {
         return false;
     }
 
+    // Admin Methods
+    public java.util.List<User> getAllUsers() throws SQLException {
+        java.util.List<User> users = new java.util.ArrayList<>();
+        String sql = "SELECT * FROM users";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                users.add(mapResultSetToUser(rs));
+            }
+        }
+        return users;
+    }
+
+    public boolean updateUserAsAdmin(User user) throws SQLException {
+        String sql = "UPDATE users SET username = ?, email = ?, birthday = ?, bio = ?, profile_image = ?, role = ? WHERE id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, user.getUsername());
+            pstmt.setString(2, user.getEmail());
+            pstmt.setDate(3, Date.valueOf(user.getBirthday()));
+            pstmt.setString(4, user.getBio());
+            pstmt.setString(5, user.getProfileImage());
+            pstmt.setString(6, user.getRole());
+            pstmt.setInt(7, user.getId());
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
+    public boolean deleteUserAsAdmin(int userId) throws SQLException {
+        String sql = "DELETE FROM users WHERE id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
+    public boolean resetPasswordAsAdmin(int userId, String newPassword) throws SQLException {
+        String sql = "UPDATE users SET password_hash = ? WHERE id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, PasswordUtil.hashPassword(newPassword));
+            pstmt.setInt(2, userId);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
     private User mapResultSetToUser(ResultSet rs) throws SQLException {
         User user = new User();
         user.setId(rs.getInt("id"));
@@ -189,6 +233,7 @@ public class UserService {
         user.setBirthday(rs.getDate("birthday").toLocalDate());
         user.setBio(rs.getString("bio"));
         user.setProfileImage(rs.getString("profile_image"));
+        user.setRole(rs.getString("role"));
         user.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         user.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
         return user;

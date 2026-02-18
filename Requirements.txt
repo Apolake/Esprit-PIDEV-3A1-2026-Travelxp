@@ -1,208 +1,292 @@
-📄 DASHBOARD MODERNIZATION REQUIREMENTS
-Project: User Management + Gamification Desktop App
+📄 UPDATED REQUIREMENTS DOCUMENT
+Project: User Management + Gamification + Admin Panel
 
 Platform: JavaFX Full-Screen Desktop | JDK 25 | Maven | MySQL | JDBC
 
 1️⃣ GOALS
 
-Professional, modern look: sleek, clean, and visually appealing
+Add Admin Login separate from regular users
 
-User engagement: gamification clearly visible, motivating
+Admins can view, edit, and delete users
 
-Information hierarchy: easy to digest user stats, profile info, and actions
+Admin actions trigger XP changes for users if applicable
 
-Interactive UI: hover effects, animated progress bars, responsive layout
+Maintain security and full-screen modern UI
 
-Full-screen utilization: maximize screen space without clutter
+Keep existing Dashboard, Gamification Engine, and User Management intact
 
-2️⃣ GENERAL LAYOUT
+2️⃣ DATABASE UPDATES
+2.1 Add role field to users table
+ALTER TABLE users
+ADD COLUMN role ENUM('USER','ADMIN') DEFAULT 'USER';
 
-Preferred Layout: BorderPane (JavaFX)
+
+Default role = USER
+
+Admins = ADMIN
+
+Only ADMIN can access admin panel
+
+2.2 Admin Table (Optional)
+
+If you want separate table for admins:
+
+CREATE TABLE admins (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+Using role field in users table is simpler; recommended for current system.
+
+3️⃣ ADMIN LOGIN
+
+Login screen detects role after authentication
+
+Admin users redirect to Admin Dashboard
+
+Regular users redirect to User Dashboard
+
+Fields:
+
+Email / Username
+
+Password
+
+Validation:
+
+Verify BCrypt password hash
+
+Role must be ADMIN to access admin panel
+
+Generic error for invalid credentials (do not leak role info)
+
+4️⃣ ADMIN DASHBOARD
+4.1 Layout
+
+BorderPane Layout (full-screen):
 
 BorderPane
  ├── Top: Header Bar
- ├── Left: Sidebar Navigation
- ├── Center: Main Dashboard Panel
- └── Right: Optional Quick Actions / Notifications
+ ├── Left: Admin Sidebar
+ ├── Center: User Management Panel
+ └── Right: Optional User Stats / Notifications
 
-3️⃣ SIDEBAR (Left)
 
-Width: 250px (fixed)
+Sidebar:
 
-Background: #1E1E1E
+Dashboard
 
-Items:
+Users
 
-Dashboard (active highlighted)
-
-Profile
-
-Achievements
+Achievements / Gamification Stats
 
 Logout
 
-Features:
+4.2 User Management Panel (Center)
 
-Icons next to labels (Material or FontAwesome style)
+TableView of all users
 
-Hover highlight: accent color (#C9A227)
+Columns:
 
-Active item: gradient background or glowing effect
+ID
 
-Collapsible (optional)
+Username
 
-4️⃣ HEADER BAR (Top)
+Email
 
-Height: 80px
+Birthday
 
-Background: slightly lighter (#2C2C2C)
+Bio
 
-Contents:
+Profile Image (thumbnail)
 
-App Logo / Name (left)
+XP
 
-Welcome Message: “Hello, [Username]”
+Level
 
-Date / Time (right, optional)
+Title
 
-Style:
+Role
 
-Large, readable font
+Actions:
 
-Subtle shadows
+Edit User (all editable fields except password unless admin resets it)
 
-Animated welcome text fade-in
+Delete User
 
-5️⃣ MAIN DASHBOARD (Center)
+Promote/Demote User Role (USER ↔ ADMIN optional)
 
-Container: GridPane or VBox inside ScrollPane for scrollable content if needed.
+Reset Password (admin can set temporary password → hashed)
 
-Sections:
+4.3 Admin Profile / Dashboard
 
-Profile Card
+Admin can see own stats
 
-Shows profile image (circular, shadowed)
+Gamification optional
 
-Username, email, birthday, bio
+Quick links to edit users
 
-Quick edit buttons (small icons over card)
+5️⃣ SERVICE LAYER UPDATES
 
-Card color: #1E1E1E with soft glow on hover
+UserService.java updates:
 
-Gamification Card
+loginAdmin(email, password) → returns User with role = ADMIN
 
-XP ProgressBar: smooth animation on XP changes
+updateUserAsAdmin(User updatedUser) → edit fields for any user
 
-Current Level displayed prominently
+deleteUserAsAdmin(int userId) → delete selected user
 
-Current Title displayed with icon or badge
+resetPasswordAsAdmin(int userId, String newPassword) → hash and update
 
-Next Level requirements: “50 XP to next level”
+Direct JDBC usage inside UserService
 
-Color gradient on progress bar (gold accent fills, subtle glow)
+GamificationService:
 
-Activity / Stats Panel (optional)
+Admin actions do not automatically give XP, unless desired
 
-Recent actions: “Updated bio”, “Logged in”, etc.
+Optionally, XP can be awarded when user updates profile
 
-Display as timeline cards (small horizontal bars)
+6️⃣ UI UPDATES
+6.1 Login Screen
 
-Use icons to represent actions (edit, login, etc.)
+Role detection after login
 
-Achievements / Badges Panel
+Optional: dropdown to select “Admin” or “User” (optional if role auto-detected by email)
 
-Optional future expansion
+6.2 Admin Dashboard (Modern Design)
 
-Small card layout with hover tooltip description
+Left Sidebar:
 
-Grayscale for locked badges, full color for earned
+Dashboard
 
-6️⃣ MODERN VISUAL ELEMENTS
-Element	Style Recommendation
-Cards	Rounded corners (15px), subtle shadow, hover lift effect
-Progress Bars	Smooth animation, gradient fill (#C9A227 → lighter gold), percentage label inside
-Buttons	Flat design, hover glow, subtle animations
-Fonts	Modern: Inter, Segoe UI, Roboto, medium weight
-Icons	Material icons or FontAwesome, monochrome by default, accent on hover
-Colors	Background: #121212, Card: #1E1E1E, Accent: #C9A227, Text: #FFFFFF
-7️⃣ ANIMATIONS & INTERACTIONS
+Users
 
-Progress bars animate from old XP → new XP
+Logout
 
-Hover effects on cards: lift and shadow increase
+Center Panel:
 
-Hover on sidebar: highlight and icon color change
+TableView of users (scrollable)
 
-Buttons: ripple effect or slight scale up on click
+Cards for XP / Level / Title optional
 
-Optional fade transitions when switching panels
+Hover and selection effects
 
-8️⃣ RESPONSIVENESS & SCALABILITY
+Buttons for Edit, Delete, Reset Password
 
-Use GridPane or VBox/HBox for sections
+Edit User Modal (Dialog):
 
-Ensure spacing between cards and margins consistent
+TextFields for:
 
-ScrollPane for overflow content (if many actions/achievements)
+Username
 
-Dynamically adjust card sizes on window resize
+Email
 
-9️⃣ SAMPLE VISUAL LAYOUT
-========================================================
-Logo | Hello, Yassin!                 [Date/Time]   
---------------------------------------------------------
-Sidebar          | Profile Card                | Stats/Notifications
-                 | -------------------------- |
-                 | Profile Pic   Username     |
-                 | Bio                          |
-                 | Email, Birthday              |
-                 | [Edit]                       |
-                 |                              |
-                 | Gamification Card            |
-                 | XP: ████████ 120/200       |
-                 | Level: 3   Title: Explorer  |
-                 | Next: 80 XP to Level 4      |
-                 |                              |
-                 | Recent Activity Timeline     |
-                 | [Logged in] [Updated Bio]   |
+Birthday
 
+Bio
 
-Sidebar fixed left, header fixed top, center scrollable
+Profile Image path
 
-Cards with shadows and subtle hover animations
+Role dropdown (USER/ADMIN)
 
-Gamification card visually prominent
+Save / Cancel buttons
 
-🔟 UX BEST PRACTICES
+Delete Confirmation Dialog:
 
-Show progress visually (XP bar + numeric)
+Require confirmation before deleting user
 
-Use consistent icons for actions
+Reset Password Dialog:
 
-Hover and click feedback on all interactive elements
+Admin enters temporary password
 
-Minimal text, prioritize icons and numbers for quick comprehension
+Automatically hashed
 
-Light animations for engagement but not distracting
+7️⃣ SECURITY REQUIREMENTS
 
-Cards aligned and spaced evenly for clarity
+Admin passwords stored hashed (BCrypt)
 
-1️⃣1️⃣ DEVELOPMENT PHASES
+Only users with role = ADMIN can access admin panel
 
-Redesign Dashboard FXML layout (BorderPane, GridPane)
+Use PreparedStatement for all queries
 
-Create Profile Card with image, bio, and buttons
+Prevent SQL injection
 
-Create Gamification Card with animated ProgressBar
+Validate all input before DB update
 
-Add Recent Activity / Timeline (optional for MVP)
+Admin cannot delete themselves
 
-Integrate Level / XP / Title updates from GamificationService
+8️⃣ VALIDATION RULES
+Field	Rule
+Username	3–50 chars
+Email	Valid format, unique
+Password	8+ chars, letter + number
+Birthday	Not future
+Bio	Max 500 chars
+Role	USER / ADMIN only
+9️⃣ UX & MODERN UI GUIDELINES
 
-Add CSS styling for cards, hover effects, progress bar gradients
+Maintain existing dark modern theme (#121212)
 
-Add animations: progress bar, hover lift, button clicks
+Sidebar and header consistent with user dashboard
 
-Test responsiveness on full-screen
+Highlight selected user in TableView
 
-Polish: consistent fonts, colors, spacing
+Use modal dialogs for edit, delete, and reset password
+
+Hover effects, subtle shadows, rounded corners (15px)
+
+Gamification info displayed in card or inline with TableView
+
+🔟 DEVELOPMENT PHASES
+
+Add role column to users table
+
+Update UserService login to detect admin
+
+Implement Admin Dashboard FXML + Controller
+
+Add TableView with user list
+
+Add Edit / Delete / Reset Password functionality
+
+Integrate JDBC queries directly in UserService for admin actions
+
+Add input validation and security checks
+
+Test all admin workflows
+
+Apply modern UI styles, hover effects, modal dialogs
+
+Test role separation: Admin vs User
+
+1️⃣1️⃣ COMPLETION CRITERIA
+
+System is complete when:
+
+Admin can login successfully
+
+Admin sees full user list with all required columns
+
+Admin can edit any user profile fields (including role)
+
+Admin can delete users (except themselves)
+
+Admin can reset password (hashed)
+
+UI is modern, clean, responsive, and visually consistent
+
+Role-based login redirects users/admins correctly
+
+If you want next, Your Majesty, I can produce the full JavaFX Admin Dashboard FXML + Controller + UserService updates including:
+
+TableView with all users
+
+Edit / Delete / Reset Password modals
+
+Role management dropdown
+
+XP / Level / Title display inline

@@ -11,6 +11,7 @@ public class User {
     private LocalDate birthday;
     private String bio;
     private String profileImage;
+    private String role;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -23,6 +24,7 @@ public class User {
         this.birthday = birthday;
         this.bio = bio;
         this.profileImage = profileImage;
+        this.role = "USER";
     }
 
     // Getters and Setters
@@ -46,6 +48,9 @@ public class User {
 
     public String getProfileImage() { return profileImage; }
     public void setProfileImage(String profileImage) { this.profileImage = profileImage; }
+
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
