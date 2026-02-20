@@ -71,7 +71,19 @@ public class GamificationService {
         if (level <= 2) return "Novice";
         if (level <= 4) return "Explorer";
         if (level <= 6) return "Traveler";
-        return "Adventurer";
+        if (level <= 8) return "Globetrotter";
+        if (level <= 10) return "Adventurer";
+        if (level <= 12) return "Voyager";
+        if (level <= 14) return "Wanderer";
+        if (level <= 16) return "Nomad";
+        if (level <= 18) return "Pioneer";
+        if (level <= 20) return "Trailblazer";
+        if (level <= 22) return "Pathfinder";
+        if (level <= 24) return "Seeker";
+        if (level <= 26) return "Globetrotter";
+        if (level <= 28) return "Explorer";
+        if (level <= 30) return "Great Adventurer";
+        return "Beyond Limits";
     }
 
     public int getXpForNextLevel(int currentLevel) {
@@ -79,6 +91,6 @@ public class GamificationService {
         if (currentLevel == 2) return 120;
         if (currentLevel == 3) return 200;
         if (currentLevel == 4) return 300;
-        return 300 + (currentLevel - 4) * 100; // Simplified calculation based on level thresholds
+        return 300 + (currentLevel - 4) * 250; 
     }
 }
