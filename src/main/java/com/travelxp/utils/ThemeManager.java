@@ -9,7 +9,12 @@ import javafx.scene.Scene;
 import javafx.util.Duration;
 
 public class ThemeManager {
-    private static boolean isDark = true;
+    private static boolean isDark = false;
+
+    static {
+        // Set initial global stylesheet before any UI loads
+        Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
+    }
 
     public static void toggleTheme(Scene scene) {
         isDark = !isDark;
@@ -24,7 +29,12 @@ public class ThemeManager {
         }
 
         if (scene != null && scene.getRoot() != null) {
-            FadeTransition ft = new FadeTransition(Duration.millis(400), scene.getRoot());
+            Parent root = scene.getRoot();
+            root.getStyleClass().remove("dark-theme");
+            root.getStyleClass().remove("light-theme");
+            root.getStyleClass().add(isDark ? "dark-theme" : "light-theme");
+
+            FadeTransition ft = new FadeTransition(Duration.millis(400), root);
             ft.setFromValue(0.8);
             ft.setToValue(1.0);
             ft.play();
@@ -32,8 +42,11 @@ public class ThemeManager {
     }
 
     public static void applyThemeToNode(Parent root) {
-        // AtlantaFX handles theme globally via setUserAgentStylesheet
-        // We can still use this if we want to add specific classes
+        if (root != null) {
+            root.getStyleClass().remove("dark-theme");
+            root.getStyleClass().remove("light-theme");
+            root.getStyleClass().add(isDark ? "dark-theme" : "light-theme");
+        }
     }
 
     public static boolean isDark() {

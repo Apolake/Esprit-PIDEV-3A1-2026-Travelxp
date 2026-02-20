@@ -4,12 +4,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.Pane?>
 
 <StackPane alignment="CENTER" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.travelxp.controllers.RegisterController" styleClass="root">
    <children>
+      <Pane fx:id="animatedBg" styleClass="animated-bg" />
       <ScrollPane fitToWidth="true" maxWidth="600.0" prefHeight="900.0" styleClass="edge-to-edge">
          <content>
-            <VBox alignment="CENTER" spacing="30.0" styleClass="card">
+            <VBox alignment="CENTER" spacing="30.0" styleClass="card, glass-card">
                <children>
                   <VBox alignment="CENTER" spacing="10">
                      <children>

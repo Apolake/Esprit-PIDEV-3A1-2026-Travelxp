@@ -7,6 +7,9 @@ import com.travelxp.models.UserViewModel;
 import com.travelxp.services.GamificationService;
 import com.travelxp.services.UserService;
 import com.travelxp.utils.ThemeManager;
+import javafx.animation.Animation;
+import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,15 +22,20 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 public class AdminDashboardController {
 
@@ -42,10 +50,12 @@ public class AdminDashboardController {
     @FXML private TableColumn<UserViewModel, Integer> levelCol;
     @FXML private TableColumn<UserViewModel, String> titleCol;
     @FXML private TableColumn<UserViewModel, Void> actionsCol;
+    @FXML private Pane animatedBg;
 
     private final UserService userService = new UserService();
     private final GamificationService gamificationService = new GamificationService();
     private final ObservableList<UserViewModel> userData = FXCollections.observableArrayList();
+    private final Random random = new Random();
 
     @FXML
     public void initialize() {
@@ -61,6 +71,58 @@ public class AdminDashboardController {
 
         addActionsToTable();
         loadUsers();
+
+        Platform.runLater(this::startBackgroundAnimation);
+    }
+
+    private void startBackgroundAnimation() {
+        if (animatedBg == null) return;
+        
+        // Fewer, more intentional circles for a cleaner look
+        for (int i = 0; i < 10; i++) {
+            Circle circle = createCircle();
+            animatedBg.getChildren().add(circle);
+            animateCircle(circle);
+        }
+    }
+
+    private Circle createCircle() {
+        // Varied sizes for depth
+        double radius = 30 + random.nextDouble() * 120;
+        Circle circle = new Circle(radius);
+        
+        circle.setCenterX(random.nextDouble() * 1200);
+        circle.setCenterY(random.nextDouble() * 900);
+        
+        // Dynamic opacity for professional layering
+        double opacity = 0.03 + random.nextDouble() * 0.05;
+        
+        // Check current theme state at creation time
+        boolean isDark = com.travelxp.utils.ThemeManager.isDark();
+        String color = isDark ? "#D4AF37" : "#002b5c";
+        
+        circle.setFill(Color.web(color, opacity));
+        circle.setStroke(Color.web(color, opacity * 1.5));
+        circle.setStrokeWidth(1.5);
+        
+        // Add a slight blur to the circles themselves
+        circle.setEffect(new javafx.scene.effect.BoxBlur(10, 10, 2));
+        
+        return circle;
+    }
+
+    private void animateCircle(Circle circle) {
+        // Faster duration: 6 to 12 seconds
+        double duration = 6 + random.nextDouble() * 6;
+        
+        TranslateTransition tt = new TranslateTransition(Duration.seconds(duration), circle);
+        tt.setByX(random.nextDouble() * 500 - 250);
+        tt.setByY(random.nextDouble() * 500 - 250);
+        tt.setAutoReverse(true);
+        tt.setCycleCount(Animation.INDEFINITE);
+        // Smooth easing is key for professionalism
+        tt.setInterpolator(javafx.animation.Interpolator.EASE_BOTH);
+        tt.play();
     }
 
     private void loadUsers() {
@@ -136,6 +198,9 @@ public class AdminDashboardController {
         ComboBox<String> roleCombo = new ComboBox<>(FXCollections.observableArrayList("USER", "ADMIN"));
         roleCombo.setValue(model.getRole());
 
+        TextField xpField = new TextField(String.valueOf(model.getXp()));
+        TextField levelField = new TextField(String.valueOf(model.getLevel()));
+
         selectedImagePath = model.getProfileImage();
         Label pathLabel = new Label(selectedImagePath == null || selectedImagePath.isEmpty() ? "No image" : "Image selected");
         Button uploadBtn = new Button("Choose Image");
@@ -155,6 +220,7 @@ public class AdminDashboardController {
             new Label("Birthday:"), birthdayPicker,
             new Label("Bio:"), bioArea,
             new Label("Role:"), roleCombo,
+            new HBox(15, new VBox(5, new Label("XP:"), xpField), new VBox(5, new Label("Level:"), levelField)),
             new Label("Profile Image:"), new HBox(10, uploadBtn, pathLabel)
         );
 
@@ -170,6 +236,9 @@ public class AdminDashboardController {
                 user.setBio(bioArea.getText());
                 user.setRole(roleCombo.getValue());
                 user.setProfileImage(selectedImagePath);
+                
+                // Store XP/Level in properties if needed, but we'll use local variables for now
+                // Actually, let's just use them in the next step.
                 return user;
             }
             return null;
@@ -179,10 +248,15 @@ public class AdminDashboardController {
         result.ifPresent(user -> {
             try {
                 if (userService.updateUserAsAdmin(user)) {
+                    // Update gamification stats
+                    int newXp = Integer.parseInt(xpField.getText());
+                    int newLevel = Integer.parseInt(levelField.getText());
+                    gamificationService.updateGamification(user.getId(), newXp, newLevel);
+                    
                     loadUsers();
                 }
-            } catch (SQLException e) {
-                showAlert(Alert.AlertType.ERROR, "Error", "Update Failed", e.getMessage());
+            } catch (SQLException | NumberFormatException e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Update Failed", "Check your inputs: " + e.getMessage());
             }
         });
     }
@@ -220,6 +294,9 @@ public class AdminDashboardController {
         ComboBox<String> roleCombo = new ComboBox<>(FXCollections.observableArrayList("USER", "ADMIN"));
         roleCombo.setValue("USER");
 
+        TextField xpField = new TextField("0");
+        TextField levelField = new TextField("1");
+
         selectedImagePath = "";
         Label pathLabel = new Label("No image selected");
         Button uploadBtn = new Button("Choose Image");
@@ -240,6 +317,7 @@ public class AdminDashboardController {
             new Label("Birthday:"), birthdayPicker,
             new Label("Bio:"), bioArea,
             new Label("Role:"), roleCombo,
+            new HBox(15, new VBox(5, new Label("Initial XP:"), xpField), new VBox(5, new Label("Initial Level:"), levelField)),
             new Label("Profile Image:"), new HBox(10, uploadBtn, pathLabel)
         );
 
@@ -254,6 +332,13 @@ public class AdminDashboardController {
             String bio = bioArea.getText();
 
             if (!validateRegistration(username, email, password, birthday, bio)) {
+                event.consume();
+            }
+            try {
+                Integer.parseInt(xpField.getText());
+                Integer.parseInt(levelField.getText());
+            } catch (NumberFormatException e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Invalid Stats", "XP and Level must be numbers.");
                 event.consume();
             }
         });
@@ -278,11 +363,19 @@ public class AdminDashboardController {
         result.ifPresent(user -> {
             try {
                 if (userService.registerUser(user)) {
-                    if ("ADMIN".equals(user.getRole())) {
-                        User registered = userService.getAllUsers().stream()
-                                .filter(u -> u.getUsername().equals(user.getUsername()))
-                                .findFirst().orElse(null);
-                        if (registered != null) {
+                    User registered = userService.getAllUsers().stream()
+                            .filter(u -> u.getUsername().equals(user.getUsername()))
+                            .findFirst().orElse(null);
+                    
+                    if (registered != null) {
+                        // Set specific initial XP/Level if they are not default
+                        int initialXp = Integer.parseInt(xpField.getText());
+                        int initialLevel = Integer.parseInt(levelField.getText());
+                        if (initialXp != 0 || initialLevel != 1) {
+                            gamificationService.updateGamification(registered.getId(), initialXp, initialLevel);
+                        }
+
+                        if ("ADMIN".equals(user.getRole())) {
                             registered.setRole("ADMIN");
                             userService.updateUserAsAdmin(registered);
                         }
@@ -290,7 +383,7 @@ public class AdminDashboardController {
                     loadUsers();
                     showAlert(Alert.AlertType.INFORMATION, "Success", "User Created", "New user has been registered successfully.");
                 }
-            } catch (SQLException e) {
+            } catch (SQLException | NumberFormatException e) {
                 showAlert(Alert.AlertType.ERROR, "Error", "Creation Failed", e.getMessage());
             }
         });

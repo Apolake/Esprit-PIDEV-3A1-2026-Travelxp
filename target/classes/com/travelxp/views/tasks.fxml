@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 
@@ -86,6 +87,7 @@
    <center>
       <StackPane styleClass="center-bg">
          <children>
+            <Pane fx:id="animatedBg" styleClass="animated-bg" />
             <ScrollPane fitToWidth="true" styleClass="edge-to-edge">
                <content>
                   <VBox spacing="40">

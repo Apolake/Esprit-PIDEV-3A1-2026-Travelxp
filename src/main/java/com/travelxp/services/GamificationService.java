@@ -59,6 +59,18 @@ public class GamificationService {
         return null;
     }
 
+    public void updateGamification(int userId, int xp, int level) throws SQLException {
+        String newTitle = getTitle(level);
+        String sql = "UPDATE gamification SET xp = ?, level = ?, title = ? WHERE user_id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, xp);
+            pstmt.setInt(2, level);
+            pstmt.setString(3, newTitle);
+            pstmt.setInt(4, userId);
+            pstmt.executeUpdate();
+        }
+    }
+
     public int calculateLevel(int xp) {
         if (xp < 50) return 1;
         if (xp < 120) return 2;

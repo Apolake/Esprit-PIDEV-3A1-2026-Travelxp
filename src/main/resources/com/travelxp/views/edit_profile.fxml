@@ -10,10 +10,12 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.Pane?>
 
 <StackPane alignment="CENTER" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.travelxp.controllers.EditProfileController" styleClass="root">
    <children>
-      <VBox alignment="CENTER" maxWidth="550.0" spacing="35.0" styleClass="card">
+      <Pane fx:id="animatedBg" styleClass="animated-bg" />
+      <VBox alignment="CENTER" maxWidth="550.0" spacing="35.0" styleClass="card, glass-card">
          <children>
             <VBox spacing="10">
                <children>
