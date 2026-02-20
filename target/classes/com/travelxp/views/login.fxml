@@ -15,8 +15,8 @@
          <children>
             <VBox alignment="CENTER" spacing="10">
                <children>
-                  <Label text="TRAVELXP" styleClass="title" style="-fx-font-size: 36px;" />
-                  <Label text="Your journey starts here." styleClass="header-text" />
+                  <Label text="TRAVELXP" styleClass="title-1" />
+                  <Label text="Your journey starts here." styleClass="text-muted" />
                </children>
             </VBox>
             
@@ -24,13 +24,13 @@
                <children>
                   <VBox spacing="8.0">
                      <children>
-                        <Label text="Email Address" style="-fx-font-weight: bold; -fx-text-fill: -fx-text-muted;" />
+                        <Label text="Email Address" styleClass="text-caption" />
                         <TextField fx:id="emailField" promptText="Enter your email" />
                      </children>
                   </VBox>
                   <VBox spacing="8.0">
                      <children>
-                        <Label text="Password" style="-fx-font-weight: bold; -fx-text-fill: -fx-text-muted;" />
+                        <Label text="Password" styleClass="text-caption" />
                         <PasswordField fx:id="passwordField" promptText="Enter your password" />
                      </children>
                   </VBox>
@@ -39,8 +39,8 @@
             
             <VBox spacing="15.0">
                <children>
-                  <Button fx:id="loginButton" maxWidth="Infinity" onAction="#handleLogin" text="Login" />
-                  <Button onAction="#handleRegisterRedirect" maxWidth="Infinity" styleClass="secondary-button" text="Create New Account" />
+                  <Button fx:id="loginButton" maxWidth="Infinity" onAction="#handleLogin" text="Login" styleClass="accent" />
+                  <Button onAction="#handleRegisterRedirect" maxWidth="Infinity" styleClass="flat" text="Create New Account" />
                </children>
             </VBox>
          </children>

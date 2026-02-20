@@ -1,73 +1,9 @@
-1️⃣ Notifications / Activity Feed
-
-Display real-time user activity (profile updates, XP gains)
-
-Could be a sidebar or pop-up system
-
-For admins: see user actions in one glance and search bar for admin table
-
-2️⃣ Achievements / Badges System
-
-Expand gamification: assign badges for milestones
-
-Examples:
-
-Completed profile → “Profile Builder” badge
-
-Logged in 7 days in a row → “Regular Traveler” badge
-
-XP milestones → “Rising Explorer” badge
-
-Show badges on dashboard (animated, colorful, hoverable tooltips)
-
-add a lot more badges based on what you think is appropriate, and add more titles for levels up to level 40
-
-3️⃣ Leaderboards
-
-Show top users by XP or levels
-
-Motivates engagement
-
-Can be admin-only or visible to all users
-
-4️⃣ User Settings / Preferences
-
-Notifications toggle
-
-5️⃣ Admin Reports
-
-Export user stats: CSV/Excel
-
-XP / level distribution
-
-Account creation trends
-
-6️⃣ Security & Account Recovery
-
-Forgot password functionality with email verification
-
-Account lockout after failed login attempts
-
-Admin forced password reset for suspicious activity
-
-7️⃣ UI Enhancements
-
-Animations: XP bar, badges, hover cards
-
-Smooth transitions between dashboards / modals
-
-Profile image upload preview before saving
-
-Tooltip hints and progress notifications
-
-8️⃣ Multi-Action XP System
-
-Reward XP for more actions:
-
-Logging in consecutive days
-
-Updating profile elements
-
-Completing badges
-
-Consider “daily challenges” for extra XP
+Fixes Required,
+- Color is reset to black and white , needs to be like it used to be black and gold or light blue and white for dark or light theme
+- buttons do not have borders and are the same color as background
+- change theme button icon does not show anymore
+- tasks rewards (+xp) is not visible anymore
+- the dashboard elements are not in their own boxes anymore
+Optional Additions
+- the login menu needs animated background if you can do that.
+- Add blur to elements where it makes sense

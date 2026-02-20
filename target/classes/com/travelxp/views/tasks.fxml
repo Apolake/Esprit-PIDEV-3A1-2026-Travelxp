@@ -17,14 +17,14 @@
                   <Insets top="40" bottom="40"/>
                </padding>
                <children>
-                  <Label text="TRAVELXP" styleClass="sidebar-title" />
-                  <Line endX="100" styleClass="sidebar-divider" strokeWidth="1"/>
+                  <Label text="TRAVELXP" styleClass="title-1" />
+                  <Separator />
                </children>
             </VBox>
             
             <VBox spacing="5" VBox.vgrow="ALWAYS">
                <children>
-                  <Button onAction="#handleDashboard" maxWidth="Infinity" styleClass="nav-button" text="Dashboard">
+                  <Button onAction="#handleDashboard" maxWidth="Infinity" styleClass="nav-button, flat" text="Dashboard">
                      <graphic>
                         <ImageView fitHeight="20" fitWidth="20">
                            <image>
@@ -33,7 +33,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button maxWidth="Infinity" styleClass="nav-button, nav-button-active" text="Tasks">
+                  <Button maxWidth="Infinity" styleClass="nav-button, accent" text="Tasks">
                      <graphic>
                         <ImageView fitHeight="20" fitWidth="20">
                            <image>
@@ -42,7 +42,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button onAction="#handleEditProfile" maxWidth="Infinity" styleClass="nav-button" text="Edit Profile">
+                  <Button onAction="#handleEditProfile" maxWidth="Infinity" styleClass="nav-button, flat" text="Edit Profile">
                      <graphic>
                         <ImageView fitHeight="20" fitWidth="20">
                            <image>
@@ -51,7 +51,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button onAction="#handleChangePassword" maxWidth="Infinity" styleClass="nav-button" text="Security">
+                  <Button onAction="#handleChangePassword" maxWidth="Infinity" styleClass="nav-button, flat" text="Security">
                      <graphic>
                         <ImageView fitHeight="20" fitWidth="20">
                            <image>
@@ -68,7 +68,7 @@
                   <Insets bottom="30" left="20" right="20"/>
                </padding>
                <children>
-                  <Button onAction="#handleLogout" maxWidth="Infinity" styleClass="secondary-button" text="Logout" style="-fx-text-fill: #CF6679; -fx-border-color: #CF6679;">
+                  <Button onAction="#handleLogout" maxWidth="Infinity" styleClass="danger, flat" text="Logout">
                      <graphic>
                         <ImageView fitHeight="16" fitWidth="16">
                            <image>
@@ -86,7 +86,7 @@
    <center>
       <StackPane styleClass="center-bg">
          <children>
-            <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+            <ScrollPane fitToWidth="true" styleClass="edge-to-edge">
                <content>
                   <VBox spacing="40">
                      <padding>
@@ -95,43 +95,43 @@
                      <children>
                         <VBox spacing="5">
                            <children>
-                              <Label styleClass="title" text="XP Quests" />
-                              <Label text="Complete tasks to earn experience points and level up!" styleClass="header-text" />
+                              <Label styleClass="title-1" text="XP Quests" />
+                              <Label text="Complete tasks to earn experience points and level up!" styleClass="text-muted" />
                            </children>
                         </VBox>
                         
                         <VBox spacing="20">
                            <children>
-                              <HBox alignment="CENTER_LEFT" styleClass="task-item">
+                              <HBox alignment="CENTER_LEFT" styleClass="card">
                                  <children>
                                     <VBox spacing="5" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <Label text="Daily Login" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
-                                          <Label text="Log in every day to maintain your streak." style="-fx-text-fill: -fx-text-muted;" />
+                                          <Label text="Daily Login" styleClass="title-4" />
+                                          <Label text="Log in every day to maintain your streak." styleClass="text-muted" />
                                        </children>
                                     </VBox>
                                     <Label text="+10 XP" styleClass="xp-badge" />
                                  </children>
                               </HBox>
                               
-                              <HBox alignment="CENTER_LEFT" styleClass="task-item">
+                              <HBox alignment="CENTER_LEFT" styleClass="card">
                                  <children>
                                     <VBox spacing="5" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <Label text="Profile Completion" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
-                                          <Label text="Update your bio, birthday, or profile image." style="-fx-text-fill: -fx-text-muted;" />
+                                          <Label text="Profile Completion" styleClass="title-4" />
+                                          <Label text="Update your bio, birthday, or profile image." styleClass="text-muted" />
                                        </children>
                                     </VBox>
                                     <Label text="+5 XP" styleClass="xp-badge" />
                                  </children>
                               </HBox>
                               
-                              <HBox alignment="CENTER_LEFT" styleClass="task-item">
+                              <HBox alignment="CENTER_LEFT" styleClass="card">
                                  <children>
                                     <VBox spacing="5" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <Label text="Security Boost" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
-                                          <Label text="Update your password or email to keep your account safe." style="-fx-text-fill: -fx-text-muted;" />
+                                          <Label text="Security Boost" styleClass="title-4" />
+                                          <Label text="Update your password or email to keep your account safe." styleClass="text-muted" />
                                        </children>
                                     </VBox>
                                     <Label text="+5 XP" styleClass="xp-badge" />

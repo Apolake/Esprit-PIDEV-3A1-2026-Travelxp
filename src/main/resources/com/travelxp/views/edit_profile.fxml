@@ -17,8 +17,8 @@
          <children>
             <VBox spacing="10">
                <children>
-                  <Label text="Edit Your Profile" styleClass="title" style="-fx-font-size: 32px;" />
-                  <Label text="Keep your journey details up to date." styleClass="header-text" />
+                  <Label text="Edit Your Profile" styleClass="title-1" />
+                  <Label text="Keep your journey details up to date." styleClass="text-muted" />
                </children>
             </VBox>
             
@@ -26,26 +26,26 @@
                <children>
                   <VBox spacing="8.0">
                      <children>
-                        <Label text="New Email Address" style="-fx-font-weight: bold; -fx-text-fill: -fx-text-muted;" />
+                        <Label text="New Email Address" styleClass="text-caption" />
                         <TextField fx:id="emailField" promptText="Enter new email" />
                      </children>
                   </VBox>
                   <VBox spacing="8.0">
                      <children>
-                        <Label text="Date of Birth" style="-fx-font-weight: bold; -fx-text-fill: -fx-text-muted;" />
+                        <Label text="Date of Birth" styleClass="text-caption" />
                         <DatePicker fx:id="birthdayPicker" maxWidth="Infinity" />
                      </children>
                   </VBox>
                   <VBox spacing="8.0">
                      <children>
-                        <Label text="Profile Bio" style="-fx-font-weight: bold; -fx-text-fill: -fx-text-muted;" />
+                        <Label text="Profile Bio" styleClass="text-caption" />
                         <TextArea fx:id="bioArea" prefHeight="120.0" promptText="Update your bio..." />
                      </children>
                   </VBox>
                   <HBox spacing="15.0" alignment="CENTER_LEFT">
                      <children>
-                        <Button onAction="#handleImageUpload" styleClass="secondary-button" text="Change Profile Image" />
-                        <Label fx:id="imagePathLabel" text="No image selected" style="-fx-text-fill: #666666;" />
+                        <Button onAction="#handleImageUpload" styleClass="flat" text="Change Profile Image" />
+                        <Label fx:id="imagePathLabel" text="No image selected" styleClass="text-muted" />
                      </children>
                   </HBox>
                </children>
@@ -53,8 +53,8 @@
             
             <HBox spacing="20.0" alignment="CENTER">
                <children>
-                  <Button onAction="#handleUpdate" text="Save Changes" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
-                  <Button onAction="#handleCancel" styleClass="secondary-button" text="Cancel" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
+                  <Button onAction="#handleUpdate" text="Save Changes" maxWidth="Infinity" HBox.hgrow="ALWAYS" styleClass="accent" />
+                  <Button onAction="#handleCancel" styleClass="flat" text="Cancel" maxWidth="Infinity" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
          </children>

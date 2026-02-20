@@ -18,14 +18,14 @@
                   <Insets top="40" bottom="40"/>
                </padding>
                <children>
-                  <Label text="TRAVELXP" styleClass="sidebar-title" />
-                  <Line endX="100" styleClass="sidebar-divider" strokeWidth="1"/>
+                  <Label text="TRAVELXP" styleClass="title-1" />
+                  <Separator />
                </children>
             </VBox>
             
             <VBox spacing="5" VBox.vgrow="ALWAYS">
                <children>
-                  <Button maxWidth="Infinity" styleClass="nav-button, nav-button-active" text="Dashboard">
+                  <Button maxWidth="Infinity" styleClass="nav-button, accent" text="Dashboard">
                      <graphic>
                         <ImageView fitHeight="20" fitWidth="20">
                            <image>
@@ -34,7 +34,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button onAction="#handleTasks" maxWidth="Infinity" styleClass="nav-button" text="Tasks">
+                  <Button onAction="#handleTasks" maxWidth="Infinity" styleClass="nav-button, flat" text="Tasks">
                      <graphic>
                         <ImageView fitHeight="20" fitWidth="20">
                            <image>
@@ -43,7 +43,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button onAction="#handleEditProfile" maxWidth="Infinity" styleClass="nav-button" text="Edit Profile">
+                  <Button onAction="#handleEditProfile" maxWidth="Infinity" styleClass="nav-button, flat" text="Edit Profile">
                      <graphic>
                         <ImageView fitHeight="20" fitWidth="20">
                            <image>
@@ -52,7 +52,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button onAction="#handleChangePassword" maxWidth="Infinity" styleClass="nav-button" text="Security">
+                  <Button onAction="#handleChangePassword" maxWidth="Infinity" styleClass="nav-button, flat" text="Security">
                      <graphic>
                         <ImageView fitHeight="20" fitWidth="20">
                            <image>
@@ -69,7 +69,7 @@
                   <Insets bottom="30" left="20" right="20"/>
                </padding>
                <children>
-                  <Button onAction="#handleLogout" maxWidth="Infinity" styleClass="secondary-button" text="Logout" style="-fx-text-fill: #CF6679; -fx-border-color: #CF6679;">
+                  <Button onAction="#handleLogout" maxWidth="Infinity" styleClass="danger, flat" text="Logout">
                      <graphic>
                         <ImageView fitHeight="16" fitWidth="16">
                            <image>
@@ -87,7 +87,7 @@
    <center>
       <StackPane styleClass="center-bg">
          <children>
-            <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+            <ScrollPane fitToWidth="true" styleClass="edge-to-edge">
                <content>
                   <VBox spacing="40">
                      <padding>
@@ -96,8 +96,8 @@
                      <children>
                         <VBox spacing="5">
                            <children>
-                              <Label fx:id="welcomeLabel" styleClass="title" text="Hello, User!" />
-                              <Label text="Here is your travel summary and achievements." styleClass="header-text" />
+                              <Label fx:id="welcomeLabel" styleClass="title-1" text="Hello, User!" />
+                              <Label text="Here is your travel summary and achievements." styleClass="text-muted" />
                            </children>
                         </VBox>
                         
@@ -106,26 +106,26 @@
                               <!-- Profile Card -->
                               <VBox spacing="25" styleClass="card" prefWidth="550">
                                  <children>
-                                    <Label text="Profile Overview" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: -fx-accent;" />
+                                    <Label text="Profile Overview" styleClass="title-3" />
                                     <HBox spacing="30" alignment="CENTER_LEFT">
                                        <children>
-                                          <StackPane style="-fx-background-color: -fx-field-bg; -fx-background-radius: 50%; -fx-padding: 5;">
+                                          <StackPane style="-fx-background-color: -fx-secondary-color; -fx-background-radius: 50%; -fx-padding: 5;">
                                              <children>
                                                 <ImageView fx:id="profileImageView" fitHeight="120" fitWidth="120" pickOnBounds="true" preserveRatio="true" />
                                              </children>
                                           </StackPane>
                                           <VBox spacing="12">
                                              <children>
-                                                <Label fx:id="emailLabel" text="email@example.com" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                                                <Label fx:id="emailLabel" text="email@example.com" styleClass="title-4" />
                                                 <HBox spacing="10" alignment="CENTER_LEFT">
                                                    <children>
-                                                      <Label text="Birthday:" style="-fx-text-fill: -fx-text-muted;" />
+                                                      <Label text="Birthday:" styleClass="text-muted" />
                                                       <Label fx:id="birthdayLabel" text="Jan 1, 1990" />
                                                    </children>
                                                 </HBox>
                                                 <VBox spacing="5">
                                                    <children>
-                                                      <Label text="Bio" style="-fx-text-fill: -fx-text-muted;" />
+                                                      <Label text="Bio" styleClass="text-muted" />
                                                       <Label fx:id="bioLabel" text="No bio provided yet." wrapText="true" maxWidth="350" style="-fx-line-spacing: 5;" />
                                                    </children>
                                                 </VBox>
@@ -141,9 +141,9 @@
                                  <children>
                                     <HBox alignment="CENTER_LEFT">
                                        <children>
-                                          <Label text="Travel Rank" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: -fx-accent;" />
+                                          <Label text="Travel Rank" styleClass="title-3" />
                                           <Region HBox.hgrow="ALWAYS" />
-                                          <Label fx:id="titleLabel" styleClass="title-badge" text="Novice" />
+                                          <Label fx:id="titleLabel" styleClass="success, rounded" text="Novice" style="-fx-padding: 5 10;" />
                                        </children>
                                     </HBox>
                                     
@@ -160,13 +160,13 @@
                                              <children>
                                                 <HBox alignment="BOTTOM_LEFT">
                                                    <children>
-                                                      <Label text="Experience Points" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                                      <Label text="Experience Points" styleClass="title-4" />
                                                       <Region HBox.hgrow="ALWAYS" />
-                                                      <Label fx:id="xpLabel" text="450 / 1000" style="-fx-text-fill: -fx-accent; -fx-font-weight: bold;" />
+                                                      <Label fx:id="xpLabel" text="450 / 1000" styleClass="accent, text-bold" />
                                                    </children>
                                                 </HBox>
-                                                <ProgressBar fx:id="xpProgressBar" progress="0.45" maxWidth="Infinity" />
-                                                <Label text="Earn XP by updating your profile and being active!" style="-fx-text-fill: -fx-text-muted; -fx-font-size: 12px;" />
+                                                <ProgressBar fx:id="xpProgressBar" progress="0.45" maxWidth="Infinity" styleClass="accent" />
+                                                <Label text="Earn XP by updating your profile and being active!" styleClass="text-muted, text-small" />
                                              </children>
                                           </VBox>
                                        </children>

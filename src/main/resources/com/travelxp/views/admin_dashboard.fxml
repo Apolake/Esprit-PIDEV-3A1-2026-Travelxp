@@ -17,14 +17,14 @@
                   <Insets top="40" bottom="40"/>
                </padding>
                <children>
-                  <Label text="ADMIN PANEL" styleClass="sidebar-title" />
-                  <Line endX="100" styleClass="sidebar-divider" strokeWidth="1"/>
+                  <Label text="ADMIN PANEL" styleClass="title-2" />
+                  <Separator />
                </children>
             </VBox>
             
             <VBox spacing="5" VBox.vgrow="ALWAYS">
                <children>
-                  <Button maxWidth="Infinity" styleClass="nav-button, nav-button-active" text="Users">
+                  <Button maxWidth="Infinity" styleClass="nav-button, accent" text="Users">
                      <graphic>
                         <ImageView fitHeight="20" fitWidth="20">
                            <image>
@@ -41,7 +41,7 @@
                   <Insets bottom="30" left="20" right="20"/>
                </padding>
                <children>
-                  <Button onAction="#handleLogout" maxWidth="Infinity" styleClass="secondary-button" text="Logout" style="-fx-text-fill: #CF6679; -fx-border-color: #CF6679;">
+                  <Button onAction="#handleLogout" maxWidth="Infinity" styleClass="danger, flat" text="Logout">
                      <graphic>
                         <ImageView fitHeight="16" fitWidth="16">
                            <image>
@@ -68,15 +68,15 @@
                      <children>
                         <VBox spacing="5">
                            <children>
-                              <Label styleClass="title" text="User Management" />
-                              <Label text="View and manage all system users." styleClass="header-text" />
+                              <Label styleClass="title-1" text="User Management" />
+                              <Label text="View and manage all system users." styleClass="text-muted" />
                            </children>
                         </VBox>
                         <Region HBox.hgrow="ALWAYS" />
                         <HBox spacing="10">
                            <children>
-                              <Button onAction="#handleCreateUser" text="+ Create User" styleClass="button" />
-                              <Button onAction="#handleRefresh" styleClass="secondary-button">
+                              <Button onAction="#handleCreateUser" text="+ Create User" styleClass="success" />
+                              <Button onAction="#handleRefresh" styleClass="flat">
                                  <graphic>
                                     <ImageView fitHeight="16" fitWidth="16">
                                        <image>
@@ -90,7 +90,7 @@
                      </children>
                   </HBox>
                   
-                  <TableView fx:id="userTable" VBox.vgrow="ALWAYS" styleClass="card">
+                  <TableView fx:id="userTable" VBox.vgrow="ALWAYS" styleClass="striped">
                     <columns>
                       <TableColumn fx:id="idCol" prefWidth="50" text="ID" />
                       <TableColumn fx:id="usernameCol" prefWidth="100" text="Username" />

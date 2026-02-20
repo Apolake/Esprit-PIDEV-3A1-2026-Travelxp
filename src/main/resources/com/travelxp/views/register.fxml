@@ -7,14 +7,14 @@
 
 <StackPane alignment="CENTER" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.travelxp.controllers.RegisterController" styleClass="root">
    <children>
-      <ScrollPane fitToWidth="true" maxWidth="600.0" prefHeight="900.0" styleClass="scroll-pane">
+      <ScrollPane fitToWidth="true" maxWidth="600.0" prefHeight="900.0" styleClass="edge-to-edge">
          <content>
             <VBox alignment="CENTER" spacing="30.0" styleClass="card">
                <children>
                   <VBox alignment="CENTER" spacing="10">
                      <children>
-                        <Label text="Join TravelXP" styleClass="title" style="-fx-font-size: 32px;" />
-                        <Label text="Track your journey and level up." styleClass="header-text" />
+                        <Label text="Join TravelXP" styleClass="title-1" />
+                        <Label text="Track your journey and level up." styleClass="text-muted" />
                      </children>
                   </VBox>
                   
@@ -24,13 +24,13 @@
                            <children>
                               <VBox spacing="8.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <Label text="Username" style="-fx-font-weight: bold; -fx-text-fill: -fx-text-muted;" />
+                                    <Label text="Username" styleClass="text-caption" />
                                     <TextField fx:id="usernameField" promptText="Enter username" />
                                  </children>
                               </VBox>
                               <VBox spacing="8.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <Label text="Email Address" style="-fx-font-weight: bold; -fx-text-fill: -fx-text-muted;" />
+                                    <Label text="Email Address" styleClass="text-caption" />
                                     <TextField fx:id="emailField" promptText="Enter email" />
                                  </children>
                               </VBox>
@@ -39,36 +39,36 @@
                         
                         <VBox spacing="8.0">
                            <children>
-                              <Label text="Create Password" style="-fx-font-weight: bold; -fx-text-fill: -fx-text-muted;" />
+                              <Label text="Create Password" styleClass="text-caption" />
                               <PasswordField fx:id="passwordField" promptText="8+ chars, 1 letter, 1 number" />
                            </children>
                         </VBox>
                         
                         <VBox spacing="8.0">
                            <children>
-                              <Label text="Confirm Password" style="-fx-font-weight: bold; -fx-text-fill: -fx-text-muted;" />
+                              <Label text="Confirm Password" styleClass="text-caption" />
                               <PasswordField fx:id="confirmPasswordField" promptText="Repeat password" />
                            </children>
                         </VBox>
                         
                         <VBox spacing="8.0">
                            <children>
-                              <Label text="Date of Birth" style="-fx-font-weight: bold; -fx-text-fill: -fx-text-muted;" />
+                              <Label text="Date of Birth" styleClass="text-caption" />
                               <DatePicker fx:id="birthdayPicker" maxWidth="Infinity" />
                            </children>
                         </VBox>
                         
                         <VBox spacing="8.0">
                            <children>
-                              <Label text="About You (Bio)" style="-fx-font-weight: bold; -fx-text-fill: -fx-text-muted;" />
+                              <Label text="About You (Bio)" styleClass="text-caption" />
                               <TextArea fx:id="bioArea" prefHeight="100.0" promptText="Tell us about yourself..." />
                            </children>
                         </VBox>
                         
                         <HBox spacing="15.0" alignment="CENTER_LEFT">
                            <children>
-                              <Button onAction="#handleImageUpload" styleClass="secondary-button" text="Choose Profile Image" />
-                              <Label fx:id="imagePathLabel" text="No image selected" style="-fx-text-fill: #666666;" />
+                              <Button onAction="#handleImageUpload" styleClass="flat" text="Choose Profile Image" />
+                              <Label fx:id="imagePathLabel" text="No image selected" styleClass="text-muted" />
                            </children>
                         </HBox>
                      </children>
@@ -76,8 +76,8 @@
                   
                   <VBox spacing="15.0">
                      <children>
-                        <Button fx:id="registerButton" maxWidth="Infinity" onAction="#handleRegister" text="Create Account" />
-                        <Button onAction="#handleBack" maxWidth="Infinity" styleClass="secondary-button" text="Back to Login" />
+                        <Button fx:id="registerButton" maxWidth="Infinity" onAction="#handleRegister" text="Create Account" styleClass="accent" />
+                        <Button onAction="#handleBack" maxWidth="Infinity" styleClass="flat" text="Back to Login" />
                      </children>
                   </VBox>
                </children>
