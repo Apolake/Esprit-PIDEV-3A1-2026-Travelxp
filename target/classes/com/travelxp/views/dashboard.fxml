@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.travelxp.controllers.DashboardController" styleClass="root">
+   <left>
+      <VBox styleClass="sidebar" prefWidth="280">
+         <children>
+            <VBox alignment="CENTER" spacing="10">
+               <padding>
+                  <Insets top="40" bottom="40"/>
+               </padding>
+               <children>
+                  <Label text="TRAVELXP" styleClass="title-1" />
+                  <Separator />
+               </children>
+            </VBox>
+            
+            <VBox spacing="5" VBox.vgrow="ALWAYS">
+               <children>
+                  <Button maxWidth="Infinity" styleClass="nav-button, accent" text="Dashboard">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-home-page-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleTasks" maxWidth="Infinity" styleClass="nav-button, flat" text="Tasks">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-to-do-list-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleBrowseProperties" maxWidth="Infinity" styleClass="nav-button, flat" text="Browse Properties">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-home-page-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleBrowseTrips" maxWidth="Infinity" styleClass="nav-button, flat" text="Browse Trips">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-advance-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleMyBookings" maxWidth="Infinity" styleClass="nav-button, flat" text="My Bookings">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-done-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleMyTrips" maxWidth="Infinity" styleClass="nav-button, flat" text="My Trips">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-advance-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleEditProfile" maxWidth="Infinity" styleClass="nav-button, flat" text="Edit Profile">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-pencil-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleChangePassword" maxWidth="Infinity" styleClass="nav-button, flat" text="Security">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-services-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleFeedback" maxWidth="Infinity" styleClass="nav-button, flat" text="Feedback">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-to-do-list-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+            
+            <VBox spacing="10" alignment="BOTTOM_CENTER">
+               <padding>
+                  <Insets bottom="30" left="20" right="20"/>
+               </padding>
+               <children>
+                  <Button onAction="#handleLogout" maxWidth="Infinity" styleClass="danger, flat" text="Logout">
+                     <graphic>
+                        <ImageView fitHeight="16" fitWidth="16">
+                           <image>
+                              <Image url="@../../../icons/icons8-advance-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </left>
+   
+   <center>
+      <StackPane styleClass="center-bg">
+         <children>
+            <Pane fx:id="animatedBg" styleClass="animated-bg" />
+            <ScrollPane fitToWidth="true" styleClass="edge-to-edge">
+               <content>
+                  <VBox spacing="40">
+                     <padding>
+                        <Insets top="50" right="60" bottom="50" left="60"/>
+                     </padding>
+                     <children>
+                        <VBox spacing="5">
+                           <children>
+                              <Label fx:id="welcomeLabel" styleClass="title-1" text="Hello, User!" />
+                              <Label text="Here is your travel summary and achievements." styleClass="text-muted" />
+                           </children>
+                        </VBox>
+                        
+                        <FlowPane hgap="30" vgap="30" alignment="TOP_LEFT">
+                           <children>
+                              <!-- Profile Card -->
+                              <VBox spacing="25" styleClass="card" prefWidth="550">
+                                 <children>
+                                    <Label text="Profile Overview" styleClass="title-3" />
+                                    <HBox spacing="30" alignment="CENTER_LEFT">
+                                       <children>
+                                          <StackPane styleClass="profile-image-container">
+                                             <children>
+                                                <ImageView fx:id="profileImageView" fitHeight="120" fitWidth="120" pickOnBounds="true" preserveRatio="true" />
+                                             </children>
+                                          </StackPane>
+                                          <VBox spacing="12">
+                                             <children>
+                                                <Label fx:id="emailLabel" text="email@example.com" styleClass="title-4" />
+                                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                                   <children>
+                                                      <Label text="Birthday:" styleClass="text-muted" />
+                                                      <Label fx:id="birthdayLabel" text="Jan 1, 1990" />
+                                                   </children>
+                                                </HBox>
+                                                <VBox spacing="5">
+                                                   <children>
+                                                      <Label text="Account Balance" styleClass="text-muted" />
+                                                      <HBox spacing="10" alignment="CENTER_LEFT">
+                                                         <children>
+                                                            <Label fx:id="balanceLabel" text="\$0.00" styleClass="title-4, accent" />
+                                                            <Button text="Recharge" onAction="#handleRecharge" styleClass="recharge-button" style="-fx-font-size: 10px; -fx-padding: 3 8;"/>
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </VBox>
+                                                <VBox spacing="5">
+                                                   <children>
+                                                      <Label text="Bio" styleClass="text-muted" />
+                                                      <Label fx:id="bioLabel" text="No bio provided yet." wrapText="true" maxWidth="350" style="-fx-line-spacing: 5;" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                              
+                              <!-- Gamification Card -->
+                              <VBox spacing="25" styleClass="card" prefWidth="550">
+                                 <children>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Travel Rank" styleClass="title-3" />
+                                          <Region HBox.hgrow="ALWAYS" />
+                                          <Label fx:id="titleLabel" styleClass="success, rounded" text="Novice" style="-fx-padding: 5 10;" />
+                                       </children>
+                                    </HBox>
+                                    
+                                    <HBox spacing="35" alignment="CENTER">
+                                       <children>
+                                          <VBox alignment="CENTER" styleClass="level-badge">
+                                             <children>
+                                                <Label text="LVL" style="-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;" />
+                                                <Label fx:id="levelLabel" styleClass="level-text" text="1" />
+                                             </children>
+                                          </VBox>
+                                          
+                                          <VBox spacing="15" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <HBox alignment="BOTTOM_LEFT">
+                                                   <children>
+                                                      <Label text="Experience Points" styleClass="title-4" />
+                                                      <Region HBox.hgrow="ALWAYS" />
+                                                      <Label fx:id="xpLabel" text="450 / 1000" styleClass="accent, text-bold" />
+                                                   </children>
+                                                </HBox>
+                                                <ProgressBar fx:id="xpProgressBar" progress="0.45" maxWidth="Infinity" styleClass="accent" />
+                                                <Label text="Earn XP by updating your profile and being active!" styleClass="text-muted, text-small" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </FlowPane>
+                        
+                        <!-- Property Showcase -->
+                        <VBox spacing="20">
+                           <children>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label text="Featured Properties" styleClass="title-2" />
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <VBox spacing="10">
+                                       <children>
+                                          <Button onAction="#scrollPropertiesUp" styleClass="flat" text="🔼" style="-fx-font-size: 20px;"/>
+                                          <Button onAction="#scrollPropertiesDown" styleClass="flat" text="🔽" style="-fx-font-size: 20px;"/>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <ScrollPane fx:id="propertyScrollPane" fitToWidth="true" minHeight="400" prefHeight="600" styleClass="edge-to-edge" vbarPolicy="NEVER" hbarPolicy="NEVER">
+                                 <content>
+                                    <TilePane fx:id="propertyShowcase" hgap="25" vgap="25" prefColumns="2">
+                                       <padding>
+                                          <Insets bottom="10" left="10" right="10" top="10" />
+                                       </padding>
+                                    </TilePane>
+                                 </content>
+                              </ScrollPane>
+                           </children>
+                        </VBox>
+
+                        <!-- Trip Showcase -->
+                        <VBox spacing="20">
+                           <children>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label text="Featured Trips" styleClass="title-2" />
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <VBox spacing="10">
+                                       <children>
+                                          <Button onAction="#scrollTripsUp" styleClass="flat" text="🔼" style="-fx-font-size: 20px;"/>
+                                          <Button onAction="#scrollTripsDown" styleClass="flat" text="🔽" style="-fx-font-size: 20px;"/>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <ScrollPane fx:id="tripScrollPane" fitToWidth="true" minHeight="400" prefHeight="600" styleClass="edge-to-edge" vbarPolicy="NEVER" hbarPolicy="NEVER">
+                                 <content>
+                                    <TilePane fx:id="tripShowcase" hgap="25" vgap="25" prefColumns="2">
+                                       <padding>
+                                          <Insets bottom="10" left="10" right="10" top="10" />
+                                       </padding>
+                                    </TilePane>
+                                 </content>
+                              </ScrollPane>
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </content>
+            </ScrollPane>
+            <Button onAction="#toggleTheme" styleClass="theme-toggle-button" StackPane.alignment="TOP_RIGHT">
+               <graphic>
+                  <Region styleClass="theme-icon" />
+               </graphic>
+               <StackPane.margin>
+                  <Insets top="20" right="20" />
+               </StackPane.margin>
+            </Button>
+         </children>
+      </StackPane>
+   </center>
+</BorderPane>

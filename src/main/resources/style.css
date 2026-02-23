@@ -1,0 +1,339 @@
+/* Enhanced UI with AtlantaFX adjustments */
+
+.root {
+    /* Base spacing and fonts */
+    -fx-font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+/* Dark Theme - Black and Gold */
+.dark-theme {
+    -fx-base: #000000;
+    -fx-background: #000000;
+    -fx-control-inner-background: #111111;
+    -fx-accent-color: #D4AF37; /* Gold */
+    -fx-secondary-bg: #1a1a1a;
+    -fx-separator-color: #333333;
+    -fx-text-base-color: #e0e0e0;
+    -fx-success-color: #D4AF37; /* Gold themed success */
+    
+    /* Specific overrides for AtlantaFX */
+    -color-bg-default: #000000;
+    -color-bg-overlay: #1a1a1a;
+    -color-fg-default: #e0e0e0;
+    -color-accent-fg: #D4AF37;
+    -color-accent-emphasis: #D4AF37;
+}
+
+/* Light Theme - Light Blue and White */
+.light-theme {
+    -fx-base: #f0faff; /* Very light blue */
+    -fx-background: #f0faff;
+    -fx-control-inner-background: #ffffff;
+    -fx-accent-color: #0078d4; /* Azure Blue */
+    -fx-secondary-bg: #ffffff;
+    -fx-separator-color: #e0e0e0;
+    -fx-text-base-color: #2c3e50;
+    -fx-success-color: #27ae60;
+    
+    /* Specific overrides for AtlantaFX */
+    -color-bg-default: #f0faff;
+    -color-bg-overlay: #ffffff;
+    -color-fg-default: #2c3e50;
+    -color-accent-fg: #0078d4;
+    -color-accent-emphasis: #0078d4;
+}
+
+/* Custom card style with proper borders and shadows */
+.card {
+    -fx-background-color: -fx-secondary-bg;
+    -fx-background-radius: 12px;
+    -fx-padding: 30px;
+    -fx-border-color: derive(-fx-secondary-bg, 20%);
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 20, 0, 0, 8);
+}
+
+.dark-theme .card {
+    -fx-border-color: #333333;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 15, 0, 0, 5);
+}
+
+.light-theme .card {
+    -fx-border-color: #d1e9ff;
+}
+
+/* Button enhancements with borders */
+.button {
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px 16px;
+    -fx-cursor: hand;
+    -fx-border-color: derive(-fx-base, 20%); /* Default border */
+}
+
+.button:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);
+    -fx-border-color: -fx-accent-color;
+}
+
+.button.accent {
+    -fx-border-color: derive(-fx-accent-color, -10%);
+    -fx-background-color: -fx-accent-color;
+    -fx-text-fill: white;
+}
+
+.dark-theme .button.accent {
+    -fx-text-fill: black; /* Gold on black looks better with black text sometimes */
+    -fx-font-weight: bold;
+}
+
+.button.flat {
+    -fx-background-color: transparent;
+    -fx-border-color: derive(-fx-base, 30%);
+}
+
+.button.flat:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-border-color: -fx-accent-color;
+}
+
+.dark-theme .button.flat:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Sidebar button styling */
+.nav-button {
+    -fx-alignment: BASELINE_LEFT;
+    -fx-padding: 12px 20px;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-border-width: 0 0 0 4; /* Left border indicator */
+    -fx-border-color: transparent;
+    -fx-text-fill: -fx-text-base-color;
+}
+
+.nav-button:hover {
+    -fx-background-color: rgba(212, 175, 55, 0.1); /* Slight gold tint */
+}
+
+.nav-button.accent {
+    -fx-border-color: transparent transparent transparent -fx-accent-color;
+    -fx-background-color: rgba(212, 175, 55, 0.1);
+    -fx-text-fill: -fx-accent-color;
+    -fx-font-weight: bold;
+}
+
+/* Ensure icons/emojis in sidebar are visible in dark mode */
+.dark-theme .nav-button .image-view {
+    -fx-effect: dropshadow(three-pass-box, white, 2, 0, 0, 0); /* Glow effect to make dark icons pop */
+}
+
+.dark-theme .nav-button.accent {
+    -fx-text-fill: -fx-accent-color; /* Gold text for selected button */
+}
+
+.dark-theme .nav-button {
+    -fx-text-fill: #e0e0e0;
+}
+
+
+/* Helper class for title */
+.title {
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-accent-color;
+}
+
+.title-1 {
+    -fx-font-size: 32px;
+    -fx-font-weight: 800;
+    -fx-text-fill: -fx-accent-color;
+}
+
+/* Theme Toggle Button */
+.theme-toggle-button {
+    -fx-background-color: -fx-secondary-bg;
+    -fx-background-radius: 50%;
+    -fx-border-color: -fx-accent-color; /* Gold or Blue border */
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 50%;
+    -fx-min-width: 44px;
+    -fx-min-height: 44px;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+
+.theme-icon {
+    -fx-shape: "M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z";
+    -fx-background-color: -fx-accent-color;
+    -fx-min-width: 20px;
+    -fx-min-height: 20px;
+    -fx-max-width: 20px;
+    -fx-max-height: 20px;
+}
+
+.light-theme .theme-icon {
+    -fx-shape: "M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 .9-.45.9-1s-.35-.9-.9-.9H2c-.55 0-.9.45-.9.9s.35 1 .9 1zm18 0h2c.55 0 .9-.45.9-1s-.35-.9-.9-.9h-2c-.55 0-.9.45-.9.9s.35 1 .9 1zM11 2v2c0 .55.45.9 1 .9s1-.35 1-.9V2c0-.55-.45-.9-1-.9s-1 .35-1 .9zm0 18v2c0 .55.45.9 1 .9s1-.35 1-.9v-2c0-.55-.45-.9-1-.9s-1 .35-1 .9zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z";
+}
+
+/* Sidebar Styling */
+.sidebar {
+    -fx-background-color: -fx-background;
+    -fx-border-color: -fx-separator-color;
+    -fx-border-width: 0 1 0 0;
+}
+
+/* XP Badge visibility fix */
+.xp-badge {
+    -fx-background-color: -fx-secondary-bg;
+    -fx-text-fill: -fx-accent-color;
+    -fx-padding: 6 12;
+    -fx-background-radius: 10;
+    -fx-border-color: -fx-accent-color;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 10;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+/* Recharge button specific fix */
+.recharge-button {
+    -fx-background-color: -fx-accent-color;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-border-color: derive(-fx-accent-color, -20%);
+}
+
+.dark-theme .recharge-button {
+    -fx-text-fill: black;
+}
+
+/* Property showcase image styling */
+.showcase-image-container {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+    -fx-overflow-hidden: true;
+    -fx-border-color: derive(-fx-base, 10%);
+    -fx-border-width: 1px;
+}
+
+.showcase-image {
+    -fx-background-radius: 15px;
+}
+
+.title-2 {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-accent-color;
+}
+
+
+/* Level Badge */
+.level-badge {
+    -fx-background-color: -fx-accent-color;
+    -fx-background-radius: 50%;
+    -fx-min-width: 90px;
+    -fx-min-height: 90px;
+    -fx-alignment: CENTER;
+    -fx-effect: dropshadow(three-pass-box, -fx-accent-color, 15, 0.2, 0, 0);
+}
+
+.level-text {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.dark-theme .level-text {
+    -fx-text-fill: black;
+}
+
+/* Animated background container */
+.animated-bg {
+    -fx-background-color: -fx-background;
+}
+
+.profile-image-container {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-background-radius: 50%;
+    -fx-padding: 5;
+}
+
+/* Glass effect for cards */
+.glass-card {
+    -fx-background-color: rgba(26, 26, 26, 0.7);
+    -fx-background-radius: 12px;
+    -fx-padding: 30px;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+}
+
+.light-theme .glass-card {
+    -fx-background-color: rgba(255, 255, 255, 0.8);
+    -fx-border-color: rgba(0, 120, 212, 0.2);
+}
+
+/* Feedback and Comments Styles */
+.feedback-card {
+    -fx-background-color: white;
+    -fx-padding: 15;
+    -fx-background-radius: 8;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);
+}
+
+.dark-theme .feedback-card {
+    -fx-background-color: #1a1a1a;
+    -fx-border-color: #333333;
+    -fx-text-fill: white;
+}
+
+.comment-card {
+    -fx-background-color: #f9f9f9;
+    -fx-padding: 12;
+    -fx-background-radius: 8;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+}
+
+.dark-theme .comment-card {
+    -fx-background-color: #262626;
+    -fx-border-color: #404040;
+}
+
+.primary-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.secondary-button {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+}
+
+.danger-button {
+    -fx-background-color: #f44336;
+    -fx-text-fill: white;
+}
+
+.meta-label {
+    -fx-font-size: 11;
+    -fx-text-fill: #999;
+}
+
+.content-label {
+    -fx-font-size: 14;
+    -fx-text-fill: #333;
+}
+
+.dark-theme .content-label {
+    -fx-text-fill: #e0e0e0;
+}
+

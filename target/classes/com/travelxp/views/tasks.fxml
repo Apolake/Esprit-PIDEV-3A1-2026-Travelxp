@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.travelxp.controllers.TasksController" styleClass="root">
+   <left>
+      <VBox styleClass="sidebar" prefWidth="280">
+         <children>
+            <VBox alignment="CENTER" spacing="10">
+               <padding>
+                  <Insets top="40" bottom="40"/>
+               </padding>
+               <children>
+                  <Label text="TRAVELXP" styleClass="title-1" />
+                  <Separator />
+               </children>
+            </VBox>
+            
+            <VBox spacing="5" VBox.vgrow="ALWAYS">
+               <children>
+                  <Button onAction="#handleDashboard" maxWidth="Infinity" styleClass="nav-button, flat" text="Dashboard">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-home-page-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button maxWidth="Infinity" styleClass="nav-button, accent" text="Tasks">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-to-do-list-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleBrowseProperties" maxWidth="Infinity" styleClass="nav-button, flat" text="Browse Properties">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-home-page-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleBrowseTrips" maxWidth="Infinity" styleClass="nav-button, flat" text="Browse Trips">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-advance-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleMyBookings" maxWidth="Infinity" styleClass="nav-button, flat" text="My Bookings">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-done-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleMyTrips" maxWidth="Infinity" styleClass="nav-button, flat" text="My Trips">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-advance-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleEditProfile" maxWidth="Infinity" styleClass="nav-button, flat" text="Edit Profile">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-pencil-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleChangePassword" maxWidth="Infinity" styleClass="nav-button, flat" text="Security">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-services-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleFeedback" maxWidth="Infinity" styleClass="nav-button, flat" text="Feedback">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-to-do-list-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+            
+            <VBox spacing="10" alignment="BOTTOM_CENTER">
+               <padding>
+                  <Insets bottom="30" left="20" right="20"/>
+               </padding>
+               <children>
+                  <Button onAction="#handleLogout" maxWidth="Infinity" styleClass="danger, flat" text="Logout">
+                     <graphic>
+                        <ImageView fitHeight="16" fitWidth="16">
+                           <image>
+                              <Image url="@../../../icons/icons8-advance-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </left>
+   
+   <center>
+      <StackPane styleClass="center-bg">
+         <children>
+            <Pane fx:id="animatedBg" styleClass="animated-bg" />
+            <ScrollPane fitToWidth="true" styleClass="edge-to-edge">
+               <content>
+                  <VBox spacing="40">
+                     <padding>
+                        <Insets top="50" right="60" bottom="50" left="60"/>
+                     </padding>
+                     <children>
+                        <VBox spacing="5">
+                           <children>
+                              <Label styleClass="title-1" text="XP Quests" />
+                              <Label text="Complete tasks to earn experience points and level up!" styleClass="text-muted" />
+                           </children>
+                        </VBox>
+                        
+                        <VBox spacing="20">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" styleClass="card">
+                                 <children>
+                                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Daily Login" styleClass="title-4" />
+                                          <Label text="Log in every day to maintain your streak." styleClass="text-muted" />
+                                       </children>
+                                    </VBox>
+                                    <Label text="+10 XP" styleClass="xp-badge" />
+                                 </children>
+                              </HBox>
+                              
+                              <HBox alignment="CENTER_LEFT" styleClass="card">
+                                 <children>
+                                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Profile Completion" styleClass="title-4" />
+                                          <Label text="Update your bio, birthday, or profile image." styleClass="text-muted" />
+                                       </children>
+                                    </VBox>
+                                    <Label text="+5 XP" styleClass="xp-badge" />
+                                 </children>
+                              </HBox>
+                              
+                              <HBox alignment="CENTER_LEFT" styleClass="card">
+                                 <children>
+                                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Security Boost" styleClass="title-4" />
+                                          <Label text="Update your password or email to keep your account safe." styleClass="text-muted" />
+                                       </children>
+                                    </VBox>
+                                    <Label text="+5 XP" styleClass="xp-badge" />
+                                 </children>
+                              </HBox>
+
+                              <HBox alignment="CENTER_LEFT" styleClass="card">
+                                 <children>
+                                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="First Booking" styleClass="title-4" />
+                                          <Label text="Book your first property to start your journey." styleClass="text-muted" />
+                                       </children>
+                                    </VBox>
+                                    <Label text="+50 XP" styleClass="xp-badge" />
+                                 </children>
+                              </HBox>
+
+                              <HBox alignment="CENTER_LEFT" styleClass="card">
+                                 <children>
+                                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Trip Explorer" styleClass="title-4" />
+                                          <Label text="Participate in a trip and explore new destinations." styleClass="text-muted" />
+                                       </children>
+                                    </VBox>
+                                    <Label text="+100 XP" styleClass="xp-badge" />
+                                 </children>
+                              </HBox>
+
+                              <HBox alignment="CENTER_LEFT" styleClass="card">
+                                 <children>
+                                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Activity Junkie" styleClass="title-4" />
+                                          <Label text="Join at least 3 activities in a single trip." styleClass="text-muted" />
+                                       </children>
+                                    </VBox>
+                                    <Label text="+30 XP" styleClass="xp-badge" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </content>
+            </ScrollPane>
+            <Button onAction="#toggleTheme" styleClass="theme-toggle-button" StackPane.alignment="TOP_RIGHT">
+               <graphic>
+                  <Region styleClass="theme-icon" />
+               </graphic>
+               <StackPane.margin>
+                  <Insets top="20" right="20" />
+               </StackPane.margin>
+            </Button>
+         </children>
+      </StackPane>
+   </center>
+</BorderPane>

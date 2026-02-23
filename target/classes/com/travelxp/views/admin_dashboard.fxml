@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.travelxp.controllers.AdminDashboardController" styleClass="root">
+   <left>
+      <VBox styleClass="sidebar" prefWidth="280">
+         <children>
+            <VBox alignment="CENTER" spacing="10">
+               <padding>
+                  <Insets top="40" bottom="40"/>
+               </padding>
+               <children>
+                  <Label text="ADMIN PANEL" styleClass="title-2" />
+                  <Separator />
+               </children>
+            </VBox>
+            
+            <VBox spacing="5" VBox.vgrow="ALWAYS">
+               <children>
+                  <Button onAction="#handleRefresh" maxWidth="Infinity" styleClass="nav-button, accent" text="Users">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-menu-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleManageProperties" maxWidth="Infinity" styleClass="nav-button, flat" text="Properties">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-home-page-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleManageOffers" maxWidth="Infinity" styleClass="nav-button, flat" text="Offers">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-favorite-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleManageBookings" maxWidth="Infinity" styleClass="nav-button, flat" text="Bookings">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-done-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleManageTrips" maxWidth="Infinity" styleClass="nav-button, flat" text="Trips">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-advance-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleActivities" maxWidth="Infinity" styleClass="nav-button, flat" text="Activities">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-services-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleManageComments" maxWidth="Infinity" styleClass="nav-button, flat" text="Comments">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-pencil-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleManageServices" maxWidth="Infinity" styleClass="nav-button, flat" text="Services">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-services-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+            
+            <VBox spacing="10" alignment="BOTTOM_CENTER">
+               <padding>
+                  <Insets bottom="30" left="20" right="20"/>
+               </padding>
+               <children>
+                  <Button onAction="#handleLogout" maxWidth="Infinity" styleClass="danger, flat" text="Logout">
+                     <graphic>
+                        <ImageView fitHeight="16" fitWidth="16">
+                           <image>
+                              <Image url="@../../../icons/icons8-advance-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </left>
+   
+   <center>
+      <StackPane styleClass="center-bg">
+         <children>
+            <Pane fx:id="animatedBg" styleClass="animated-bg" />
+            <VBox spacing="25">
+               <padding>
+                  <Insets top="50" right="40" bottom="50" left="40"/>
+               </padding>
+               <children>
+                  <HBox alignment="CENTER_LEFT">
+                     <children>
+                        <VBox spacing="5">
+                           <children>
+                              <Label styleClass="title-1" text="User Management" />
+                              <Label text="View and manage all system users." styleClass="text-muted" />
+                           </children>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <HBox spacing="10">
+                           <children>
+                              <Button onAction="#handleCreateUser" text="+ Create User" styleClass="success" />
+                              <Button onAction="#handleRefresh" styleClass="flat">
+                                 <graphic>
+                                    <ImageView fitHeight="16" fitWidth="16">
+                                       <image>
+                                          <Image url="@../../../icons/icons8-refresh-50.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </HBox>
+                  
+                  <TableView fx:id="userTable" VBox.vgrow="ALWAYS" styleClass="striped">
+                    <columns>
+                      <TableColumn fx:id="idCol" prefWidth="50" text="ID" />
+                      <TableColumn fx:id="usernameCol" prefWidth="100" text="Username" />
+                      <TableColumn fx:id="emailCol" prefWidth="150" text="Email" />
+                      <TableColumn fx:id="bioCol" prefWidth="150" text="Bio" />
+                      <TableColumn fx:id="imageCol" prefWidth="100" text="Image Path" />
+                      <TableColumn fx:id="roleCol" prefWidth="80" text="Role" />
+                      <TableColumn fx:id="xpCol" prefWidth="60" text="XP" />
+                      <TableColumn fx:id="levelCol" prefWidth="60" text="Lvl" />
+                      <TableColumn fx:id="titleCol" prefWidth="100" text="Title" />
+                      <TableColumn fx:id="actionsCol" prefWidth="250" text="Actions" />
+                    </columns>
+                  </TableView>
+               </children>
+            </VBox>
+            <Button onAction="#toggleTheme" styleClass="theme-toggle-button" StackPane.alignment="TOP_RIGHT">
+               <graphic>
+                  <Region styleClass="theme-icon" />
+               </graphic>
+               <StackPane.margin>
+                  <Insets top="20" right="20" />
+               </StackPane.margin>
+            </Button>
+         </children>
+      </StackPane>
+   </center>
+</BorderPane>

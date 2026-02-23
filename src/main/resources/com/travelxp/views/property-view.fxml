@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.travelxp.controllers.PropertyController" stylesheets="@../../../style.css" styleClass="root">
+   <left>
+      <VBox styleClass="sidebar" prefWidth="280">
+         <children>
+            <VBox alignment="CENTER" spacing="10">
+               <padding>
+                  <Insets top="40" bottom="40"/>
+               </padding>
+               <children>
+                  <Label text="TRAVELXP" styleClass="title-1" />
+                  <Separator />
+               </children>
+            </VBox>
+            
+            <VBox spacing="5" VBox.vgrow="ALWAYS">
+               <children>
+                  <Button onAction="#handleBack" maxWidth="Infinity" styleClass="nav-button, flat" text="Dashboard">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-home-page-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleTasks" maxWidth="Infinity" styleClass="nav-button, flat" text="Tasks">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-to-do-list-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button maxWidth="Infinity" styleClass="nav-button, accent" text="Browse Properties">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-home-page-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleBrowseTrips" maxWidth="Infinity" styleClass="nav-button, flat" text="Browse Trips">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-advance-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleMyBookings" maxWidth="Infinity" styleClass="nav-button, flat" text="My Bookings">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-done-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleMyTrips" maxWidth="Infinity" styleClass="nav-button, flat" text="My Trips">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-advance-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleEditProfile" maxWidth="Infinity" styleClass="nav-button, flat" text="Edit Profile">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-pencil-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleChangePassword" maxWidth="Infinity" styleClass="nav-button, flat" text="Security">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-services-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleFeedback" maxWidth="Infinity" styleClass="nav-button, flat" text="Feedback">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-to-do-list-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+            
+            <VBox spacing="10" alignment="BOTTOM_CENTER">
+               <padding>
+                  <Insets bottom="30" left="20" right="20"/>
+               </padding>
+               <children>
+                  <Button onAction="#handleLogout" maxWidth="Infinity" styleClass="danger, flat" text="Logout">
+                     <graphic>
+                        <ImageView fitHeight="16" fitWidth="16">
+                           <image>
+                              <Image url="@../../../icons/icons8-advance-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </left>
+   
+   <center>
+      <StackPane styleClass="center-bg">
+         <children>
+            <Pane fx:id="animatedBg" styleClass="animated-bg" />
+            <VBox spacing="20">
+               <padding>
+                  <Insets top="20" right="20" bottom="20" left="20"/>
+               </padding>
+               <children>
+                  <GridPane fx:id="adminForm" hgap="10" vgap="10" styleClass="card">
+                     <padding>
+                        <Insets top="15" right="15" bottom="15" left="15"/>
+                     </padding>
+                     <children>
+                        <Label text="Owner ID:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <TextField fx:id="ownerIdField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                        
+                        <Label text="Title:" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                        <TextField fx:id="titleField" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+                        
+                        <Label text="Type:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <TextField fx:id="propertyTypeField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        
+                        <Label text="Address:" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                        <TextField fx:id="addressField" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+                        
+                        <Label text="City:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <TextField fx:id="cityField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                        
+                        <Label text="Country:" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                        <TextField fx:id="countryField" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+                        
+                        <Label text="Price:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                        <TextField fx:id="priceField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                        
+                        <Label text="Max Guests:" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+                        <TextField fx:id="maxGuestsField" GridPane.columnIndex="3" GridPane.rowIndex="3"/>
+
+                        <Label text="Bedrooms:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                        <TextField fx:id="bedroomsField" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+                        <Label text="Bathrooms:" GridPane.columnIndex="2" GridPane.rowIndex="4"/>
+                        <TextField fx:id="bathroomsField" GridPane.columnIndex="3" GridPane.rowIndex="4"/>
+
+                        <Label text="Images:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+                        <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                           <children>
+                              <TextField fx:id="imagesField" HBox.hgrow="ALWAYS" editable="false"/>
+                              <Button text="..." onAction="#handleChooseImage" styleClass="button"/>
+                           </children>
+                        </HBox>
+
+                        <Label text="Description:" GridPane.columnIndex="2" GridPane.rowIndex="5"/>
+                        <TextField fx:id="descriptionField" GridPane.columnIndex="3" GridPane.rowIndex="5"/>
+                        
+                        <CheckBox fx:id="isActiveCheck" text="Is Active" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                        
+                        <HBox spacing="10" GridPane.columnIndex="3" GridPane.rowIndex="6" alignment="CENTER_RIGHT">
+                           <children>
+                              <Button text="Clear" onAction="#handleClearForm" styleClass="button"/>
+                              <Button text="Add" onAction="#handleAddProperty" styleClass="button, primary-button"/>
+                              <Button text="Update" onAction="#handleUpdateProperty" styleClass="button, secondary-button"/>
+                              <Button text="Delete" onAction="#handleDeleteProperty" styleClass="button, danger-button"/>
+                           </children>
+                        </HBox>
+                     </children>
+                  </GridPane>
+                  
+                  <TableView fx:id="propertyTable" VBox.vgrow="ALWAYS">
+                     <columns>
+                        <TableColumn fx:id="idCol" text="ID" prefWidth="50"/>
+                        <TableColumn fx:id="ownerIdCol" text="Owner" prefWidth="60"/>
+                        <TableColumn fx:id="titleCol" text="Title" prefWidth="120"/>
+                        <TableColumn fx:id="descriptionCol" text="Description" prefWidth="100"/>
+                        <TableColumn fx:id="propertyTypeCol" text="Type" prefWidth="80"/>
+                        <TableColumn fx:id="addressCol" text="Address" prefWidth="100"/>
+                        <TableColumn fx:id="cityCol" text="City" prefWidth="80"/>
+                        <TableColumn fx:id="countryCol" text="Country" prefWidth="80"/>
+                        <TableColumn fx:id="bedroomsCol" text="BR" prefWidth="40"/>
+                        <TableColumn fx:id="bathroomsCol" text="BA" prefWidth="40"/>
+                        <TableColumn fx:id="maxGuestsCol" text="Max" prefWidth="40"/>
+                        <TableColumn fx:id="priceCol" text="Price" prefWidth="70"/>
+                        <TableColumn fx:id="imagesCol" text="Images" prefWidth="80"/>
+                        <TableColumn fx:id="isActiveCol" text="Active" prefWidth="60"/>
+                        <TableColumn fx:id="actionsCol" text="Actions" prefWidth="100"/>
+                     </columns>
+                  </TableView>
+
+                  <ScrollPane fx:id="userScrollPane" fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="edge-to-edge">
+                     <content>
+                        <FlowPane fx:id="userCardsContainer" hgap="25" vgap="25" prefWrapLength="1200">
+                           <padding>
+                              <Insets top="10" right="10" bottom="10" left="10"/>
+                           </padding>
+                        </FlowPane>
+                     </content>
+                  </ScrollPane>
+               </children>
+            </VBox>
+            <Button onAction="#toggleTheme" styleClass="theme-toggle-button" StackPane.alignment="TOP_RIGHT">
+               <graphic>
+                  <Region styleClass="theme-icon" />
+               </graphic>
+               <StackPane.margin>
+                  <Insets top="20" right="20" />
+               </StackPane.margin>
+            </Button>
+         </children>
+      </StackPane>
+   </center>
+</BorderPane>

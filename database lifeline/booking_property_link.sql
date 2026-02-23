@@ -1,0 +1,5 @@
+USE travelxp;
+
+ALTER TABLE booking 
+ADD COLUMN IF NOT EXISTS property_id BIGINT NULL,
+ADD FOREIGN KEY (property_id) REFERENCES property(id) ON DELETE SET NULL;
