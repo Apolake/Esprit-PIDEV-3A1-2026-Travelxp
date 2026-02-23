@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.travelxp.controllers.ModerationController" stylesheets="@../../../style.css" styleClass="root">
+   <top>
+      <HBox spacing="20" alignment="CENTER_LEFT" styleClass="top-bar">
+         <padding>
+            <Insets top="10" right="20" bottom="10" left="20"/>
+         </padding>
+         <children>
+            <Button text="Back" onAction="#handleBack" styleClass="button, secondary-button"/>
+            <Label text="Moderation Center" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <VBox spacing="30">
+         <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+         </padding>
+         <children>
+            <VBox spacing="10" VBox.vgrow="ALWAYS">
+               <children>
+                  <Label text="All Feedback" styleClass="title-3"/>
+                  <TableView fx:id="feedbackTable" VBox.vgrow="ALWAYS">
+                     <columns>
+                        <TableColumn fx:id="fIdCol" text="ID" prefWidth="50"/>
+                        <TableColumn fx:id="fUserIdCol" text="User ID" prefWidth="60"/>
+                        <TableColumn fx:id="fContentCol" text="Content" prefWidth="300"/>
+                        <TableColumn fx:id="fDateCol" text="Date" prefWidth="150"/>
+                        <TableColumn fx:id="fActionsCol" text="Actions" prefWidth="150"/>
+                     </columns>
+                  </TableView>
+               </children>
+            </VBox>
+            
+            <VBox spacing="10" VBox.vgrow="ALWAYS">
+               <children>
+                  <Label text="All Comments" styleClass="title-3"/>
+                  <TableView fx:id="commentTable" VBox.vgrow="ALWAYS">
+                     <columns>
+                        <TableColumn fx:id="cIdCol" text="ID" prefWidth="50"/>
+                        <TableColumn fx:id="cFeedbackIdCol" text="Feed ID" prefWidth="60"/>
+                        <TableColumn fx:id="cUserIdCol" text="User ID" prefWidth="60"/>
+                        <TableColumn fx:id="cContentCol" text="Comment" prefWidth="300"/>
+                        <TableColumn fx:id="cDateCol" text="Date" prefWidth="150"/>
+                        <TableColumn fx:id="cActionsCol" text="Actions" prefWidth="150"/>
+                     </columns>
+                  </TableView>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

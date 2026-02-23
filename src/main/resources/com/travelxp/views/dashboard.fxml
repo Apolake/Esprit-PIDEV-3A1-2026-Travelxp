@@ -44,6 +44,33 @@
                         </ImageView>
                      </graphic>
                   </Button>
+                  <Button onAction="#handleFeedback" maxWidth="Infinity" styleClass="nav-button, flat" text="Feedback">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-to-do-list-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleBrowseProperties" maxWidth="Infinity" styleClass="nav-button, flat" text="Browse Properties">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-home-page-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleMyBookings" maxWidth="Infinity" styleClass="nav-button, flat" text="My Bookings">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-done-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
                   <Button onAction="#handleEditProfile" maxWidth="Infinity" styleClass="nav-button, flat" text="Edit Profile">
                      <graphic>
                         <ImageView fitHeight="20" fitWidth="20">
@@ -127,6 +154,17 @@
                                                 </HBox>
                                                 <VBox spacing="5">
                                                    <children>
+                                                      <Label text="Account Balance" styleClass="text-muted" />
+                                                      <HBox spacing="10" alignment="CENTER_LEFT">
+                                                         <children>
+                                                            <Label fx:id="balanceLabel" text="\$0.00" styleClass="title-4, accent" />
+                                                            <Button text="Recharge" onAction="#handleRecharge" styleClass="flat, accent" style="-fx-font-size: 10px; -fx-padding: 3 8;"/>
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </VBox>
+                                                <VBox spacing="5">
+                                                   <children>
                                                       <Label text="Bio" styleClass="text-muted" />
                                                       <Label fx:id="bioLabel" text="No bio provided yet." wrapText="true" maxWidth="350" style="-fx-line-spacing: 5;" />
                                                    </children>
@@ -177,6 +215,49 @@
                               </VBox>
                            </children>
                         </FlowPane>
+                        
+                        <!-- Property Showcase -->
+                        <VBox spacing="20">
+                           <children>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label text="Featured Properties" styleClass="title-2" />
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <VBox spacing="10">
+                                       <children>
+                                          <Button onAction="#scrollPropertiesUp" styleClass="flat">
+                                             <graphic>
+                                                <ImageView fitHeight="16" fitWidth="16" rotate="90">
+                                                   <image>
+                                                      <Image url="@../../../icons/icons8-back-to-50.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                          <Button onAction="#scrollPropertiesDown" styleClass="flat">
+                                             <graphic>
+                                                <ImageView fitHeight="16" fitWidth="16" rotate="90">
+                                                   <image>
+                                                      <Image url="@../../../icons/icons8-forward-arrow-50.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <ScrollPane fx:id="propertyScrollPane" fitToWidth="true" minHeight="400" prefHeight="500" styleClass="edge-to-edge" vbarPolicy="NEVER" hbarPolicy="NEVER">
+                                 <content>
+                                    <VBox fx:id="propertyShowcase" spacing="25">
+                                       <padding>
+                                          <Insets bottom="10" left="10" right="10" top="10" />
+                                       </padding>
+                                    </VBox>
+                                 </content>
+                              </ScrollPane>
+                           </children>
+                        </VBox>
                      </children>
                   </VBox>
                </content>

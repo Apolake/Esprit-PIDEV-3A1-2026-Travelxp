@@ -49,8 +49,10 @@ public class ProfileController {
 
         if (user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {
             try {
-                Image image = new Image("file:" + user.getProfileImage());
-                profileImageView.setImage(image);
+                java.io.File file = new java.io.File(user.getProfileImage());
+                if (file.exists()) {
+                    profileImageView.setImage(new Image(file.toURI().toString()));
+                }
             } catch (Exception e) {
                 // Fallback or log error
             }

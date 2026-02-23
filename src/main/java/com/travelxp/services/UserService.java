@@ -155,6 +155,15 @@ public class UserService {
         }
     }
 
+    public boolean updateBalance(int userId, double amount) throws SQLException {
+        String sql = "UPDATE users SET balance = balance + ? WHERE id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setDouble(1, amount);
+            pstmt.setInt(2, userId);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
     public User getUserById(int userId) throws SQLException {
         String sql = "SELECT * FROM users WHERE id = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -234,6 +243,7 @@ public class UserService {
         user.setBio(rs.getString("bio"));
         user.setProfileImage(rs.getString("profile_image"));
         user.setRole(rs.getString("role"));
+        user.setBalance(rs.getDouble("balance"));
         user.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         user.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
         return user;

@@ -14,4 +14,5 @@ module com.travelxp {
     exports com.travelxp.services;
     exports com.travelxp.controllers;
     exports com.travelxp.utils;
+    exports com.travelxp.repositories;
 }

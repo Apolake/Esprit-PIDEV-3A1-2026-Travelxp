@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.travelxp.controllers.TripMilestoneListController"
+            styleClass="content-area">
+
+    <top>
+        <VBox spacing="8" styleClass="page-header">
+            <Label text="Milestones" styleClass="page-title"/>
+            <Label text="Manage trip milestones (CRUD) linked to trips." styleClass="page-subtitle"/>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="12">
+
+            <HBox spacing="10" styleClass="toolbar-bar" alignment="CENTER_LEFT">
+                <Button text="Refresh" onAction="#refresh" styleClass="btn-secondary"/>
+                <Button text="Add Milestone" onAction="#openAdd" styleClass="btn-primary"/>
+
+                <Button fx:id="btnEdit" text="Edit Selected" onAction="#openEdit" styleClass="btn-secondary"/>
+                <Button fx:id="btnDelete" text="Delete Selected" onAction="#deleteSelected" styleClass="btn-danger"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+            </HBox>
+
+            <Label fx:id="errorLabel" styleClass="error-label error-label-hidden"/>
+
+            <VBox styleClass="card">
+                <TableView fx:id="milestoneTable" prefHeight="560.0">
+                    <columns>
+                        <TableColumn fx:id="colId" text="ID" prefWidth="70"/>
+                        <TableColumn fx:id="colTripId" text="Trip ID" prefWidth="90"/>
+                        <TableColumn fx:id="colTitle" text="Title" prefWidth="240"/>
+                        <TableColumn fx:id="colDate" text="Date" prefWidth="130"/>
+                        <TableColumn fx:id="colStatus" text="Status" prefWidth="140"/>
+                        <TableColumn fx:id="colXp" text="XP" prefWidth="90"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+        </VBox>
+    </center>
+
+    <padding>
+        <Insets top="16" right="18" bottom="18" left="18"/>
+    </padding>
+
+</BorderPane>

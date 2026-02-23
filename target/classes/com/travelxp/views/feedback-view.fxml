@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.travelxp.controllers.FeedbackController"
+            stylesheets="@../../../style.css">
+
+    <top>
+        <VBox spacing="10" style="-fx-padding: 20; -fx-background-color: #f5f5f5; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button text="← Back" onAction="#handleBack" styleClass="button, secondary-button"/>
+                <Label text="Feedback Management System" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+                <Pane HBox.hgrow="ALWAYS"/>
+                <Button text="+ Add Feedback"
+                        onAction="#handleAddFeedback"
+                        styleClass="button, primary-button"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-padding: 0; -fx-background-color: #f9f9f9;">
+            <VBox fx:id="feedbackContainer"
+                  spacing="15"
+                  style="-fx-padding: 20; -fx-background-color: #f9f9f9;"/>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.travelxp.controllers.ServiceController" stylesheets="@../../style.css" styleClass="root">
+   <top>
+      <HBox spacing="20" alignment="CENTER_LEFT" styleClass="top-bar">
+         <padding>
+            <Insets top="10" right="20" bottom="10" left="20"/>
+         </padding>
+         <children>
+            <Button text="Back" onAction="#handleBack" styleClass="button, secondary-button"/>
+            <Label text="Service Management" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <VBox spacing="20">
+         <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+         </padding>
+         <children>
+            <GridPane hgap="10" vgap="10" styleClass="card">
+               <padding>
+                  <Insets top="15" right="15" bottom="15" left="15"/>
+               </padding>
+               <children>
+                  <Label text="Provider:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                  <TextField fx:id="providerNameField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                  
+                  <Label text="Type:" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                  <TextField fx:id="serviceTypeField" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+                  
+                  <Label text="Price:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                  <TextField fx:id="priceField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                  
+                  <Label text="XP Reward:" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                  <TextField fx:id="xpRewardField" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+                  
+                  <CheckBox fx:id="ecoFriendlyCheckBox" text="Eco Friendly" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                  
+                  <HBox spacing="10" GridPane.columnIndex="3" GridPane.rowIndex="3" alignment="CENTER_RIGHT">
+                     <children>
+                        <Button text="Clear" onAction="#handleClearForm" styleClass="button"/>
+                        <Button text="Add" onAction="#handleAddService" styleClass="button, primary-button"/>
+                        <Button text="Update" onAction="#handleUpdateService" styleClass="button, secondary-button"/>
+                        <Button text="Delete" onAction="#handleDeleteService" styleClass="button, danger-button"/>
+                     </children>
+                  </HBox>
+               </children>
+            </GridPane>
+            
+            <TableView fx:id="serviceTable" VBox.vgrow="ALWAYS">
+               <columns>
+                  <TableColumn fx:id="serviceIdCol" text="ID" prefWidth="50"/>
+                  <TableColumn fx:id="providerNameCol" text="Provider" prefWidth="150"/>
+                  <TableColumn fx:id="serviceTypeCol" text="Type" prefWidth="120"/>
+                  <TableColumn fx:id="priceCol" text="Price" prefWidth="80"/>
+                  <TableColumn fx:id="ecoFriendlyCol" text="Eco" prefWidth="60"/>
+                  <TableColumn fx:id="xpRewardCol" text="XP" prefWidth="60"/>
+               </columns>
+            </TableView>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.travelxp.controllers.TripFormController"
+            styleClass="content-area">
+
+    <!-- HEADER -->
+    <top>
+        <VBox spacing="6" styleClass="page-header">
+            <Label fx:id="formTitle" text="Add Trip" styleClass="page-title"/>
+            <Label text="Fill the form then click Save." styleClass="page-subtitle"/>
+        </VBox>
+    </top>
+
+    <!-- FORM CONTENT -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color:transparent;" styleClass="content-area">
+            <content>
+                <VBox spacing="14" styleClass="card">
+
+                    <!-- Error -->
+                    <Label fx:id="errorLabel" styleClass="error-label error-label-hidden"/>
+
+                    <!-- BASIC -->
+                    <Label text="BASIC INFO" styleClass="section-title"/>
+
+                    <GridPane hgap="12" vgap="12">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="26"/>
+                            <ColumnConstraints percentWidth="74"/>
+                        </columnConstraints>
+
+                        <Label text="User ID" styleClass="form-label"
+                               GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <TextField fx:id="userIdField" promptText="Optional (default=1)"
+                                   GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                        <Label text="Trip Name *" styleClass="form-label"
+                               GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <TextField fx:id="tripNameField" promptText="Required"
+                                   GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                        <Label text="Origin" styleClass="form-label"
+                               GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <TextField fx:id="originField"
+                                   GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                        <Label text="Destination" styleClass="form-label"
+                               GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                        <TextField fx:id="destinationField"
+                                   GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                        <Label text="Description" styleClass="form-label"
+                               GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                        <TextArea fx:id="descriptionArea" prefRowCount="3"
+                                  GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                        <Label text="Start Date *" styleClass="form-label"
+                               GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                        <DatePicker fx:id="startDatePicker"
+                                    GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+                        <Label text="End Date *" styleClass="form-label"
+                               GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+                        <DatePicker fx:id="endDatePicker"
+                                    GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+                        <Label text="Status" styleClass="form-label"
+                               GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+                        <ComboBox fx:id="statusCombo"
+                                  GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+                    </GridPane>
+
+                    <Separator/>
+
+                    <!-- FINANCIAL -->
+                    <Label text="FINANCIAL &amp; XP" styleClass="section-title"/>
+                    <GridPane hgap="12" vgap="12">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="26"/>
+                            <ColumnConstraints percentWidth="74"/>
+                        </columnConstraints>
+
+                        <Label text="Budget" styleClass="form-label"
+                               GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <TextField fx:id="budgetField" promptText="e.g. 1500.0"
+                                   GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                        <Label text="Currency" styleClass="form-label"
+                               GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <TextField fx:id="currencyField" promptText="e.g. TND, EUR"
+                                   GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                        <Label text="Total Expenses" styleClass="form-label"
+                               GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <TextField fx:id="expensesField" promptText="e.g. 200.0"
+                                   GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                        <Label text="Total XP" styleClass="form-label"
+                               GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                        <TextField fx:id="xpField" promptText="e.g. 0"
+                                   GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                    </GridPane>
+
+                    <Separator/>
+
+                    <!-- EXTRA -->
+                    <Label text="EXTRA" styleClass="section-title"/>
+
+                    <GridPane hgap="12" vgap="12">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="26"/>
+                            <ColumnConstraints percentWidth="74"/>
+                        </columnConstraints>
+
+                        <Label text="Notes" styleClass="form-label"
+                               GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <TextArea fx:id="notesArea" prefRowCount="3"
+                                  GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                        <Label text="Cover Image URL" styleClass="form-label"
+                               GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <TextField fx:id="coverImageUrlField" promptText="Optional"
+                                   GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    </GridPane>
+
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+    <!-- FOOTER BUTTONS -->
+    <bottom>
+        <HBox spacing="10" alignment="CENTER_RIGHT" styleClass="toolbar-bar">
+            <Button text="Cancel" onAction="#cancel" styleClass="btn-secondary"/>
+            <Button text="Save" onAction="#save" styleClass="btn-primary"/>
+        </HBox>
+    </bottom>
+
+    <padding>
+        <Insets top="16" right="18" bottom="18" left="18"/>
+    </padding>
+
+</BorderPane>

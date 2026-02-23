@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.travelxp.controllers.TripListController"
+            styleClass="content-area">
+
+    <!-- HEADER -->
+    <top>
+        <VBox spacing="8" styleClass="page-header">
+            <Label text="Trips" styleClass="page-title"/>
+            <Label text="Manage your trips (CRUD) with database connection." styleClass="page-subtitle"/>
+        </VBox>
+    </top>
+
+    <!-- CONTENT -->
+    <center>
+        <VBox spacing="12">
+
+            <!-- Toolbar -->
+            <HBox spacing="10" styleClass="toolbar-bar" alignment="CENTER_LEFT">
+                <Button text="Refresh" onAction="#refresh" styleClass="btn-secondary"/>
+                <Button text="Add Trip" onAction="#openAdd" styleClass="btn-primary"/>
+
+                <!-- ✅ مهم: fx:id حتى الكنترولر يقدر يعطلهم -->
+                <Button fx:id="btnEdit" text="Edit Selected" onAction="#openEdit" styleClass="btn-secondary"/>
+                <Button fx:id="btnDelete" text="Delete Selected" onAction="#deleteSelected" styleClass="btn-danger"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <!-- optional search field if you want later -->
+                <!-- <TextField promptText="Search..." styleClass="search-field"/> -->
+            </HBox>
+
+            <!-- Error label -->
+            <Label fx:id="errorLabel" styleClass="error-label error-label-hidden"/>
+
+            <!-- Table inside card -->
+            <VBox styleClass="card">
+                <TableView fx:id="tripTable" prefHeight="560.0">
+                    <columns>
+                        <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                        <TableColumn fx:id="colName" text="Trip Name" prefWidth="170"/>
+                        <TableColumn fx:id="colOrigin" text="Origin" prefWidth="130"/>
+                        <TableColumn fx:id="colDestination" text="Destination" prefWidth="130"/>
+                        <TableColumn fx:id="colStart" text="Start" prefWidth="110"/>
+                        <TableColumn fx:id="colEnd" text="End" prefWidth="110"/>
+                        <TableColumn fx:id="colStatus" text="Status" prefWidth="120"/>
+                        <TableColumn fx:id="colXp" text="XP" prefWidth="80"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+        </VBox>
+    </center>
+
+    <padding>
+        <Insets top="16" right="18" bottom="18" left="18"/>
+    </padding>
+
+</BorderPane>

@@ -209,8 +209,11 @@ public class AdminDashboardController {
             javafx.stage.FileChooser fc = new javafx.stage.FileChooser();
             java.io.File file = fc.showOpenDialog(null);
             if (file != null) {
-                selectedImagePath = file.getAbsolutePath();
-                pathLabel.setText(file.getName());
+                String relativePath = com.travelxp.utils.ImageUtil.saveImage(file);
+                if (relativePath != null) {
+                    selectedImagePath = relativePath;
+                    pathLabel.setText(file.getName());
+                }
             }
         });
 
@@ -267,6 +270,26 @@ public class AdminDashboardController {
     }
 
     @FXML
+    private void handleManageProperties(ActionEvent event) {
+        changeScene(event, "/com/travelxp/views/property-view.fxml");
+    }
+
+    @FXML
+    private void handleManageOffers(ActionEvent event) {
+        changeScene(event, "/com/travelxp/views/offer-view.fxml");
+    }
+
+    @FXML
+    private void handleManageBookings(ActionEvent event) {
+        changeScene(event, "/com/travelxp/views/booking-view.fxml");
+    }
+
+    @FXML
+    private void handleManageComments(ActionEvent event) {
+        changeScene(event, "/com/travelxp/views/moderation-view.fxml");
+    }
+
+    @FXML
     private void handleCreateUser() {
         Dialog<User> dialog = new Dialog<>();
         dialog.getDialogPane().getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
@@ -305,8 +328,11 @@ public class AdminDashboardController {
             javafx.stage.FileChooser fc = new javafx.stage.FileChooser();
             java.io.File file = fc.showOpenDialog(null);
             if (file != null) {
-                selectedImagePath = file.getAbsolutePath();
-                pathLabel.setText(file.getName());
+                String relativePath = com.travelxp.utils.ImageUtil.saveImage(file);
+                if (relativePath != null) {
+                    selectedImagePath = relativePath;
+                    pathLabel.setText(file.getName());
+                }
             }
         });
 

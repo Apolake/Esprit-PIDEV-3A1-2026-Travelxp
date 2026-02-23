@@ -102,8 +102,11 @@ public class RegisterController {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
         File selectedFile = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
         if (selectedFile != null) {
-            selectedImagePath = selectedFile.getAbsolutePath();
-            imagePathLabel.setText(selectedFile.getName());
+            String relativePath = com.travelxp.utils.ImageUtil.saveImage(selectedFile);
+            if (relativePath != null) {
+                selectedImagePath = relativePath;
+                imagePathLabel.setText(new File(selectedImagePath).getName());
+            }
         }
     }
 

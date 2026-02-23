@@ -2,22 +2,27 @@ package com.travelxp.controllers;
 
 import com.travelxp.Main;
 import com.travelxp.models.Gamification;
+import com.travelxp.models.Property;
 import com.travelxp.models.User;
 import com.travelxp.services.GamificationService;
+import com.travelxp.services.PropertyService;
 import javafx.animation.Animation;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -27,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Random;
 
 public class DashboardController {
@@ -41,8 +47,12 @@ public class DashboardController {
     @FXML private Label xpLabel;
     @FXML private ProgressBar xpProgressBar;
     @FXML private Pane animatedBg;
+    
+    @FXML private VBox propertyShowcase;
+    @FXML private ScrollPane propertyScrollPane;
 
     private final GamificationService gamificationService = new GamificationService();
+    private final PropertyService propertyService = new PropertyService();
     private final Random random = new Random();
 
     @FXML
@@ -57,7 +67,87 @@ public class DashboardController {
             updateGamificationUI(user.getId());
         }
 
+        loadPropertyShowcase();
         Platform.runLater(this::startBackgroundAnimation);
+    }
+
+    private void loadPropertyShowcase() {
+        if (propertyShowcase == null) return;
+        propertyShowcase.getChildren().clear();
+        try {
+            List<Property> properties = propertyService.getAllProperties();
+            for (Property p : properties) {
+                propertyShowcase.getChildren().add(createPropertyCard(p));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private VBox createPropertyCard(Property p) {
+        VBox card = new VBox(15);
+        card.getStyleClass().add("card");
+        card.setMaxWidth(Double.MAX_VALUE);
+        card.setPadding(new Insets(20));
+
+        HBox mainContent = new HBox(20);
+        mainContent.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+        // Image Preview
+        StackPane imageContainer = new StackPane();
+        imageContainer.setPrefSize(120, 120);
+        imageContainer.getStyleClass().add("profile-image-container");
+        ImageView iv = new ImageView();
+        iv.setFitHeight(110);
+        iv.setFitWidth(110);
+        iv.setPreserveRatio(true);
+        if (p.getImages() != null && !p.getImages().isEmpty()) {
+            File imgFile = new File(p.getImages());
+            if (imgFile.exists()) {
+                iv.setImage(new Image(imgFile.toURI().toString()));
+            }
+        }
+        imageContainer.getChildren().add(iv);
+
+        VBox textInfo = new VBox(5);
+        Label title = new Label(p.getTitle());
+        title.getStyleClass().add("title-4");
+        title.setWrapText(true);
+
+        Label location = new Label(p.getCity() + ", " + p.getCountry());
+        location.getStyleClass().add("text-muted");
+        
+        textInfo.getChildren().addAll(title, location);
+        HBox.setHgrow(textInfo, Priority.ALWAYS);
+
+        VBox priceInfo = new VBox(5);
+        priceInfo.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+        Label price = new Label("$" + p.getPricePerNight());
+        price.getStyleClass().add("accent");
+        price.setStyle("-fx-font-weight: bold; -fx-font-size: 18px;");
+        Label night = new Label("/ night");
+        night.getStyleClass().add("text-muted");
+        priceInfo.getChildren().addAll(price, night);
+
+        mainContent.getChildren().addAll(imageContainer, textInfo, priceInfo);
+
+        Button viewBtn = new Button("Book This Property");
+        viewBtn.getStyleClass().add("accent");
+        viewBtn.setMaxWidth(Double.MAX_VALUE);
+        viewBtn.setOnAction(e -> handleBrowseProperties(e));
+
+        card.getChildren().addAll(mainContent, viewBtn);
+        return card;
+    }
+
+    @FXML
+    private void scrollPropertiesUp() {
+        propertyScrollPane.setVvalue(Math.max(0, propertyScrollPane.getVvalue() - 0.2));
+    }
+
+    @FXML
+    private void scrollPropertiesDown() {
+        propertyScrollPane.setVvalue(Math.min(1, propertyScrollPane.getVvalue() + 0.2));
     }
 
     private void startBackgroundAnimation() {
@@ -177,6 +267,21 @@ public class DashboardController {
     @FXML
     private void handleChangePassword(ActionEvent event) {
         changeScene(event, "/com/travelxp/views/change_password.fxml");
+    }
+
+    @FXML
+    private void handleFeedback(ActionEvent event) {
+        changeScene(event, "/com/travelxp/views/feedback-view.fxml");
+    }
+
+    @FXML
+    private void handleBrowseProperties(ActionEvent event) {
+        changeScene(event, "/com/travelxp/views/property-view.fxml");
+    }
+
+    @FXML
+    private void handleMyBookings(ActionEvent event) {
+        changeScene(event, "/com/travelxp/views/booking-view.fxml");
     }
 
     @FXML

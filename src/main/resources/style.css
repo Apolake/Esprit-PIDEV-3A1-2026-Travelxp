@@ -70,11 +70,12 @@
     -fx-background-radius: 8px;
     -fx-padding: 8px 16px;
     -fx-cursor: hand;
-    -fx-border-color: transparent;
+    -fx-border-color: derive(-fx-base, 20%); /* Default border */
 }
 
 .button:hover {
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);
+    -fx-border-color: -fx-accent-color;
 }
 
 .button.accent {
@@ -90,11 +91,16 @@
 
 .button.flat {
     -fx-background-color: transparent;
-    -fx-border-color: derive(-fx-secondary-bg, 30%);
+    -fx-border-color: derive(-fx-base, 30%);
 }
 
 .button.flat:hover {
-    -fx-background-color: derive(-fx-secondary-bg, 10%);
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-border-color: -fx-accent-color;
+}
+
+.dark-theme .button.flat:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Sidebar button styling */
@@ -104,14 +110,16 @@
     -fx-background-radius: 0;
     -fx-border-radius: 0;
     -fx-border-width: 0 0 0 4; /* Left border indicator */
+    -fx-border-color: transparent;
 }
 
 .nav-button:hover {
-    -fx-background-color: derive(-fx-base, 10%);
+    -fx-background-color: rgba(212, 175, 55, 0.1); /* Slight gold tint */
 }
 
 .nav-button.accent {
     -fx-border-color: transparent transparent transparent -fx-accent-color;
+    -fx-background-color: rgba(212, 175, 55, 0.05);
 }
 
 /* Helper class for title */
@@ -130,8 +138,8 @@
 .theme-toggle-button {
     -fx-background-color: -fx-secondary-bg;
     -fx-background-radius: 50%;
-    -fx-border-color: derive(-fx-secondary-bg, 20%);
-    -fx-border-width: 1px;
+    -fx-border-color: -fx-accent-color; /* Gold or Blue border */
+    -fx-border-width: 1.5px;
     -fx-border-radius: 50%;
     -fx-min-width: 44px;
     -fx-min-height: 44px;
@@ -144,6 +152,8 @@
     -fx-background-color: -fx-accent-color;
     -fx-min-width: 20px;
     -fx-min-height: 20px;
+    -fx-max-width: 20px;
+    -fx-max-height: 20px;
 }
 
 .light-theme .theme-icon {
@@ -159,16 +169,19 @@
 
 /* XP Badge visibility fix */
 .xp-badge {
-    -fx-background-color: -fx-accent-color;
-    -fx-text-fill: white;
+    -fx-background-color: -fx-secondary-bg;
+    -fx-text-fill: -fx-accent-color;
     -fx-padding: 6 12;
     -fx-background-radius: 10;
+    -fx-border-color: -fx-accent-color;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 10;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
 }
 
 .dark-theme .xp-badge {
-    -fx-text-fill: black;
+    -fx-text-fill: -fx-accent-color;
 }
 
 /* Level Badge */
@@ -216,3 +229,65 @@
     -fx-background-color: rgba(255, 255, 255, 0.8);
     -fx-border-color: rgba(0, 120, 212, 0.2);
 }
+
+/* Feedback and Comments Styles */
+.feedback-card {
+    -fx-background-color: white;
+    -fx-padding: 15;
+    -fx-background-radius: 8;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);
+}
+
+.dark-theme .feedback-card {
+    -fx-background-color: #1a1a1a;
+    -fx-border-color: #333333;
+    -fx-text-fill: white;
+}
+
+.comment-card {
+    -fx-background-color: #f9f9f9;
+    -fx-padding: 12;
+    -fx-background-radius: 8;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+}
+
+.dark-theme .comment-card {
+    -fx-background-color: #262626;
+    -fx-border-color: #404040;
+}
+
+.primary-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.secondary-button {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+}
+
+.danger-button {
+    -fx-background-color: #f44336;
+    -fx-text-fill: white;
+}
+
+.meta-label {
+    -fx-font-size: 11;
+    -fx-text-fill: #999;
+}
+
+.content-label {
+    -fx-font-size: 14;
+    -fx-text-fill: #333;
+}
+
+.dark-theme .content-label {
+    -fx-text-fill: #e0e0e0;
+}
+

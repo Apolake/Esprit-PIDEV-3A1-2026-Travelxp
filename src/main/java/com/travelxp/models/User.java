@@ -12,6 +12,7 @@ public class User {
     private String bio;
     private String profileImage;
     private String role;
+    private double balance;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -25,6 +26,7 @@ public class User {
         this.bio = bio;
         this.profileImage = profileImage;
         this.role = "USER";
+        this.balance = 0.0;
     }
 
     // Getters and Setters
@@ -51,6 +53,9 @@ public class User {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public double getBalance() { return balance; }
+    public void setBalance(double balance) { this.balance = balance; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

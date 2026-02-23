@@ -25,11 +25,47 @@
             
             <VBox spacing="5" VBox.vgrow="ALWAYS">
                <children>
-                  <Button maxWidth="Infinity" styleClass="nav-button, accent" text="Users">
+                  <Button onAction="#handleRefresh" maxWidth="Infinity" styleClass="nav-button, accent" text="Users">
                      <graphic>
                         <ImageView fitHeight="20" fitWidth="20">
                            <image>
                               <Image url="@../../../icons/icons8-menu-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleManageProperties" maxWidth="Infinity" styleClass="nav-button, flat" text="Properties">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-home-page-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleManageOffers" maxWidth="Infinity" styleClass="nav-button, flat" text="Offers">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-favorite-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleManageBookings" maxWidth="Infinity" styleClass="nav-button, flat" text="Bookings">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-done-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleManageComments" maxWidth="Infinity" styleClass="nav-button, flat" text="Comments">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-pencil-50.png" />
                            </image>
                         </ImageView>
                      </graphic>
