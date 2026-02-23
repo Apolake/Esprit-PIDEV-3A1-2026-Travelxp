@@ -22,7 +22,7 @@ public class Main extends Application {
         Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
         
-        primaryStage.setTitle("TravelXP - Secure User Management");
+        primaryStage.setTitle("TravelXP - Travel like a pro");
         primaryStage.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/image.png")));
         primaryStage.setResizable(true);
         primaryStage.setScene(scene);
