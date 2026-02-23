@@ -9,10 +9,14 @@ import com.travelxp.services.BookingService;
 import com.travelxp.services.OfferService;
 import com.travelxp.services.PropertyService;
 import com.travelxp.services.ServiceService;
+import com.travelxp.services.TripService;
 import com.travelxp.utils.ImageUtil;
 import com.travelxp.utils.ThemeManager;
 import com.travelxp.services.UserService;
 
+import javafx.animation.Animation;
+import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -26,9 +30,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +46,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 public class PropertyController {
 
@@ -76,13 +84,16 @@ public class PropertyController {
 	@FXML private GridPane adminForm;
     @FXML private ScrollPane userScrollPane;
     @FXML private FlowPane userCardsContainer;
+    @FXML private Pane animatedBg;
 
 	private final PropertyService propertyService = new PropertyService();
 	private final BookingService bookingService = new BookingService();
 	private final OfferService offerService = new OfferService();
 	private final ServiceService serviceService = new ServiceService();
 	private final UserService userService = new UserService();
+    private final TripService tripService = new TripService();
 	private final ObservableList<Property> propertyData = FXCollections.observableArrayList();
+    private final Random random = new Random();
 
 	@FXML
 	public void initialize() {
@@ -123,7 +134,43 @@ public class PropertyController {
 		
 		addActionsToTable();
 		loadProperties();
+        Platform.runLater(this::startBackgroundAnimation);
 	}
+
+    private void startBackgroundAnimation() {
+        if (animatedBg == null) return;
+        for (int i = 0; i < 10; i++) {
+            Circle circle = createCircle();
+            animatedBg.getChildren().add(circle);
+            animateCircle(circle);
+        }
+    }
+
+    private Circle createCircle() {
+        double radius = 30 + random.nextDouble() * 120;
+        Circle circle = new Circle(radius);
+        circle.setCenterX(random.nextDouble() * 1200);
+        circle.setCenterY(random.nextDouble() * 900);
+        double opacity = 0.03 + random.nextDouble() * 0.05;
+        boolean isDark = ThemeManager.isDark();
+        String color = isDark ? "#D4AF37" : "#002b5c";
+        circle.setFill(Color.web(color, opacity));
+        circle.setStroke(Color.web(color, opacity * 1.5));
+        circle.setStrokeWidth(1.5);
+        circle.setEffect(new javafx.scene.effect.BoxBlur(10, 10, 2));
+        return circle;
+    }
+
+    private void animateCircle(Circle circle) {
+        double duration = 6 + random.nextDouble() * 6;
+        TranslateTransition tt = new TranslateTransition(Duration.seconds(duration), circle);
+        tt.setByX(random.nextDouble() * 500 - 250);
+        tt.setByY(random.nextDouble() * 500 - 250);
+        tt.setAutoReverse(true);
+        tt.setCycleCount(Animation.INDEFINITE);
+        tt.setInterpolator(javafx.animation.Interpolator.EASE_BOTH);
+        tt.play();
+    }
 
     @FXML
     private void handleTasks(ActionEvent event) {
@@ -137,7 +184,11 @@ public class PropertyController {
 
     @FXML
     private void handleMyBookings(ActionEvent event) {
-        changeScene(event, "/com/travelxp/views/booking-view.fxml");
+        String fxml = "/com/travelxp/views/booking-view.fxml";
+        if (Main.getSession().getUser().getRole().equals("ADMIN")) {
+            fxml = "/com/travelxp/views/admin-booking-view.fxml";
+        }
+        changeScene(event, fxml);
     }
 
     @FXML

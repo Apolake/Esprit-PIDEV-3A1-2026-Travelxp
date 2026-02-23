@@ -6,6 +6,9 @@ import com.travelxp.models.Trip;
 import com.travelxp.services.ActivityService;
 import com.travelxp.services.TripService;
 import com.travelxp.utils.ThemeManager;
+import javafx.animation.Animation;
+import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,12 +20,16 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Random;
 
 public class ActivityController {
 
@@ -44,10 +51,12 @@ public class ActivityController {
     @FXML private VBox userActivitiesContainer;
     @FXML private ScrollPane userScrollPane;
     @FXML private GridPane adminForm;
+    @FXML private Pane animatedBg;
 
     private final ActivityService activityService = new ActivityService();
     private final TripService tripService = new TripService();
     private final ObservableList<Activity> activityData = FXCollections.observableArrayList();
+    private final Random random = new Random();
 
     @FXML
     public void initialize() {
@@ -87,6 +96,42 @@ public class ActivityController {
         }
 
         loadActivities();
+        Platform.runLater(this::startBackgroundAnimation);
+    }
+
+    private void startBackgroundAnimation() {
+        if (animatedBg == null) return;
+        for (int i = 0; i < 10; i++) {
+            Circle circle = createCircle();
+            animatedBg.getChildren().add(circle);
+            animateCircle(circle);
+        }
+    }
+
+    private Circle createCircle() {
+        double radius = 30 + random.nextDouble() * 120;
+        Circle circle = new Circle(radius);
+        circle.setCenterX(random.nextDouble() * 1200);
+        circle.setCenterY(random.nextDouble() * 900);
+        double opacity = 0.03 + random.nextDouble() * 0.05;
+        boolean isDark = ThemeManager.isDark();
+        String color = isDark ? "#D4AF37" : "#002b5c";
+        circle.setFill(Color.web(color, opacity));
+        circle.setStroke(Color.web(color, opacity * 1.5));
+        circle.setStrokeWidth(1.5);
+        circle.setEffect(new javafx.scene.effect.BoxBlur(10, 10, 2));
+        return circle;
+    }
+
+    private void animateCircle(Circle circle) {
+        double duration = 6 + random.nextDouble() * 6;
+        TranslateTransition tt = new TranslateTransition(Duration.seconds(duration), circle);
+        tt.setByX(random.nextDouble() * 500 - 250);
+        tt.setByY(random.nextDouble() * 500 - 250);
+        tt.setAutoReverse(true);
+        tt.setCycleCount(Animation.INDEFINITE);
+        tt.setInterpolator(javafx.animation.Interpolator.EASE_BOTH);
+        tt.play();
     }
 
     private void loadActivities() {
@@ -121,7 +166,7 @@ public class ActivityController {
         HBox.setHgrow(left, Priority.ALWAYS);
 
         VBox right = new VBox(5);
-        Label dateLab = new Label(a.getActivityDate().toString());
+        Label dateLab = new Label(a.getActivityDate() != null ? a.getActivityDate().toString() : "No Date");
         dateLab.setStyle("-fx-font-weight: bold;");
         Label xpLab = new Label("+" + a.getXpEarned() + " XP");
         xpLab.getStyleClass().add("accent");
@@ -195,8 +240,11 @@ public class ActivityController {
 
     @FXML private void handleClearForm() { clearForm(); }
     private void clearForm() {
-        titleField.clear(); typeField.clear(); datePicker.setValue(null);
-        statusCombo.setValue("PLANNED"); costField.clear();
+        if (titleField != null) titleField.clear();
+        if (typeField != null) typeField.clear();
+        if (datePicker != null) datePicker.setValue(null);
+        if (statusCombo != null) statusCombo.setValue("PLANNED");
+        if (costField != null) costField.clear();
         if (activityTable != null) activityTable.getSelectionModel().clearSelection();
     }
 

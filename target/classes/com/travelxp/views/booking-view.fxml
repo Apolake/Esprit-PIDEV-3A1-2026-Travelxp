@@ -129,7 +129,7 @@
    <center>
       <StackPane styleClass="center-bg">
          <children>
-            <Pane fx:id="animatedBg" styleClass="animated-bg" visible="false" />
+            <Pane fx:id="animatedBg" styleClass="animated-bg" />
             <VBox spacing="20">
                <padding>
                   <Insets top="20" right="20" bottom="20" left="20"/>

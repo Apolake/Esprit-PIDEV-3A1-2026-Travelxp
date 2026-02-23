@@ -5,6 +5,9 @@ import com.travelxp.models.Offer;
 import com.travelxp.services.OfferService;
 import com.travelxp.utils.ThemeManager;
 
+import javafx.animation.Animation;
+import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,13 +19,18 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Random;
 
 public class OfferController {
 
@@ -47,9 +55,11 @@ public class OfferController {
 	
 	@FXML private GridPane adminForm;
 	@FXML private TableColumn<Offer, Void> actionsCol;
+    @FXML private Pane animatedBg;
 
 	private final OfferService offerService = new OfferService();
 	private final ObservableList<Offer> offerData = FXCollections.observableArrayList();
+    private final Random random = new Random();
 
 	@FXML
 	public void initialize() {
@@ -75,7 +85,43 @@ public class OfferController {
 		
 		addActionsToTable();
 		loadOffers();
+        Platform.runLater(this::startBackgroundAnimation);
 	}
+
+    private void startBackgroundAnimation() {
+        if (animatedBg == null) return;
+        for (int i = 0; i < 10; i++) {
+            Circle circle = createCircle();
+            animatedBg.getChildren().add(circle);
+            animateCircle(circle);
+        }
+    }
+
+    private Circle createCircle() {
+        double radius = 30 + random.nextDouble() * 120;
+        Circle circle = new Circle(radius);
+        circle.setCenterX(random.nextDouble() * 1200);
+        circle.setCenterY(random.nextDouble() * 900);
+        double opacity = 0.03 + random.nextDouble() * 0.05;
+        boolean isDark = ThemeManager.isDark();
+        String color = isDark ? "#D4AF37" : "#002b5c";
+        circle.setFill(Color.web(color, opacity));
+        circle.setStroke(Color.web(color, opacity * 1.5));
+        circle.setStrokeWidth(1.5);
+        circle.setEffect(new javafx.scene.effect.BoxBlur(10, 10, 2));
+        return circle;
+    }
+
+    private void animateCircle(Circle circle) {
+        double duration = 6 + random.nextDouble() * 6;
+        TranslateTransition tt = new TranslateTransition(Duration.seconds(duration), circle);
+        tt.setByX(random.nextDouble() * 500 - 250);
+        tt.setByY(random.nextDouble() * 500 - 250);
+        tt.setAutoReverse(true);
+        tt.setCycleCount(Animation.INDEFINITE);
+        tt.setInterpolator(javafx.animation.Interpolator.EASE_BOTH);
+        tt.play();
+    }
 
 	private void addActionsToTable() {
 		javafx.util.Callback<TableColumn<Offer, Void>, TableCell<Offer, Void>> cellFactory = param -> new TableCell<>() {
@@ -95,7 +141,6 @@ public class OfferController {
 	}
 
 	private void handleBookFromOffer(Offer offer) {
-		// Logic to open property-view or just show a booking dialog for the property associated with the offer
 		showAlert(Alert.AlertType.INFORMATION, "Offer Applied", "Booking with " + offer.getDiscountPercentage() + "% discount", "Please proceed to booking in the Properties menu.");
 	}
 

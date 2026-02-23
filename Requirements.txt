@@ -1,9 +1,0 @@
-Fixes Required,
-- Color is reset to black and white , needs to be like it used to be black and gold or light blue and white for dark or light theme
-- buttons do not have borders and are the same color as background
-- change theme button icon does not show anymore
-- tasks rewards (+xp) is not visible anymore
-- the dashboard elements are not in their own boxes anymore
-Optional Additions
-- the login menu needs animated background if you can do that.
-- Add blur to elements where it makes sense

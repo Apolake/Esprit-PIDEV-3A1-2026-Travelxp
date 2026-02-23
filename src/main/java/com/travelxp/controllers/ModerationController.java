@@ -5,6 +5,10 @@ import com.travelxp.models.Comment;
 import com.travelxp.models.Feedback;
 import com.travelxp.services.FeedbackService;
 import com.travelxp.utils.ThemeManager;
+
+import javafx.animation.Animation;
+import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,14 +19,19 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 public class ModerationController {
 
@@ -40,10 +49,12 @@ public class ModerationController {
     @FXML private TableColumn<Comment, String> cContentCol;
     @FXML private TableColumn<Comment, LocalDateTime> cDateCol;
     @FXML private TableColumn<Comment, Void> cActionsCol;
+    @FXML private Pane animatedBg;
 
     private final FeedbackService feedbackService = new FeedbackService();
     private final ObservableList<Feedback> feedbackData = FXCollections.observableArrayList();
     private final ObservableList<Comment> commentData = FXCollections.observableArrayList();
+    private final Random random = new Random();
 
     @FXML
     public void initialize() {
@@ -63,6 +74,42 @@ public class ModerationController {
         addCommentActions();
 
         loadAllData();
+        Platform.runLater(this::startBackgroundAnimation);
+    }
+
+    private void startBackgroundAnimation() {
+        if (animatedBg == null) return;
+        for (int i = 0; i < 10; i++) {
+            Circle circle = createCircle();
+            animatedBg.getChildren().add(circle);
+            animateCircle(circle);
+        }
+    }
+
+    private Circle createCircle() {
+        double radius = 30 + random.nextDouble() * 120;
+        Circle circle = new Circle(radius);
+        circle.setCenterX(random.nextDouble() * 1200);
+        circle.setCenterY(random.nextDouble() * 900);
+        double opacity = 0.03 + random.nextDouble() * 0.05;
+        boolean isDark = ThemeManager.isDark();
+        String color = isDark ? "#D4AF37" : "#002b5c";
+        circle.setFill(Color.web(color, opacity));
+        circle.setStroke(Color.web(color, opacity * 1.5));
+        circle.setStrokeWidth(1.5);
+        circle.setEffect(new javafx.scene.effect.BoxBlur(10, 10, 2));
+        return circle;
+    }
+
+    private void animateCircle(Circle circle) {
+        double duration = 6 + random.nextDouble() * 6;
+        TranslateTransition tt = new TranslateTransition(Duration.seconds(duration), circle);
+        tt.setByX(random.nextDouble() * 500 - 250);
+        tt.setByY(random.nextDouble() * 500 - 250);
+        tt.setAutoReverse(true);
+        tt.setCycleCount(Animation.INDEFINITE);
+        tt.setInterpolator(javafx.animation.Interpolator.EASE_BOTH);
+        tt.play();
     }
 
     private void loadAllData() {

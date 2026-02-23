@@ -9,6 +9,9 @@ import com.travelxp.services.PropertyService;
 import com.travelxp.services.UserService;
 import com.travelxp.utils.ThemeManager;
 
+import javafx.animation.Animation;
+import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,15 +24,20 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class BookingController {
@@ -53,11 +61,13 @@ public class BookingController {
 	@FXML private GridPane adminForm;
     @FXML private ScrollPane userScrollPane;
     @FXML private VBox userBookingsContainer;
+    @FXML private Pane animatedBg;
 
 	private final BookingService bookingService = new BookingService();
     private final PropertyService propertyService = new PropertyService();
     private final UserService userService = new UserService();
 	private final ObservableList<Booking> bookingData = FXCollections.observableArrayList();
+    private final Random random = new Random();
 
 	@FXML
 	public void initialize() {
@@ -94,7 +104,43 @@ public class BookingController {
 		
 		addActionsToTable();
 		loadBookings();
+        Platform.runLater(this::startBackgroundAnimation);
 	}
+
+    private void startBackgroundAnimation() {
+        if (animatedBg == null) return;
+        for (int i = 0; i < 10; i++) {
+            Circle circle = createCircle();
+            animatedBg.getChildren().add(circle);
+            animateCircle(circle);
+        }
+    }
+
+    private Circle createCircle() {
+        double radius = 30 + random.nextDouble() * 120;
+        Circle circle = new Circle(radius);
+        circle.setCenterX(random.nextDouble() * 1200);
+        circle.setCenterY(random.nextDouble() * 900);
+        double opacity = 0.03 + random.nextDouble() * 0.05;
+        boolean isDark = ThemeManager.isDark();
+        String color = isDark ? "#D4AF37" : "#002b5c";
+        circle.setFill(Color.web(color, opacity));
+        circle.setStroke(Color.web(color, opacity * 1.5));
+        circle.setStrokeWidth(1.5);
+        circle.setEffect(new javafx.scene.effect.BoxBlur(10, 10, 2));
+        return circle;
+    }
+
+    private void animateCircle(Circle circle) {
+        double duration = 6 + random.nextDouble() * 6;
+        TranslateTransition tt = new TranslateTransition(Duration.seconds(duration), circle);
+        tt.setByX(random.nextDouble() * 500 - 250);
+        tt.setByY(random.nextDouble() * 500 - 250);
+        tt.setAutoReverse(true);
+        tt.setCycleCount(Animation.INDEFINITE);
+        tt.setInterpolator(javafx.animation.Interpolator.EASE_BOTH);
+        tt.play();
+    }
 
     @FXML
     private void handleTasks(ActionEvent event) {
