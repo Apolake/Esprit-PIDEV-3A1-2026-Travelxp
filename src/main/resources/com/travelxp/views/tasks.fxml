@@ -183,6 +183,42 @@
                                     <Label text="+5 XP" styleClass="xp-badge" />
                                  </children>
                               </HBox>
+
+                              <HBox alignment="CENTER_LEFT" styleClass="card">
+                                 <children>
+                                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="First Booking" styleClass="title-4" />
+                                          <Label text="Book your first property to start your journey." styleClass="text-muted" />
+                                       </children>
+                                    </VBox>
+                                    <Label text="+50 XP" styleClass="xp-badge" />
+                                 </children>
+                              </HBox>
+
+                              <HBox alignment="CENTER_LEFT" styleClass="card">
+                                 <children>
+                                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Trip Explorer" styleClass="title-4" />
+                                          <Label text="Participate in a trip and explore new destinations." styleClass="text-muted" />
+                                       </children>
+                                    </VBox>
+                                    <Label text="+100 XP" styleClass="xp-badge" />
+                                 </children>
+                              </HBox>
+
+                              <HBox alignment="CENTER_LEFT" styleClass="card">
+                                 <children>
+                                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Activity Junkie" styleClass="title-4" />
+                                          <Label text="Join at least 3 activities in a single trip." styleClass="text-muted" />
+                                       </children>
+                                    </VBox>
+                                    <Label text="+30 XP" styleClass="xp-badge" />
+                                 </children>
+                              </HBox>
                            </children>
                         </VBox>
                      </children>

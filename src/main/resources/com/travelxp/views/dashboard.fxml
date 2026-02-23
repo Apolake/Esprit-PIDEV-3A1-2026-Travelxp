@@ -260,6 +260,33 @@
                               </ScrollPane>
                            </children>
                         </VBox>
+
+                        <!-- Trip Showcase -->
+                        <VBox spacing="20">
+                           <children>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label text="Featured Trips" styleClass="title-2" />
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <VBox spacing="10">
+                                       <children>
+                                          <Button onAction="#scrollTripsUp" styleClass="flat" text="🔼" style="-fx-font-size: 20px;"/>
+                                          <Button onAction="#scrollTripsDown" styleClass="flat" text="🔽" style="-fx-font-size: 20px;"/>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <ScrollPane fx:id="tripScrollPane" fitToWidth="true" minHeight="400" prefHeight="600" styleClass="edge-to-edge" vbarPolicy="NEVER" hbarPolicy="NEVER">
+                                 <content>
+                                    <TilePane fx:id="tripShowcase" hgap="25" vgap="25" prefColumns="2">
+                                       <padding>
+                                          <Insets bottom="10" left="10" right="10" top="10" />
+                                       </padding>
+                                    </TilePane>
+                                 </content>
+                              </ScrollPane>
+                           </children>
+                        </VBox>
                      </children>
                   </VBox>
                </content>

@@ -3,9 +3,11 @@ package com.travelxp.controllers;
 import com.travelxp.Main;
 import com.travelxp.models.Gamification;
 import com.travelxp.models.Property;
+import com.travelxp.models.Trip;
 import com.travelxp.models.User;
 import com.travelxp.services.GamificationService;
 import com.travelxp.services.PropertyService;
+import com.travelxp.services.TripService;
 import com.travelxp.services.UserService;
 import javafx.animation.Animation;
 import javafx.animation.TranslateTransition;
@@ -53,10 +55,13 @@ public class DashboardController {
     
     @FXML private TilePane propertyShowcase;
     @FXML private ScrollPane propertyScrollPane;
+    @FXML private TilePane tripShowcase;
+    @FXML private ScrollPane tripScrollPane;
 
     private final UserService userService = new UserService();
     private final GamificationService gamificationService = new GamificationService();
     private final PropertyService propertyService = new PropertyService();
+    private final TripService tripService = new TripService();
     private final Random random = new Random();
 
     @FXML
@@ -72,6 +77,7 @@ public class DashboardController {
         }
 
         loadPropertyShowcase();
+        loadTripShowcase();
         Platform.runLater(this::startBackgroundAnimation);
     }
 
@@ -88,16 +94,31 @@ public class DashboardController {
         }
     }
 
+    private void loadTripShowcase() {
+        if (tripShowcase == null) return;
+        tripShowcase.getChildren().clear();
+        try {
+            List<Trip> trips = tripService.getAllTrips().stream()
+                    .filter(t -> t.getUserId() == null)
+                    .limit(6)
+                    .toList();
+            for (Trip t : trips) {
+                tripShowcase.getChildren().add(createTripCard(t));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private VBox createPropertyCard(Property p) {
         VBox card = new VBox(15);
         card.getStyleClass().add("card");
-        card.setPrefWidth(350); // Fixed width for TilePane columns
+        card.setPrefWidth(350);
         card.setMinWidth(350);
         card.setMaxWidth(350);
         card.setPadding(new Insets(15));
         card.setAlignment(javafx.geometry.Pos.TOP_CENTER);
 
-        // Image Preview - Main Focus
         StackPane imageContainer = new StackPane();
         imageContainer.setPrefHeight(180);
         imageContainer.setMaxHeight(180);
@@ -108,7 +129,6 @@ public class DashboardController {
         iv.setFitWidth(320);
         iv.setPreserveRatio(true);
         
-        // Clip for rounded corners
         javafx.scene.shape.Rectangle clip = new javafx.scene.shape.Rectangle(320, 180);
         clip.setArcWidth(30);
         clip.setArcHeight(30);
@@ -163,6 +183,55 @@ public class DashboardController {
         return card;
     }
 
+    private VBox createTripCard(Trip t) {
+        VBox card = new VBox(15);
+        card.getStyleClass().add("card");
+        card.setPrefWidth(350);
+        card.setMinWidth(350);
+        card.setMaxWidth(350);
+        card.setPadding(new Insets(15));
+        card.setAlignment(javafx.geometry.Pos.TOP_CENTER);
+
+        VBox infoBox = new VBox(10);
+        infoBox.setPadding(new Insets(10, 0, 0, 0));
+
+        HBox topInfo = new HBox(10);
+        topInfo.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+        VBox textInfo = new VBox(2);
+        Label title = new Label(t.getTripName());
+        title.getStyleClass().add("title-4");
+        title.setStyle("-fx-font-size: 16px;");
+        title.setWrapText(true);
+
+        Label location = new Label(t.getOrigin() + " ➔ " + t.getDestination());
+        location.getStyleClass().add("text-muted");
+        textInfo.getChildren().addAll(title, location);
+        HBox.setHgrow(textInfo, Priority.ALWAYS);
+
+        VBox priceInfo = new VBox(0);
+        priceInfo.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+        Label price = new Label("$" + (t.getBudgetAmount() != null ? t.getBudgetAmount() : 0.0));
+        price.getStyleClass().add("accent");
+        price.setStyle("-fx-font-weight: bold; -fx-font-size: 18px;");
+        Label entry = new Label("Entry");
+        entry.getStyleClass().add("text-muted");
+        priceInfo.getChildren().addAll(price, entry);
+
+        topInfo.getChildren().addAll(textInfo, priceInfo);
+
+        Button viewBtn = new Button("Participate Now");
+        viewBtn.getStyleClass().add("accent");
+        viewBtn.setMaxWidth(Double.MAX_VALUE);
+        viewBtn.setPrefHeight(35);
+        viewBtn.setOnAction(e -> handleBrowseTrips(e));
+
+        infoBox.getChildren().addAll(topInfo, viewBtn);
+        
+        card.getChildren().addAll(infoBox);
+        return card;
+    }
+
     @FXML
     private void scrollPropertiesUp() {
         propertyScrollPane.setVvalue(Math.max(0, propertyScrollPane.getVvalue() - 0.2));
@@ -173,10 +242,18 @@ public class DashboardController {
         propertyScrollPane.setVvalue(Math.min(1, propertyScrollPane.getVvalue() + 0.2));
     }
 
+    @FXML
+    private void scrollTripsUp() {
+        tripScrollPane.setVvalue(Math.max(0, tripScrollPane.getVvalue() - 0.2));
+    }
+
+    @FXML
+    private void scrollTripsDown() {
+        tripScrollPane.setVvalue(Math.min(1, tripScrollPane.getVvalue() + 0.2));
+    }
+
     private void startBackgroundAnimation() {
         if (animatedBg == null) return;
-        
-        // Fewer, more intentional circles for a cleaner look
         for (int i = 0; i < 10; i++) {
             Circle circle = createCircle();
             animatedBg.getChildren().add(circle);
@@ -185,40 +262,27 @@ public class DashboardController {
     }
 
     private Circle createCircle() {
-        // Varied sizes for depth
         double radius = 30 + random.nextDouble() * 120;
         Circle circle = new Circle(radius);
-        
         circle.setCenterX(random.nextDouble() * 1200);
         circle.setCenterY(random.nextDouble() * 900);
-        
-        // Dynamic opacity for professional layering
         double opacity = 0.03 + random.nextDouble() * 0.05;
-        
-        // Check current theme state at creation time
         boolean isDark = com.travelxp.utils.ThemeManager.isDark();
         String color = isDark ? "#D4AF37" : "#002b5c";
-        
         circle.setFill(Color.web(color, opacity));
         circle.setStroke(Color.web(color, opacity * 1.5));
         circle.setStrokeWidth(1.5);
-        
-        // Add a slight blur to the circles themselves
         circle.setEffect(new javafx.scene.effect.BoxBlur(10, 10, 2));
-        
         return circle;
     }
 
     private void animateCircle(Circle circle) {
-        // Faster duration: 6 to 12 seconds
         double duration = 6 + random.nextDouble() * 6;
-        
         TranslateTransition tt = new TranslateTransition(Duration.seconds(duration), circle);
         tt.setByX(random.nextDouble() * 500 - 250);
         tt.setByY(random.nextDouble() * 500 - 250);
         tt.setAutoReverse(true);
         tt.setCycleCount(Animation.INDEFINITE);
-        // Smooth easing is key for professionalism
         tt.setInterpolator(javafx.animation.Interpolator.EASE_BOTH);
         tt.play();
     }
@@ -237,10 +301,8 @@ public class DashboardController {
                 
                 int userId = Main.getSession().getUser().getId();
                 if (userService.updateBalance(userId, amount)) {
-                    // Update session and UI
                     Main.getSession().setUser(userService.getUserById(userId));
                     updateProfileUI(Main.getSession().getUser());
-                    
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Success! Your balance has been updated.");
                     alert.show();
                 }
@@ -259,7 +321,6 @@ public class DashboardController {
         if (balanceLabel != null) {
             balanceLabel.setText(String.format("$%.2f", user.getBalance()));
         }
-        
         if (user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {
             try {
                 File file = new File(user.getProfileImage());
@@ -267,9 +328,7 @@ public class DashboardController {
                     Image image = new Image(file.toURI().toString());
                     profileImageView.setImage(image);
                 }
-            } catch (Exception e) {
-                // Ignore
-            }
+            } catch (Exception e) {}
         }
     }
 
@@ -279,28 +338,12 @@ public class DashboardController {
             if (gamification != null) {
                 titleLabel.setText(gamification.getTitle());
                 levelLabel.setText(String.valueOf(gamification.getLevel()));
-                
                 int currentLevel = gamification.getLevel();
                 int currentXp = gamification.getXp();
                 int nextLevelXp = gamificationService.getXpForNextLevel(currentLevel);
-                // Calculate previous level threshold to show progress within current level
                 int prevLevelXp = (currentLevel > 1) ? gamificationService.getXpForNextLevel(currentLevel - 1) : 0;
-                
-                // Progress is (currentXp - prevLevelXp) / (nextLevelXp - prevLevelXp)
-                // But simplified: just show total XP or progress to next level?
-                // The requirements say "XP: 120 / 200". Let's assume total XP vs threshold.
-                
                 xpLabel.setText(currentXp + " / " + nextLevelXp + " XP");
-                
-                double progress;
-                if (currentLevel == 1) {
-                    progress = (double) currentXp / nextLevelXp;
-                } else {
-                    double range = nextLevelXp - prevLevelXp;
-                    double gainedInLevel = currentXp - prevLevelXp;
-                    progress = gainedInLevel / range;
-                }
-                
+                double progress = (currentLevel == 1) ? (double) currentXp / nextLevelXp : (double) (currentXp - prevLevelXp) / (nextLevelXp - prevLevelXp);
                 xpProgressBar.setProgress(progress);
             }
         } catch (SQLException e) {
@@ -308,41 +351,20 @@ public class DashboardController {
         }
     }
 
-    @FXML
-    private void handleTasks(ActionEvent event) {
-        changeScene(event, "/com/travelxp/views/tasks.fxml");
-    }
-
-    @FXML
-    private void handleEditProfile(ActionEvent event) {
-        changeScene(event, "/com/travelxp/views/edit_profile.fxml");
-    }
-
-    @FXML
-    private void handleChangePassword(ActionEvent event) {
-        changeScene(event, "/com/travelxp/views/change_password.fxml");
-    }
-
-    @FXML
-    private void handleFeedback(ActionEvent event) {
-        changeScene(event, "/com/travelxp/views/feedback-view.fxml");
-    }
+    @FXML private void handleTasks(ActionEvent event) { changeScene(event, "/com/travelxp/views/tasks.fxml"); }
+    @FXML private void handleEditProfile(ActionEvent event) { changeScene(event, "/com/travelxp/views/edit_profile.fxml"); }
+    @FXML private void handleChangePassword(ActionEvent event) { changeScene(event, "/com/travelxp/views/change_password.fxml"); }
+    @FXML private void handleFeedback(ActionEvent event) { changeScene(event, "/com/travelxp/views/feedback-view.fxml"); }
 
     @FXML
     private void handleBrowseProperties(ActionEvent event) {
-        String fxml = "/com/travelxp/views/property-view.fxml";
-        if (Main.getSession().getUser().getRole().equals("ADMIN")) {
-            fxml = "/com/travelxp/views/admin-property-view.fxml";
-        }
+        String fxml = Main.getSession().getUser().getRole().equals("ADMIN") ? "/com/travelxp/views/admin-property-view.fxml" : "/com/travelxp/views/property-view.fxml";
         changeScene(event, fxml);
     }
 
     @FXML
     private void handleMyBookings(ActionEvent event) {
-        String fxml = "/com/travelxp/views/booking-view.fxml";
-        if (Main.getSession().getUser().getRole().equals("ADMIN")) {
-            fxml = "/com/travelxp/views/admin-booking-view.fxml";
-        }
+        String fxml = Main.getSession().getUser().getRole().equals("ADMIN") ? "/com/travelxp/views/admin-booking-view.fxml" : "/com/travelxp/views/booking-view.fxml";
         changeScene(event, fxml);
     }
 
@@ -376,19 +398,12 @@ public class DashboardController {
         }
     }
 
-    @FXML
-    private void handleActivities(ActionEvent event) {
-        // Disabled as per user request (integrated into My Trips)
-    }
-
-    @FXML
-    private void toggleTheme(ActionEvent event) {
+    @FXML private void toggleTheme(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         com.travelxp.utils.ThemeManager.toggleTheme(stage.getScene());
     }
 
-    @FXML
-    private void handleLogout(ActionEvent event) {
+    @FXML private void handleLogout(ActionEvent event) {
         Main.setSession(null);
         changeScene(event, "/com/travelxp/views/login.fxml");
     }
@@ -402,15 +417,6 @@ public class DashboardController {
             com.travelxp.utils.ThemeManager.applyTheme(stage.getScene());
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Error", "Scene Error", "Failed to load view: " + e.getMessage());
         }
-    }
-
-    private void showAlert(Alert.AlertType type, String title, String header, String content) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        alert.showAndWait();
     }
 }
