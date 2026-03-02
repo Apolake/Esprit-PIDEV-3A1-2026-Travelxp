@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.Pane?>
+
+<StackPane alignment="CENTER" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.travelxp.controllers.RegisterController" styleClass="root">
+   <children>
+      <Pane fx:id="animatedBg" styleClass="animated-bg" />
+      <ScrollPane fitToWidth="true" maxWidth="600.0" prefHeight="900.0" styleClass="edge-to-edge">
+         <content>
+            <VBox alignment="CENTER" spacing="30.0" styleClass="card, glass-card">
+               <children>
+                  <VBox alignment="CENTER" spacing="10">
+                     <children>
+                        <Label text="Join TravelXP" styleClass="title-1" />
+                        <Label text="Track your journey and level up." styleClass="text-muted" />
+                     </children>
+                  </VBox>
+                  
+                  <VBox spacing="20.0">
+                     <children>
+                        <HBox spacing="15.0">
+                           <children>
+                              <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label text="Username" styleClass="text-caption" />
+                                    <TextField fx:id="usernameField" promptText="Enter username" />
+                                 </children>
+                              </VBox>
+                              <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label text="Email Address" styleClass="text-caption" />
+                                    <TextField fx:id="emailField" promptText="Enter email" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        
+                        <VBox spacing="8.0">
+                           <children>
+                              <Label text="Create Password" styleClass="text-caption" />
+                              <PasswordField fx:id="passwordField" promptText="8+ chars, 1 letter, 1 number" />
+                           </children>
+                        </VBox>
+                        
+                        <VBox spacing="8.0">
+                           <children>
+                              <Label text="Confirm Password" styleClass="text-caption" />
+                              <PasswordField fx:id="confirmPasswordField" promptText="Repeat password" />
+                           </children>
+                        </VBox>
+                        
+                        <VBox spacing="8.0">
+                           <children>
+                              <Label text="Date of Birth" styleClass="text-caption" />
+                              <DatePicker fx:id="birthdayPicker" maxWidth="Infinity" />
+                           </children>
+                        </VBox>
+                        
+                        <VBox spacing="8.0">
+                           <children>
+                              <Label text="About You (Bio)" styleClass="text-caption" />
+                              <TextArea fx:id="bioArea" prefHeight="100.0" promptText="Tell us about yourself..." />
+                           </children>
+                        </VBox>
+                        
+                        <HBox spacing="15.0" alignment="CENTER_LEFT">
+                           <children>
+                              <Button onAction="#handleImageUpload" styleClass="flat" text="Choose Profile Image" />
+                              <Label fx:id="imagePathLabel" text="No image selected" styleClass="text-muted" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  
+                  <VBox spacing="15.0">
+                     <children>
+                        <Button fx:id="registerButton" maxWidth="Infinity" onAction="#handleRegister" text="Create Account" styleClass="accent" />
+                        <Button onAction="#handleBack" maxWidth="Infinity" styleClass="flat" text="Back to Login" />
+                     </children>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets bottom="60.0" left="60.0" right="60.0" top="60.0" />
+               </padding>
+            </VBox>
+         </content>
+      </ScrollPane>
+      <Button onAction="#toggleTheme" styleClass="theme-toggle-button" StackPane.alignment="TOP_RIGHT">
+         <graphic>
+            <Region styleClass="theme-icon" />
+         </graphic>
+         <StackPane.margin>
+            <Insets top="20" right="20" />
+         </StackPane.margin>
+      </Button>
+   </children>
+</StackPane>

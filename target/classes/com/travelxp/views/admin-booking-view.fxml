@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.travelxp.controllers.BookingController" stylesheets="@../../../style.css" styleClass="root">
+   <left>
+      <VBox styleClass="sidebar" prefWidth="280">
+         <children>
+            <VBox alignment="CENTER" spacing="10">
+               <padding>
+                  <Insets top="40" bottom="40"/>
+               </padding>
+               <children>
+                  <Label text="ADMIN PANEL" styleClass="title-2" />
+                  <Separator />
+               </children>
+            </VBox>
+            
+            <VBox spacing="5" VBox.vgrow="ALWAYS">
+               <children>
+                  <Button onAction="#handleBack" maxWidth="Infinity" styleClass="nav-button, flat" text="Users">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-menu-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleManageProperties" maxWidth="Infinity" styleClass="nav-button, flat" text="Properties">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-home-page-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleManageOffers" maxWidth="Infinity" styleClass="nav-button, flat" text="Offers">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-favorite-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button maxWidth="Infinity" styleClass="nav-button, accent" text="Bookings">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-done-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleManageTrips" maxWidth="Infinity" styleClass="nav-button, flat" text="Trips">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-advance-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleActivities" maxWidth="Infinity" styleClass="nav-button, flat" text="Activities">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-services-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleManageComments" maxWidth="Infinity" styleClass="nav-button, flat" text="Comments">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-pencil-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button onAction="#handleManageServices" maxWidth="Infinity" styleClass="nav-button, flat" text="Services">
+                     <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                           <image>
+                              <Image url="@../../../icons/icons8-services-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+            
+            <VBox spacing="10" alignment="BOTTOM_CENTER">
+               <padding>
+                  <Insets bottom="30" left="20" right="20"/>
+               </padding>
+               <children>
+                  <Button onAction="#handleLogout" maxWidth="Infinity" styleClass="danger, flat" text="Logout">
+                     <graphic>
+                        <ImageView fitHeight="16" fitWidth="16">
+                           <image>
+                              <Image url="@../../../icons/icons8-advance-50.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </left>
+   
+   <center>
+      <StackPane styleClass="center-bg">
+         <children>
+            <Pane fx:id="animatedBg" styleClass="animated-bg" />
+            <VBox spacing="20">
+               <padding>
+                  <Insets top="20" right="20" bottom="20" left="20"/>
+               </padding>
+               <children>
+                  <HBox spacing="20" alignment="CENTER_LEFT" styleClass="top-bar">
+                     <children>
+                        <Label text="Booking Management" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+                     </children>
+                  </HBox>
+
+                  <GridPane fx:id="adminForm" hgap="10" vgap="10" styleClass="card">
+                     <padding>
+                        <Insets top="15" right="15" bottom="15" left="15"/>
+                     </padding>
+                     <children>
+                        <Label text="User ID:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <TextField fx:id="userIdField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                        
+                        <Label text="Trip ID:" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                        <TextField fx:id="tripIdField" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+                        
+                        <Label text="Service ID:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <TextField fx:id="serviceIdField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        
+                        <Label text="Date:" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                        <DatePicker fx:id="bookingDatePicker" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+                        
+                        <Label text="Status:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <ComboBox fx:id="bookingStatusCombo" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                        
+                        <HBox spacing="10" GridPane.columnIndex="3" GridPane.rowIndex="2" alignment="CENTER_RIGHT">
+                           <children>
+                              <Button text="Clear" onAction="#handleClearForm" styleClass="button"/>
+                              <Button text="Add" onAction="#handleAddBooking" styleClass="button, primary-button"/>
+                              <Button text="Update Status" onAction="#handleUpdateBookingStatus" styleClass="button, secondary-button"/>
+                              <Button text="Delete" onAction="#handleDeleteBooking" styleClass="button, danger-button"/>
+                           </children>
+                        </HBox>
+                     </children>
+                  </GridPane>
+                  
+                  <TableView fx:id="bookingTable" VBox.vgrow="ALWAYS">
+                     <columns>
+                        <TableColumn fx:id="bookingIdCol" text="ID" prefWidth="50"/>
+                        <TableColumn fx:id="userIdCol" text="User" prefWidth="60"/>
+                        <TableColumn fx:id="tripIdCol" text="Trip" prefWidth="60"/>
+                        <TableColumn fx:id="serviceIdCol" text="Service" prefWidth="60"/>
+                        <TableColumn fx:id="bookingDateCol" text="Date" prefWidth="120"/>
+                        <TableColumn fx:id="durationCol" text="Duration (Days)" prefWidth="100"/>
+                        <TableColumn fx:id="totalPriceCol" text="Total Price" prefWidth="100"/>
+                        <TableColumn fx:id="bookingStatusCol" text="Status" prefWidth="100"/>
+                        <TableColumn fx:id="actionsCol" text="Actions" prefWidth="180"/>
+                     </columns>
+                  </TableView>
+               </children>
+            </VBox>
+            <Button onAction="#toggleTheme" styleClass="theme-toggle-button" StackPane.alignment="TOP_RIGHT">
+               <graphic>
+                  <Region styleClass="theme-icon" />
+               </graphic>
+               <StackPane.margin>
+                  <Insets top="20" right="20" />
+               </StackPane.margin>
+            </Button>
+         </children>
+      </StackPane>
+   </center>
+</BorderPane>
