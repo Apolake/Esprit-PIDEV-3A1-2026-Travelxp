@@ -1,5 +1,13 @@
 package com.travelxp.controllers;
 
+import java.io.IOException;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+
 import com.travelxp.Main;
 import com.travelxp.models.Gamification;
 import com.travelxp.models.User;
@@ -7,19 +15,35 @@ import com.travelxp.models.UserViewModel;
 import com.travelxp.services.GamificationService;
 import com.travelxp.services.UserService;
 import com.travelxp.utils.ThemeManager;
+
 import javafx.animation.Animation;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -29,13 +53,6 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
-
-import java.io.IOException;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
 
 public class AdminDashboardController {
 
@@ -51,10 +68,14 @@ public class AdminDashboardController {
     @FXML private TableColumn<UserViewModel, String> titleCol;
     @FXML private TableColumn<UserViewModel, Void> actionsCol;
     @FXML private Pane animatedBg;
+    @FXML private TextField searchField;
+    @FXML private ComboBox<String> roleFilterCombo;
+    @FXML private ComboBox<String> sortCombo;
 
     private final UserService userService = new UserService();
     private final GamificationService gamificationService = new GamificationService();
     private final ObservableList<UserViewModel> userData = FXCollections.observableArrayList();
+    private FilteredList<UserViewModel> filteredData;
     private final Random random = new Random();
 
     @FXML
@@ -70,6 +91,34 @@ public class AdminDashboardController {
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
 
         addActionsToTable();
+
+        // --- Search, Filter & Sort setup ---
+        filteredData = new FilteredList<>(userData, p -> true);
+
+        // Role filter combo
+        roleFilterCombo.setItems(FXCollections.observableArrayList("All Roles", "USER", "ADMIN"));
+        roleFilterCombo.setValue("All Roles");
+
+        // Sort combo
+        sortCombo.setItems(FXCollections.observableArrayList(
+                "ID (Asc)", "ID (Desc)",
+                "Username (A-Z)", "Username (Z-A)",
+                "Email (A-Z)", "Email (Z-A)",
+                "XP (High-Low)", "XP (Low-High)",
+                "Level (High-Low)", "Level (Low-High)"
+        ));
+
+        // Live search listener
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
+        roleFilterCombo.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters());
+
+        // Sort listener
+        sortCombo.valueProperty().addListener((obs, oldVal, newVal) -> applySorting());
+
+        // Wrap in SortedList and bind to table
+        SortedList<UserViewModel> sortedData = new SortedList<>(filteredData);
+        userTable.setItems(sortedData);
+
         loadUsers();
 
         Platform.runLater(this::startBackgroundAnimation);
@@ -133,10 +182,64 @@ public class AdminDashboardController {
                 Gamification g = gamificationService.getGamificationByUserId(user.getId());
                 userData.add(new UserViewModel(user, g));
             }
-            userTable.setItems(userData);
+            applyFilters();
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Error", "Load Failed", e.getMessage());
         }
+    }
+
+    private void applyFilters() {
+        String searchText = searchField.getText() == null ? "" : searchField.getText().toLowerCase().trim();
+        String roleFilter = roleFilterCombo.getValue();
+
+        filteredData.setPredicate(user -> {
+            // Role filter
+            if (roleFilter != null && !"All Roles".equals(roleFilter)) {
+                if (!roleFilter.equals(user.getRole())) return false;
+            }
+
+            // Search filter
+            if (!searchText.isEmpty()) {
+                boolean matchesUsername = user.getUsername() != null && user.getUsername().toLowerCase().contains(searchText);
+                boolean matchesEmail = user.getEmail() != null && user.getEmail().toLowerCase().contains(searchText);
+                boolean matchesBio = user.getBio() != null && user.getBio().toLowerCase().contains(searchText);
+                boolean matchesTitle = user.getTitle() != null && user.getTitle().toLowerCase().contains(searchText);
+                boolean matchesId = String.valueOf(user.getId()).contains(searchText);
+                if (!(matchesUsername || matchesEmail || matchesBio || matchesTitle || matchesId)) return false;
+            }
+
+            return true;
+        });
+    }
+
+    private void applySorting() {
+        String sortOption = sortCombo.getValue();
+        if (sortOption == null) return;
+
+        Comparator<UserViewModel> comparator = switch (sortOption) {
+            case "ID (Asc)" -> Comparator.comparingInt(UserViewModel::getId);
+            case "ID (Desc)" -> Comparator.comparingInt(UserViewModel::getId).reversed();
+            case "Username (A-Z)" -> Comparator.comparing(u -> u.getUsername() != null ? u.getUsername().toLowerCase() : "");
+            case "Username (Z-A)" -> Comparator.<UserViewModel, String>comparing(u -> u.getUsername() != null ? u.getUsername().toLowerCase() : "").reversed();
+            case "Email (A-Z)" -> Comparator.comparing(u -> u.getEmail() != null ? u.getEmail().toLowerCase() : "");
+            case "Email (Z-A)" -> Comparator.<UserViewModel, String>comparing(u -> u.getEmail() != null ? u.getEmail().toLowerCase() : "").reversed();
+            case "XP (High-Low)" -> Comparator.comparingInt(UserViewModel::getXp).reversed();
+            case "XP (Low-High)" -> Comparator.comparingInt(UserViewModel::getXp);
+            case "Level (High-Low)" -> Comparator.comparingInt(UserViewModel::getLevel).reversed();
+            case "Level (Low-High)" -> Comparator.comparingInt(UserViewModel::getLevel);
+            default -> null;
+        };
+
+        if (comparator != null) {
+            FXCollections.sort(userData, comparator);
+        }
+    }
+
+    @FXML
+    private void handleClearFilters() {
+        searchField.clear();
+        roleFilterCombo.setValue("All Roles");
+        sortCombo.setValue(null);
     }
 
     private void addActionsToTable() {

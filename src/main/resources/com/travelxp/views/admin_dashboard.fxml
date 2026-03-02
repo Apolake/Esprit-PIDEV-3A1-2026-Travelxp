@@ -155,6 +155,20 @@
                      </children>
                   </HBox>
                   
+                  <!-- Search, Filter, and Sort Bar -->
+                  <HBox spacing="15" alignment="CENTER_LEFT">
+                     <children>
+                        <TextField fx:id="searchField" promptText="Search by name, email, or bio..." prefWidth="300"
+                                   style="-fx-background-radius: 20; -fx-padding: 8 16;" />
+                        <ComboBox fx:id="roleFilterCombo" promptText="Filter by Role" prefWidth="150"
+                                  style="-fx-background-radius: 20;" />
+                        <ComboBox fx:id="sortCombo" promptText="Sort by..." prefWidth="180"
+                                  style="-fx-background-radius: 20;" />
+                        <Button onAction="#handleClearFilters" text="Clear" styleClass="flat"
+                                style="-fx-font-size: 12px;" />
+                     </children>
+                  </HBox>
+                  
                   <TableView fx:id="userTable" VBox.vgrow="ALWAYS" styleClass="striped">
                     <columns>
                       <TableColumn fx:id="idCol" prefWidth="50" text="ID" />
