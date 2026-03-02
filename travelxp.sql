@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 23, 2026 at 11:36 PM
+-- Generation Time: Mar 02, 2026 at 11:14 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -51,9 +51,10 @@ CREATE TABLE `activities` (
 --
 
 INSERT INTO `activities` (`id`, `trip_id`, `title`, `type`, `description`, `activity_date`, `start_time`, `end_time`, `location_name`, `transport_type`, `cost_amount`, `currency`, `xp_earned`, `status`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Diving Sessions', 'Diving', NULL, '2026-02-26', NULL, NULL, NULL, NULL, 200, NULL, NULL, 'PLANNED', '2026-02-23 21:39:35', '2026-02-23 21:39:35'),
-(2, 2, 'Beach Party', 'Swimming', NULL, '2026-02-28', NULL, NULL, NULL, NULL, 50, NULL, NULL, 'PLANNED', '2026-02-23 21:55:50', '2026-02-23 21:55:50'),
-(3, 3, 'Beach Party', 'Swimming', NULL, '2026-02-28', NULL, NULL, NULL, NULL, 50, NULL, NULL, 'DONE', '2026-02-23 22:20:46', '2026-02-23 22:28:48');
+(2, 2, 'Beach Party', 'Swimming', NULL, '2026-02-28', NULL, NULL, NULL, NULL, 50, NULL, NULL, 'PLANNED', '2026-02-23 21:55:50', '2026-02-24 09:15:01'),
+(6, 2, 'okd', 'jjj', NULL, '2026-02-25', NULL, NULL, NULL, NULL, 655, NULL, NULL, 'PLANNED', '2026-02-24 09:14:56', '2026-02-24 09:14:56'),
+(7, 8, 'okd', 'jjj', NULL, '2026-02-25', NULL, NULL, NULL, NULL, 655, NULL, NULL, 'DONE', '2026-02-24 09:19:56', '2026-02-24 09:19:56'),
+(8, 8, 'Beach Party', 'Swimming', NULL, '2026-02-28', NULL, NULL, NULL, NULL, 50, NULL, NULL, 'DONE', '2026-02-24 09:19:56', '2026-02-24 09:19:56');
 
 -- --------------------------------------------------------
 
@@ -84,8 +85,9 @@ INSERT INTO `booking` (`booking_id`, `user_id`, `trip_id`, `service_id`, `bookin
 (3, 4, 0, 0, '2026-02-23', 'CANCELLED', '2026-02-23 20:13:41', 1, 270.00, NULL),
 (4, 4, 0, 0, '2027-02-11', 'CANCELLED', '2026-02-23 20:14:02', 3, 405.00, NULL),
 (5, 4, 0, 0, '2026-02-23', 'CANCELLED', '2026-02-23 20:21:37', 3, 500.00, NULL),
-(6, 4, 0, 0, '2026-02-23', 'CONFIRMED', '2026-02-23 20:36:53', 2, 360.00, 4),
-(7, 4, 0, 0, '2026-02-23', 'CONFIRMED', '2026-02-23 22:06:57', 3, 966.00, 6);
+(6, 4, 0, 0, '2026-02-23', 'CANCELLED', '2026-02-23 20:36:53', 2, 360.00, 4),
+(7, 4, 0, 0, '2026-02-23', 'CANCELLED', '2026-02-23 22:06:57', 2, 644.00, 6),
+(8, 4, 0, 0, '2026-02-24', 'CONFIRMED', '2026-02-24 08:47:25', 100, 19980.00, 4);
 
 -- --------------------------------------------------------
 
@@ -105,7 +107,9 @@ CREATE TABLE `booking_services` (
 INSERT INTO `booking_services` (`booking_id`, `service_id`) VALUES
 (6, 1),
 (7, 1),
-(7, 2);
+(7, 2),
+(8, 1),
+(8, 2);
 
 -- --------------------------------------------------------
 
@@ -126,7 +130,8 @@ CREATE TABLE `comments` (
 --
 
 INSERT INTO `comments` (`id`, `feedback_id`, `user_id`, `comment_text`, `created_at`) VALUES
-(2, 2, 4, 'haha', '2026-02-23 20:05:49');
+(2, 2, 4, 'haha', '2026-02-23 20:05:49'),
+(3, 2, 4, 'commznt13454 ', '2026-02-24 07:42:36');
 
 -- --------------------------------------------------------
 
@@ -147,7 +152,8 @@ CREATE TABLE `feedback` (
 
 INSERT INTO `feedback` (`id`, `fcontent`, `user_id`, `created_at`) VALUES
 (2, 'test', 3, '2026-02-23 18:41:25'),
-(3, 'teasst', 4, '2026-02-23 20:05:37');
+(3, 'teasst', 4, '2026-02-23 20:05:37'),
+(4, 'test 123455', 4, '2026-02-24 07:40:23');
 
 -- --------------------------------------------------------
 
@@ -167,10 +173,12 @@ CREATE TABLE `gamification` (
 --
 
 INSERT INTO `gamification` (`user_id`, `xp`, `level`, `title`) VALUES
-(2, 145, 3, 'Explorer'),
+(2, 155, 3, 'Explorer'),
 (3, 730, 9, 'Adventurer'),
-(4, 7400, 76, 'Beyond Limits'),
-(5, 100, 5, 'Traveler');
+(4, 7490, 76, 'Beyond Limits'),
+(5, 100, 5, 'Traveler'),
+(6, 90, 2, 'Novice'),
+(7, 0, 1, 'Novice');
 
 -- --------------------------------------------------------
 
@@ -288,7 +296,9 @@ CREATE TABLE `trips` (
 INSERT INTO `trips` (`id`, `user_id`, `trip_name`, `origin`, `destination`, `description`, `start_date`, `end_date`, `status`, `budget_amount`, `currency`, `total_expenses`, `total_xp_earned`, `notes`, `cover_image_url`, `created_at`, `updated_at`, `parent_id`) VALUES
 (1, 3, 'new trip', 'Paris', 'Tunis', NULL, '2026-02-24', '2026-02-27', 'PLANNED', 500, NULL, 0, 0, NULL, NULL, '2026-02-23 21:39:11', '2026-02-23 21:39:11', NULL),
 (2, NULL, 'new trip2', 'Germany', 'Tunis', NULL, '2026-02-24', '2026-02-27', 'PLANNED', 500, NULL, 0, 0, NULL, NULL, '2026-02-23 21:51:41', '2026-02-23 21:51:41', NULL),
-(3, 4, 'new trip2', 'Germany', 'Tunis', NULL, '2026-02-24', '2026-02-27', 'PLANNED', 500, NULL, 550, 0, NULL, NULL, '2026-02-23 22:20:46', '2026-02-23 22:28:48', 2);
+(6, NULL, 'hhhhhhhh', 'libya', 'tunisia', NULL, '2026-02-25', '2026-02-26', 'PLANNED', 2, NULL, 0, 0, NULL, NULL, '2026-02-24 09:12:43', '2026-02-24 09:13:31', NULL),
+(7, NULL, 'kkkkkkkkk', 'libya', 'tunisia', NULL, '2026-02-25', '2026-02-26', 'PLANNED', 2, NULL, 0, 0, NULL, NULL, '2026-02-24 09:13:15', '2026-02-24 09:13:15', NULL),
+(8, 4, 'new trip2', 'Germany', 'Tunis', NULL, '2026-02-24', '2026-02-27', 'PLANNED', 500, NULL, 1205, 0, NULL, NULL, '2026-02-24 09:19:56', '2026-02-24 09:19:56', 2);
 
 -- --------------------------------------------------------
 
@@ -307,7 +317,8 @@ CREATE TABLE `trip_activity_participants` (
 --
 
 INSERT INTO `trip_activity_participants` (`activity_id`, `user_id`, `joined_at`) VALUES
-(2, 4, '2026-02-23 22:28:48');
+(2, 4, '2026-02-24 09:09:26'),
+(6, 4, '2026-02-24 09:19:56');
 
 -- --------------------------------------------------------
 
@@ -344,7 +355,7 @@ CREATE TABLE `trip_participants` (
 --
 
 INSERT INTO `trip_participants` (`trip_id`, `user_id`, `joined_at`) VALUES
-(2, 4, '2026-02-23 22:17:19');
+(2, 4, '2026-02-24 09:09:26');
 
 -- --------------------------------------------------------
 
@@ -363,18 +374,23 @@ CREATE TABLE `users` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `role` enum('USER','ADMIN') DEFAULT 'USER',
-  `balance` decimal(10,2) DEFAULT 0.00
+  `balance` decimal(10,2) DEFAULT 0.00,
+  `face_registered` tinyint(1) NOT NULL DEFAULT 0,
+  `totp_enabled` tinyint(1) NOT NULL DEFAULT 0,
+  `totp_secret` varchar(64) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `birthday`, `bio`, `profile_image`, `created_at`, `updated_at`, `role`, `balance`) VALUES
-(2, 'reaperxd', 'reaper@gmail.com', '$2a$12$4LzY0oIu9sX.CPr4Wmz/R.lE4dHA/ovilj0pxGrFhLgvatq/N12hW', '2008-02-18', 'OMG', 'uploads\\image_7.png', '2026-02-18 22:01:10', '2026-02-23 22:20:23', 'USER', 0.00),
-(3, 'admin', 'admin@gmail.com', '$2a$12$Bbbzf9nb7b8XHsLjXEZ9euK2YSLohLrAYOdY8A885evHAaviycasS', '2003-05-18', 'its me', 'uploads\\image_5.png', '2026-02-20 19:30:28', '2026-02-23 22:20:00', 'ADMIN', 0.00),
-(4, 'yassine', 'yassine@gmail.com', '$2a$12$zMirywH8ldorzziMbTSM3OmRDn.dXvM48hLArovCqJyo/D03ZEpHy', '2003-05-18', 'real', 'uploads\\image_6.png', '2026-02-20 19:31:38', '2026-02-23 22:28:48', 'USER', 1004.00),
-(5, 'test', 'test@gmail.com', '$2a$12$mtPVwj2Cr9bzW0NHNrFHB.wWqeSKpCmIQSV3fZP47vkf5igezwI6i', '2004-02-24', 'test', 'uploads\\image_3.png', '2026-02-23 22:04:24', '2026-02-23 22:04:24', 'USER', 0.00);
+INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `birthday`, `bio`, `profile_image`, `created_at`, `updated_at`, `role`, `balance`, `face_registered`, `totp_enabled`, `totp_secret`) VALUES
+(2, 'reaperxd', 'reaper@gmail.com', '$2a$12$Mrhuj2urJxJ2B4xSDjn51OUdw3vewlAyc41xKAWaBeFpgjXlbGnQe', '2008-02-18', 'OMG', 'uploads\\image_7.png', '2026-02-18 22:01:10', '2026-03-02 09:12:34', 'USER', 0.00, 1, 0, NULL),
+(3, 'admin', 'admin@gmail.com', '$2a$12$Bbbzf9nb7b8XHsLjXEZ9euK2YSLohLrAYOdY8A885evHAaviycasS', '2003-05-18', 'its me', 'uploads\\image_5.png', '2026-02-20 19:30:28', '2026-02-23 22:20:00', 'ADMIN', 0.00, 0, 0, NULL),
+(4, 'yassine', 'yassine@gmail.com', '$2a$12$lsCe772z4trtu3VFqRdFROXh4S08mYJOCW5.OOjmNfAqeO9uCYn8C', '2003-05-18', 'real', 'uploads\\image_6.png', '2026-02-20 19:31:38', '2026-03-02 09:36:15', 'USER', 5745.00, 1, 1, 'E3JNLSUKQLH6AKGVT4QNMASJJRISHSUG'),
+(5, 'test', 'test@gmail.com', '$2a$12$mtPVwj2Cr9bzW0NHNrFHB.wWqeSKpCmIQSV3fZP47vkf5igezwI6i', '2004-02-24', 'test', 'uploads\\image_3.png', '2026-02-23 22:04:24', '2026-02-23 22:04:24', 'USER', 0.00, 0, 0, NULL),
+(6, 'dhiaadmin', 'raddaouidhia135@gmail.com', '$2a$12$0P6k4lpDgOqJdemIL5j1peD8MkwsqzFVQ4mEu73T5hkIeakdRoKIe', '2004-11-12', '', 'uploads\\image_8.jpg', '2026-02-24 08:13:51', '2026-02-24 08:15:40', 'ADMIN', 0.00, 0, 0, NULL),
+(7, 'yassineraddadi', 'yassine.raddad.1@gmail.com', '$2a$12$uXexhVql0F8wq2R8SaViz.cvJFEviGEWLzV1hjWZG33CC/Ro7KRZ.', '2006-02-15', '', 'uploads\\image_9.jpg', '2026-02-24 08:17:25', '2026-02-24 08:17:25', 'USER', 0.00, 0, 0, NULL);
 
 --
 -- Indexes for dumped tables
@@ -488,25 +504,25 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `activities`
 --
 ALTER TABLE `activities`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `booking`
 --
 ALTER TABLE `booking`
-  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `feedback`
 --
 ALTER TABLE `feedback`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `offer`
@@ -530,7 +546,7 @@ ALTER TABLE `service`
 -- AUTO_INCREMENT for table `trips`
 --
 ALTER TABLE `trips`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `trip_milestones`
@@ -542,7 +558,7 @@ ALTER TABLE `trip_milestones`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
