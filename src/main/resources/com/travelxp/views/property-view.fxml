@@ -214,6 +214,39 @@
                      </columns>
                   </TableView>
 
+                  <!-- Search / Filter / Sort Bar (User View) -->
+                  <HBox fx:id="searchFilterBar" spacing="10" alignment="CENTER_LEFT" styleClass="card">
+                     <padding>
+                        <Insets top="10" right="15" bottom="10" left="15"/>
+                     </padding>
+                     <children>
+                        <TextField fx:id="searchField" promptText="Search by name..." prefWidth="200" />
+                        <ComboBox fx:id="cityFilterCombo" promptText="City" prefWidth="140" />
+                        <ComboBox fx:id="countryFilterCombo" promptText="Country" prefWidth="140" />
+                        <ComboBox fx:id="sortPriceCombo" promptText="Sort by Price" prefWidth="140" />
+                        <Button text="Search" onAction="#handleSearchProperties" styleClass="button, primary-button" />
+                        <Button text="Clear" onAction="#handleClearSearch" styleClass="button" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button text="Get Directions" onAction="#handleGetDirections" styleClass="button, accent" />
+                     </children>
+                  </HBox>
+
+                  <!-- Recommended Deals Section (User View) -->
+                  <VBox fx:id="recommendationsSection" spacing="10">
+                     <children>
+                        <Label text="Recommended Deals (30%+ Off)" styleClass="title-4" style="-fx-font-size: 18px;" />
+                        <ScrollPane fitToHeight="true" hbarPolicy="AS_NEEDED" vbarPolicy="NEVER" styleClass="edge-to-edge" prefHeight="280">
+                           <content>
+                              <HBox fx:id="recommendationsContainer" spacing="20">
+                                 <padding>
+                                    <Insets top="5" right="5" bottom="5" left="5" />
+                                 </padding>
+                              </HBox>
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </VBox>
+
                   <ScrollPane fx:id="userScrollPane" fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="edge-to-edge">
                      <content>
                         <FlowPane fx:id="userCardsContainer" hgap="25" vgap="25" prefWrapLength="1200">

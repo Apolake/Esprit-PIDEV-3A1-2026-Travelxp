@@ -274,7 +274,9 @@ public class GeminiService {
         }
 
         // All models/retries failed
-        conversationHistory.removeLast();
+        if (conversationHistory.size() > 0) {
+            conversationHistory.remove(conversationHistory.size() - 1);
+        }
         throw lastError != null ? lastError : new IOException("All Gemini models are unavailable.");
     }
 

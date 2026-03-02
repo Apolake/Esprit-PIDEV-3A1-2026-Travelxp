@@ -20,7 +20,7 @@ public class BookingService {
 
     // CREATE
     public void addBooking(Booking booking) throws SQLException {
-        String sql = "INSERT INTO booking (user_id, property_id, trip_id, service_id, booking_date, booking_status, duration, total_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO booking (user_id, property_id, trip_id, service_id, booking_date, booking_status, duration, total_price, num_guests) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, booking.getUserId());
             if (booking.getPropertyId() != null) ps.setLong(2, booking.getPropertyId()); else ps.setNull(2, java.sql.Types.BIGINT);
@@ -30,6 +30,7 @@ public class BookingService {
             ps.setString(6, booking.getBookingStatus());
             ps.setInt(7, booking.getDuration());
             ps.setDouble(8, booking.getTotalPrice());
+            ps.setInt(9, booking.getNumGuests());
             ps.executeUpdate();
 
             try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -121,7 +122,23 @@ public class BookingService {
             rs.getDouble("total_price")
         );
         b.setBookingId(rs.getInt("booking_id"));
+        try { b.setNumGuests(rs.getInt("num_guests")); } catch (SQLException ignored) {}
+        try { b.setCreatedAt(rs.getTimestamp("created_at")); } catch (SQLException ignored) {}
         return b;
+    }
+
+    /**
+     * Get the created_at timestamp for a booking (used by CancellationPolicyEngine).
+     */
+    public java.sql.Timestamp getBookingCreatedAt(int bookingId) throws SQLException {
+        String sql = "SELECT created_at FROM booking WHERE booking_id = ?";
+        try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
+            ps.setInt(1, bookingId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getTimestamp("created_at");
+            }
+        }
+        return null;
     }
 
     // UPDATE DURATION

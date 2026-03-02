@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" 
+            xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.travelxp.controllers.MessengerController" 
+            prefWidth="800" 
+            prefHeight="600">
+
+    <!-- Header -->
+    <VBox style="-fx-background-color: #007bff;">
+        <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 15;">
+            <Label fx:id="conversationTitle" 
+                   text="Chat" 
+                   style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;"/>
+            <Label fx:id="onlineStatus" 
+                   text="Online" 
+                   style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 12;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="closeButton" 
+                    text="Close" 
+                    style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white;"/>
+        </HBox>
+    </VBox>
+
+    <!-- Messages Area -->
+    <ScrollPane fx:id="messagesScrollPane" 
+                fitToWidth="true" 
+                style="-fx-background: white;">
+        <VBox fx:id="messagesContainer" 
+              spacing="10" 
+              style="-fx-padding: 20; -fx-background-color: white;">
+            <!-- Messages will be added here dynamically -->
+        </VBox>
+    </ScrollPane>
+
+    <!-- Input Area -->
+    <VBox spacing="10" 
+          style="-fx-padding: 15; -fx-background-color: #f8f9fa;">
+        <TextArea fx:id="messageInput" 
+                  wrapText="true" 
+                  prefRowCount="3" 
+                  promptText="Type your message..." 
+                  style="-fx-font-size: 14;"/>
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button fx:id="sendButton" 
+                    text="Send" 
+                    style="-fx-background-color: #28a745; -fx-text-fill: white;"/>
+        </HBox>
+    </VBox>
+
+</BorderPane>

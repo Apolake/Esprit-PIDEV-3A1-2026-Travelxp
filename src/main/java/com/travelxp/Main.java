@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 
 import javafx.stage.Screen;
 import javafx.geometry.Rectangle2D;
+import com.travelxp.utils.DatabaseInitializer;
 
 public class Main extends Application {
 
@@ -15,6 +16,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        // Initialize database schema for feedback/comments features
+        DatabaseInitializer.initialize();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/travelxp/views/login.fxml"));
         Parent root = loader.load();
         

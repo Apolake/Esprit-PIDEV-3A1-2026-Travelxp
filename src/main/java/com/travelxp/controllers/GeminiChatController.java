@@ -93,7 +93,7 @@ public class GeminiChatController {
         chatContainer.getChildren().add(typingIndicator);
 
         // Send to Gemini on background thread
-        Thread.ofVirtual().start(() -> {
+        new Thread(() -> {
             try {
                 String response = geminiService.chat(message);
                 Platform.runLater(() -> {
@@ -112,7 +112,7 @@ public class GeminiChatController {
                     messageField.requestFocus();
                 });
             }
-        });
+        }).start();
     }
 
     @FXML

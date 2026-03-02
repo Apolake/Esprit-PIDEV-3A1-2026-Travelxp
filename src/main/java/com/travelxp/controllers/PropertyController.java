@@ -1,18 +1,32 @@
 package com.travelxp.controllers;
 
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+
 import com.travelxp.Main;
 import com.travelxp.models.Booking;
 import com.travelxp.models.Offer;
 import com.travelxp.models.Property;
 import com.travelxp.models.Service;
 import com.travelxp.services.BookingService;
+import com.travelxp.services.NominatimGeocodingService;
+import com.travelxp.services.OSRMRoutingService;
 import com.travelxp.services.OfferService;
+import com.travelxp.services.PropertyRecommendationService;
 import com.travelxp.services.PropertyService;
 import com.travelxp.services.ServiceService;
 import com.travelxp.services.TripService;
+import com.travelxp.services.UserService;
 import com.travelxp.utils.ImageUtil;
 import com.travelxp.utils.ThemeManager;
-import com.travelxp.services.UserService;
 
 import javafx.animation.Animation;
 import javafx.animation.TranslateTransition;
@@ -25,28 +39,37 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
-
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
 
 public class PropertyController {
 
@@ -86,12 +109,24 @@ public class PropertyController {
     @FXML private FlowPane userCardsContainer;
     @FXML private Pane animatedBg;
 
+    // ── New FXML fields for search/filter/sort & recommendations ──
+    @FXML private HBox searchFilterBar;
+    @FXML private TextField searchField;
+    @FXML private ComboBox<String> cityFilterCombo;
+    @FXML private ComboBox<String> countryFilterCombo;
+    @FXML private ComboBox<String> sortPriceCombo;
+    @FXML private VBox recommendationsSection;
+    @FXML private HBox recommendationsContainer;
+
 	private final PropertyService propertyService = new PropertyService();
 	private final BookingService bookingService = new BookingService();
 	private final OfferService offerService = new OfferService();
 	private final ServiceService serviceService = new ServiceService();
 	private final UserService userService = new UserService();
     private final TripService tripService = new TripService();
+    private final PropertyRecommendationService recommendationService = new PropertyRecommendationService();
+    private final NominatimGeocodingService geocodingService = new NominatimGeocodingService();
+    private final OSRMRoutingService routingService = new OSRMRoutingService();
 	private final ObservableList<Property> propertyData = FXCollections.observableArrayList();
     private final Random random = new Random();
 
@@ -131,6 +166,21 @@ public class PropertyController {
             userScrollPane.setVisible(!isAdmin);
             userScrollPane.setManaged(!isAdmin);
         }
+        // Hide search/filter/sort bar and recommendations for admin
+        if (searchFilterBar != null) {
+            searchFilterBar.setVisible(!isAdmin);
+            searchFilterBar.setManaged(!isAdmin);
+        }
+        if (recommendationsSection != null) {
+            recommendationsSection.setVisible(!isAdmin);
+            recommendationsSection.setManaged(!isAdmin);
+        }
+
+        // Populate filter ComboBoxes
+        if (!isAdmin) {
+            setupSearchFilterControls();
+            loadRecommendations();
+        }
 		
 		addActionsToTable();
 		loadProperties();
@@ -143,6 +193,298 @@ public class PropertyController {
             Circle circle = createCircle();
             animatedBg.getChildren().add(circle);
             animateCircle(circle);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // ADVANCED FEATURE #1 – Search, Filter & Sort
+    // ═══════════════════════════════════════════════════════
+
+    private void setupSearchFilterControls() {
+        if (sortPriceCombo != null) {
+            sortPriceCombo.setItems(FXCollections.observableArrayList("None", "Price: Low → High", "Price: High → Low"));
+            sortPriceCombo.setValue("None");
+        }
+        try {
+            if (cityFilterCombo != null) {
+                List<String> cities = propertyService.getAllCities();
+                cities.add(0, "All Cities");
+                cityFilterCombo.setItems(FXCollections.observableArrayList(cities));
+                cityFilterCombo.setValue("All Cities");
+            }
+            if (countryFilterCombo != null) {
+                List<String> countries = propertyService.getAllCountries();
+                countries.add(0, "All Countries");
+                countryFilterCombo.setItems(FXCollections.observableArrayList(countries));
+                countryFilterCombo.setValue("All Countries");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleSearchProperties() {
+        try {
+            String nameQuery = (searchField != null) ? searchField.getText() : null;
+            String city = (cityFilterCombo != null && cityFilterCombo.getValue() != null
+                    && !"All Cities".equals(cityFilterCombo.getValue()))
+                    ? cityFilterCombo.getValue() : null;
+            String country = (countryFilterCombo != null && countryFilterCombo.getValue() != null
+                    && !"All Countries".equals(countryFilterCombo.getValue()))
+                    ? countryFilterCombo.getValue() : null;
+
+            String sortByPrice = null;
+            if (sortPriceCombo != null && sortPriceCombo.getValue() != null) {
+                if (sortPriceCombo.getValue().contains("Low")) sortByPrice = "ASC";
+                else if (sortPriceCombo.getValue().contains("High")) sortByPrice = "DESC";
+            }
+
+            List<Property> results = propertyService.searchProperties(nameQuery, city, country, sortByPrice);
+            propertyData.setAll(results);
+            propertyTable.setItems(propertyData);
+
+            if (userCardsContainer != null) {
+                userCardsContainer.getChildren().clear();
+                for (Property p : results) {
+                    userCardsContainer.getChildren().add(createUserPropertyCard(p));
+                }
+            }
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Search Error", "Search Failed", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleClearSearch() {
+        if (searchField != null) searchField.clear();
+        if (cityFilterCombo != null) cityFilterCombo.setValue("All Cities");
+        if (countryFilterCombo != null) countryFilterCombo.setValue("All Countries");
+        if (sortPriceCombo != null) sortPriceCombo.setValue("None");
+        loadProperties();
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // ADVANCED FEATURE #2 – Property Recommendations
+    // ═══════════════════════════════════════════════════════
+
+    private void loadRecommendations() {
+        if (recommendationsContainer == null) return;
+        recommendationsContainer.getChildren().clear();
+        try {
+            java.util.Map<Property, Offer> recommendations = recommendationService.getRecommendationsWithOffers();
+            if (recommendations.isEmpty()) {
+                recommendationsSection.setVisible(false);
+                recommendationsSection.setManaged(false);
+                return;
+            }
+            recommendationsSection.setVisible(true);
+            recommendationsSection.setManaged(true);
+            for (java.util.Map.Entry<Property, Offer> entry : recommendations.entrySet()) {
+                recommendationsContainer.getChildren().add(
+                    createRecommendationCard(entry.getKey(), entry.getValue())
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            recommendationsSection.setVisible(false);
+            recommendationsSection.setManaged(false);
+        }
+    }
+
+    private VBox createRecommendationCard(Property p, Offer offer) {
+        VBox card = new VBox(10);
+        card.getStyleClass().add("card");
+        card.setPrefWidth(280);
+        card.setMinWidth(280);
+        card.setPadding(new Insets(12));
+        card.setAlignment(javafx.geometry.Pos.TOP_CENTER);
+        card.setStyle("-fx-border-color: #D4AF37; -fx-border-width: 2; -fx-border-radius: 8;");
+
+        // Deal badge
+        Label badge = new Label(offer.getDiscountPercentage().intValue() + "% OFF");
+        badge.setStyle("-fx-background-color: #D4AF37; -fx-text-fill: white; -fx-padding: 4 12; "
+                + "-fx-font-weight: bold; -fx-background-radius: 12;");
+
+        // Image
+        StackPane imageContainer = new StackPane();
+        imageContainer.setPrefHeight(140);
+        imageContainer.getStyleClass().add("showcase-image-container");
+        ImageView iv = new ImageView();
+        iv.setFitHeight(140);
+        iv.setFitWidth(250);
+        iv.setPreserveRatio(true);
+        javafx.scene.shape.Rectangle clip = new javafx.scene.shape.Rectangle(250, 140);
+        clip.setArcWidth(20);
+        clip.setArcHeight(20);
+        imageContainer.setClip(clip);
+        if (p.getImages() != null && !p.getImages().isEmpty()) {
+            File imgFile = new File(p.getImages());
+            if (imgFile.exists()) {
+                iv.setImage(new Image(imgFile.toURI().toString(), true));
+            }
+        }
+        imageContainer.getChildren().add(iv);
+
+        Label title = new Label(p.getTitle());
+        title.getStyleClass().add("title-4");
+        title.setStyle("-fx-font-size: 15px;");
+
+        Label loc = new Label(p.getCity() + ", " + p.getCountry());
+        loc.getStyleClass().add("text-muted");
+
+        Label price = new Label("$" + p.getPricePerNight() + " / night");
+        price.setStyle("-fx-font-weight: bold;");
+
+        Label offerTitle = new Label(offer.getTitle());
+        offerTitle.setStyle("-fx-text-fill: #D4AF37; -fx-font-style: italic;");
+
+        Button bookBtn = new Button("Book Deal");
+        bookBtn.getStyleClass().add("accent");
+        bookBtn.setMaxWidth(Double.MAX_VALUE);
+        bookBtn.setOnAction(e -> handleBook(p));
+
+        card.getChildren().addAll(badge, imageContainer, title, loc, price, offerTitle, bookBtn);
+        return card;
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // API #1 – OSRM Routing / Distance  +  API #2 – Nominatim Geocoding
+    // ═══════════════════════════════════════════════════════
+
+    @FXML
+    private void handleGetDirections() {
+        // Ask user for their location (address string) and a property to navigate to
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Get Directions to a Property");
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CLOSE);
+
+        VBox content = new VBox(12);
+        content.setPadding(new Insets(20));
+        content.setPrefWidth(500);
+
+        TextField fromField = new TextField();
+        fromField.setPromptText("Enter your address or city, e.g. 'Tunis, Tunisia'");
+
+        ComboBox<Property> propertyCombo = new ComboBox<>();
+        propertyCombo.setItems(propertyData);
+        propertyCombo.setPromptText("Select destination property");
+        propertyCombo.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(Property item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.getTitle() + " – " + item.getCity() + ", " + item.getCountry());
+            }
+        });
+        propertyCombo.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(Property item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.getTitle() + " – " + item.getCity());
+            }
+        });
+
+        Label resultLabel = new Label();
+        resultLabel.setWrapText(true);
+        resultLabel.setStyle("-fx-font-size: 13px;");
+
+        ListView<String> stepsList = new ListView<>();
+        stepsList.setPrefHeight(200);
+        stepsList.setVisible(false);
+        stepsList.setManaged(false);
+
+        Button calcButton = new Button("Calculate Route");
+        calcButton.getStyleClass().addAll("button", "primary-button");
+        calcButton.setOnAction(e -> {
+            String fromAddress = fromField.getText();
+            Property dest = propertyCombo.getValue();
+            if (fromAddress == null || fromAddress.isBlank()) {
+                resultLabel.setText("Please enter your address.");
+                return;
+            }
+            if (dest == null) {
+                resultLabel.setText("Please select a destination property.");
+                return;
+            }
+
+            resultLabel.setText("Calculating route...");
+            stepsList.getItems().clear();
+
+            // Run in background so UI doesn't freeze
+            new Thread(() -> {
+                // Geocode the origin address
+                NominatimGeocodingService.GeocodingResult origin = geocodingService.geocode(fromAddress);
+                if (origin == null) {
+                    Platform.runLater(() -> resultLabel.setText("Could not geocode your address. Try a more specific location."));
+                    return;
+                }
+
+                // Determine destination coordinates
+                double destLat, destLng;
+                if (dest.getLatitude() != null && dest.getLongitude() != null) {
+                    destLat = dest.getLatitude();
+                    destLng = dest.getLongitude();
+                } else {
+                    // Geocode destination too
+                    String destAddr = dest.getAddress() + ", " + dest.getCity() + ", " + dest.getCountry();
+                    NominatimGeocodingService.GeocodingResult destGeo = geocodingService.geocode(destAddr);
+                    if (destGeo == null) {
+                        Platform.runLater(() -> resultLabel.setText("Could not locate the property address."));
+                        return;
+                    }
+                    destLat = destGeo.getLatitude();
+                    destLng = destGeo.getLongitude();
+                }
+
+                // Get route from OSRM
+                OSRMRoutingService.RouteResult route = routingService.getRoute(
+                        origin.getLatitude(), origin.getLongitude(), destLat, destLng
+                );
+
+                Platform.runLater(() -> {
+                    if (route == null) {
+                        resultLabel.setText("Route calculation failed. The locations may not be routable by road.");
+                        return;
+                    }
+                    resultLabel.setText("Route: " + route.getFormattedDistance()
+                            + "  |  Estimated driving time: " + route.getFormattedDuration()
+                            + "\nFrom: " + origin.getDisplayName()
+                            + "\nTo:   " + dest.getTitle() + " – " + dest.getCity() + ", " + dest.getCountry());
+
+                    // Show step-by-step directions
+                    List<OSRMRoutingService.RouteStep> steps = route.getSteps();
+                    if (!steps.isEmpty()) {
+                        stepsList.setVisible(true);
+                        stepsList.setManaged(true);
+                        for (int i = 0; i < steps.size(); i++) {
+                            stepsList.getItems().add((i + 1) + ". " + steps.get(i).toString());
+                        }
+                    }
+                });
+            }).start();
+        });
+
+        content.getChildren().addAll(
+                new Label("Your Location:"), fromField,
+                new Label("Destination Property:"), propertyCombo,
+                calcButton, resultLabel,
+                new Label("Step-by-step Directions:"), stepsList
+        );
+        dialog.getDialogPane().setContent(content);
+        dialog.showAndWait();
+    }
+
+    /**
+     * Called when admin adds/updates a property – auto-geocode the address to populate lat/lng.
+     */
+    private void geocodePropertyAddress(Property property) {
+        if (property.getAddress() != null && property.getCity() != null) {
+            String fullAddress = property.getAddress() + ", " + property.getCity() + ", " + property.getCountry();
+            NominatimGeocodingService.GeocodingResult result = geocodingService.geocode(fullAddress);
+            if (result != null) {
+                property.setLatitude(result.getLatitude());
+                property.setLongitude(result.getLongitude());
+            }
         }
     }
 
@@ -399,12 +741,23 @@ public class PropertyController {
         price.getStyleClass().add("accent");
         price.setStyle("-fx-font-weight: bold;");
 
+        // Show coordinates if available
+        Label coordLabel = new Label();
+        if (p.getLatitude() != null && p.getLongitude() != null) {
+            coordLabel.setText(String.format("GPS: %.4f, %.4f", p.getLatitude(), p.getLongitude()));
+            coordLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #888;");
+        }
+
         Button bookBtn = new Button("Book Now");
         bookBtn.getStyleClass().add("accent");
         bookBtn.setMaxWidth(Double.MAX_VALUE);
         bookBtn.setOnAction(e -> handleBook(p));
 
-        info.getChildren().addAll(title, loc, price, bookBtn);
+        info.getChildren().addAll(title, loc, price);
+        if (p.getLatitude() != null && p.getLongitude() != null) {
+            info.getChildren().add(coordLabel);
+        }
+        info.getChildren().add(bookBtn);
         card.getChildren().addAll(imageContainer, info);
         return card;
     }
@@ -584,6 +937,8 @@ public class PropertyController {
 			String images = imagesField.getText();
 			Boolean isActive = isActiveCheck.isSelected();
 			Property property = new Property((long)ownerId, title, description, propertyType, address, city, country, bedrooms, bathrooms, maxGuests, price, images, isActive);
+			// Auto-geocode address to populate latitude/longitude
+			geocodePropertyAddress(property);
 			propertyService.addProperty(property);
 			loadProperties();
 			clearForm();
@@ -620,6 +975,8 @@ public class PropertyController {
 			String images = imagesField.getText();
 			Boolean isActive = isActiveCheck.isSelected();
 			Property updated = new Property(selected.getId(), (long)ownerId, title, description, propertyType, address, city, country, bedrooms, bathrooms, maxGuests, price, images, isActive);
+			// Auto-geocode address to populate latitude/longitude
+			geocodePropertyAddress(updated);
 			propertyService.updateProperty(updated);
 			loadProperties();
 			showAlert(Alert.AlertType.INFORMATION, "Success", "Property Updated", "Property updated successfully.");

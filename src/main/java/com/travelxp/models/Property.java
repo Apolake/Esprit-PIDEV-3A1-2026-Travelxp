@@ -17,6 +17,8 @@ public class Property {
 	private BigDecimal pricePerNight;
 	private String images;
 	private Boolean isActive;
+	private Double latitude;
+	private Double longitude;
 
 	public Property() {}
 
@@ -95,6 +97,12 @@ public class Property {
 	public Boolean getIsActive() { return isActive; }
 	public void setIsActive(Boolean isActive) { this.isActive = isActive; }
 
+	public Double getLatitude() { return latitude; }
+	public void setLatitude(Double latitude) { this.latitude = latitude; }
+
+	public Double getLongitude() { return longitude; }
+	public void setLongitude(Double longitude) { this.longitude = longitude; }
+
 	@Override
 	public String toString() {
 		return "Property{" +
@@ -112,6 +120,8 @@ public class Property {
 				", pricePerNight=" + pricePerNight +
 				", images='" + images + '\'' +
 				", isActive=" + isActive +
+				", latitude=" + latitude +
+				", longitude=" + longitude +
 				'}';
 	}
 }

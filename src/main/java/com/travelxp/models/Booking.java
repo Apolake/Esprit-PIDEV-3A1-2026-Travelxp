@@ -1,6 +1,7 @@
 package com.travelxp.models;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public class Booking {
 
@@ -13,6 +14,8 @@ public class Booking {
     private String bookingStatus;
     private int duration; // In days
     private double totalPrice;
+    private int numGuests;
+    private Timestamp createdAt;
     private java.util.List<Service> extraServices = new java.util.ArrayList<>();
 
     public Booking() {}
@@ -54,6 +57,12 @@ public class Booking {
 
     public double getTotalPrice() { return totalPrice; }
     public void setTotalPrice(double totalPrice) { this.totalPrice = totalPrice; }
+
+    public int getNumGuests() { return numGuests; }
+    public void setNumGuests(int numGuests) { this.numGuests = numGuests; }
+
+    public Timestamp getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
 
     public java.util.List<Service> getExtraServices() { return extraServices; }
     public void setExtraServices(java.util.List<Service> extraServices) { this.extraServices = extraServices; }

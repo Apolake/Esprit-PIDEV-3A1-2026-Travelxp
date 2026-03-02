@@ -23,6 +23,11 @@
                         onAction="#handleAddComment"
                         styleClass="button, primary-button"/>
             </HBox>
+            <HBox spacing="6" style="-fx-alignment: center-left;">
+                <Label text="Sort by:" />
+                <ComboBox fx:id="commentSortCombo" prefWidth="120" />
+                <Button text="Reset" onAction="#handleCommentReset" />
+            </HBox>
         </VBox>
     </top>
 

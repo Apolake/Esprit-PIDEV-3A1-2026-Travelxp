@@ -1,10 +1,24 @@
 package com.travelxp.controllers;
 
+import java.io.IOException;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
 import com.travelxp.Main;
 import com.travelxp.models.Booking;
 import com.travelxp.models.Property;
 import com.travelxp.models.Service;
 import com.travelxp.services.BookingService;
+import com.travelxp.services.CancellationPolicyEngine;
+import com.travelxp.services.CurrencyExchangeService;
+import com.travelxp.services.DynamicPricingEngine;
+import com.travelxp.services.EmailService;
 import com.travelxp.services.PropertyService;
 import com.travelxp.services.UserService;
 import com.travelxp.utils.ThemeManager;
@@ -20,7 +34,18 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -31,14 +56,6 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
-
-import java.io.IOException;
-import java.sql.Date;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.Optional;
-import java.util.Random;
-import java.util.stream.Collectors;
 
 public class BookingController {
 
@@ -62,12 +79,19 @@ public class BookingController {
     @FXML private ScrollPane userScrollPane;
     @FXML private VBox userBookingsContainer;
     @FXML private Pane animatedBg;
+    @FXML private ComboBox<String> currencyCombo;
+    @FXML private Label convertedPriceLabel;
 
 	private final BookingService bookingService = new BookingService();
     private final PropertyService propertyService = new PropertyService();
     private final UserService userService = new UserService();
+    private final CancellationPolicyEngine cancellationEngine = new CancellationPolicyEngine();
+    private final DynamicPricingEngine pricingEngine = new DynamicPricingEngine();
+    private final EmailService emailService = new EmailService();
+    private final CurrencyExchangeService currencyService = new CurrencyExchangeService();
 	private final ObservableList<Booking> bookingData = FXCollections.observableArrayList();
     private final Random random = new Random();
+    private String selectedCurrency = "USD";
 
 	@FXML
 	public void initialize() {
@@ -104,6 +128,18 @@ public class BookingController {
 		
 		addActionsToTable();
 		loadBookings();
+        
+        // Initialize currency selector
+        if (currencyCombo != null) {
+            Set<String> currencies = new TreeSet<>(currencyService.getSupportedCurrencies());
+            currencyCombo.setItems(FXCollections.observableArrayList(new ArrayList<>(currencies)));
+            currencyCombo.setValue("USD");
+            currencyCombo.setOnAction(e -> {
+                selectedCurrency = currencyCombo.getValue();
+                loadBookings(); // refresh cards with new currency
+            });
+        }
+        
         Platform.runLater(this::startBackgroundAnimation);
 	}
 
@@ -302,17 +338,44 @@ public class BookingController {
 	}
 
 	private void handleCancelBooking(Booking booking) {
+        // Calculate refund using cancellation policy engine
+        java.sql.Timestamp createdAt = booking.getCreatedAt();
+        if (createdAt == null) {
+            try { createdAt = bookingService.getBookingCreatedAt(booking.getBookingId()); } catch (SQLException ignored) {}
+        }
+        CancellationPolicyEngine.CancellationResult result = cancellationEngine.calculateRefund(booking, createdAt);
+
 		Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
 		confirm.setTitle("Cancel Booking");
-		confirm.setHeaderText("Are you sure you want to cancel this booking?");
-        confirm.setContentText("You will be refunded: $" + String.format("%.2f", booking.getTotalPrice()));
+		confirm.setHeaderText("Cancellation Policy");
+        confirm.setContentText(
+            "Policy: " + result.getPolicyApplied() + "\n\n" +
+            "Refund: $" + String.format("%.2f", result.getRefundAmount()) +
+            " (" + String.format("%.0f", result.getRefundPercentage()) + "% of $" +
+            String.format("%.2f", booking.getTotalPrice()) + ")\n\n" +
+            "Do you want to proceed with the cancellation?"
+        );
 		confirm.showAndWait().ifPresent(btn -> {
 			if (btn == ButtonType.OK) {
 				try {
 					bookingService.updateBookingStatus(booking.getBookingId(), "CANCELLED");
-                    userService.updateBalance(booking.getUserId(), booking.getTotalPrice());
+                    userService.updateBalance(booking.getUserId(), result.getRefundAmount());
                     Main.getSession().setUser(userService.getUserById(booking.getUserId()));
 					loadBookings();
+
+                    showAlert(Alert.AlertType.INFORMATION, "Cancelled",
+                            "Booking Cancelled",
+                            "Refund of $" + String.format("%.2f", result.getRefundAmount()) + " applied.\n" +
+                            result.getPolicyApplied());
+
+                    // Send cancellation email
+                    String email = Main.getSession().getUser().getEmail();
+                    if (email != null && !email.isEmpty()) {
+                        new Thread(() -> emailService.sendCancellationNotice(
+                            email, booking.getBookingId(), result.getRefundAmount(),
+                            result.getPolicyApplied(), selectedCurrency
+                        )).start();
+                    }
 				} catch (SQLException e) {
 					showAlert(Alert.AlertType.ERROR, "Error", "Cancellation Failed", e.getMessage());
 				}
@@ -344,6 +407,17 @@ public class BookingController {
                 bookingService.updateBookingPrice(booking.getBookingId(), newTotalPrice);
                 userService.updateBalance(booking.getUserId(), -diff);
                 Main.getSession().setUser(userService.getUserById(booking.getUserId()));
+                
+                // Send modification email
+                String email = Main.getSession().getUser().getEmail();
+                if (email != null && !email.isEmpty()) {
+                    final double emailPrice = newTotalPrice;
+                    new Thread(() -> emailService.sendBookingModification(
+                        email, booking.getBookingId(),
+                        "Duration changed from " + booking.getDuration() + " to " + newDuration + " days",
+                        emailPrice, selectedCurrency
+                    )).start();
+                }
                 
 				loadBookings();
 			} catch (NumberFormatException | SQLException e) {
@@ -390,6 +464,8 @@ public class BookingController {
         dateLab.getStyleClass().add("text-muted");
         Label durationLab = new Label("Duration: " + b.getDuration() + " days");
         durationLab.getStyleClass().add("text-muted");
+        Label guestsLab = new Label("Guests: " + (b.getNumGuests() > 0 ? b.getNumGuests() : "N/A"));
+        guestsLab.getStyleClass().add("text-muted");
         
         String servicesStr = b.getExtraServices().stream()
                 .map(Service::getServiceType)
@@ -398,7 +474,7 @@ public class BookingController {
         servicesLab.getStyleClass().add("text-small");
         servicesLab.setStyle("-fx-text-fill: -fx-accent-color;");
 
-        left.getChildren().addAll(idLab, dateLab, durationLab, servicesLab);
+        left.getChildren().addAll(idLab, dateLab, durationLab, guestsLab, servicesLab);
         HBox.setHgrow(left, javafx.scene.layout.Priority.ALWAYS);
 
         VBox right = new VBox(5);
@@ -406,9 +482,33 @@ public class BookingController {
         Label priceLab = new Label(String.format("$%.2f", b.getTotalPrice()));
         priceLab.getStyleClass().add("accent");
         priceLab.setStyle("-fx-font-weight: bold; -fx-font-size: 18px;");
+        
+        // Currency conversion display
+        if (!"USD".equals(selectedCurrency)) {
+            double converted = currencyService.convert(b.getTotalPrice(), "USD", selectedCurrency);
+            if (converted >= 0) {
+                Label convertedLab = new Label(String.format("≈ %.2f %s", converted, selectedCurrency));
+                convertedLab.setStyle("-fx-text-fill: #D4AF37; -fx-font-size: 13px;");
+                right.getChildren().add(convertedLab);
+            }
+        }
+        
         Label statusLab = new Label(b.getBookingStatus());
         statusLab.setStyle("-fx-text-fill: " + getStatusColor(b.getBookingStatus()) + "; -fx-font-weight: bold;");
         right.getChildren().addAll(priceLab, statusLab);
+
+        // Cancellation policy preview (for active bookings)
+        if (!b.getBookingStatus().equals("CANCELLED") && !b.getBookingStatus().equals("COMPLETED")) {
+            java.sql.Timestamp createdAt = b.getCreatedAt();
+            if (createdAt == null) {
+                try { createdAt = bookingService.getBookingCreatedAt(b.getBookingId()); } catch (SQLException ignored) {}
+            }
+            CancellationPolicyEngine.CancellationResult policyPreview = cancellationEngine.calculateRefund(b, createdAt);
+            Label policyLab = new Label("Cancellation: " + policyPreview.getPolicyApplied());
+            policyLab.setStyle("-fx-text-fill: #999; -fx-font-size: 11px; -fx-wrap-text: true;");
+            policyLab.setWrapText(true);
+            right.getChildren().add(policyLab);
+        }
 
         top.getChildren().addAll(left, right);
 
@@ -416,26 +516,64 @@ public class BookingController {
         actions.setPadding(new Insets(10, 0, 0, 0));
         
         if (b.getPropertyId() != null) {
-            Button viewPropBtn = new Button("🔍 View Property");
+            Button viewPropBtn = new Button("\uD83D\uDD0D View Property");
             viewPropBtn.getStyleClass().add("flat");
             viewPropBtn.setOnAction(e -> handleViewProperty(b.getPropertyId()));
             actions.getChildren().add(viewPropBtn);
         }
 
         if (!b.getBookingStatus().equals("CANCELLED") && !b.getBookingStatus().equals("COMPLETED")) {
-            Button editBtn = new Button("✏️ Edit Duration");
+            Button editBtn = new Button("\u270F\uFE0F Edit Duration");
             editBtn.getStyleClass().add("secondary-button");
             editBtn.setOnAction(e -> handleEditDuration(b));
 
-            Button cancelBtn = new Button("❌ Cancel Booking");
+            Button cancelBtn = new Button("\u274C Cancel Booking");
             cancelBtn.getStyleClass().add("danger-button");
             cancelBtn.setOnAction(e -> handleCancelBooking(b));
             
-            actions.getChildren().addAll(editBtn, cancelBtn);
+            Button pricingBtn = new Button("\uD83D\uDCB0 Price Breakdown");
+            pricingBtn.getStyleClass().add("flat");
+            pricingBtn.setOnAction(e -> handleShowPriceBreakdown(b));
+            
+            actions.getChildren().addAll(editBtn, cancelBtn, pricingBtn);
         }
 
         card.getChildren().addAll(top, actions);
         return card;
+    }
+
+    private void handleShowPriceBreakdown(Booking b) {
+        try {
+            double basePrice = 100.0; // default
+            if (b.getPropertyId() != null) {
+                Property p = propertyService.getPropertyById(b.getPropertyId());
+                if (p != null && p.getPricePerNight() != null) {
+                    basePrice = p.getPricePerNight().doubleValue();
+                }
+            }
+            LocalDate bookingDate = b.getBookingDate() != null ? b.getBookingDate().toLocalDate() : LocalDate.now();
+            int guests = b.getNumGuests() > 0 ? b.getNumGuests() : 1;
+            DynamicPricingEngine.PricingBreakdown breakdown = pricingEngine.calculatePrice(
+                    basePrice, bookingDate, b.getDuration(), guests,
+                    b.getPropertyId(), b.getExtraServices());
+
+            String currencyNote = "";
+            if (!"USD".equals(selectedCurrency)) {
+                double converted = currencyService.convert(breakdown.getTotalPrice(), "USD", selectedCurrency);
+                if (converted >= 0) {
+                    currencyNote = "\n\nConverted: " + String.format("%.2f %s", converted, selectedCurrency);
+                }
+            }
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Dynamic Price Breakdown");
+            alert.setHeaderText("Booking #" + b.getBookingId() + " – Price Analysis");
+            alert.setContentText(breakdown.getExplanation() + currencyNote);
+            alert.getDialogPane().setMinWidth(500);
+            alert.showAndWait();
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Pricing Error", e.getMessage());
+        }
     }
 
     private void handleViewProperty(Long propertyId) {

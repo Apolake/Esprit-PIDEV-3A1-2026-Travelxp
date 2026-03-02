@@ -146,6 +146,15 @@
                                     onAction="#handleAddFeedback"
                                     styleClass="primary-button"/>
                         </HBox>
+                        <!-- filter/sort bar -->
+                        <HBox spacing="6" alignment="CENTER_LEFT" styleClass="filter-bar">
+                            <TextField fx:id="usernameFilterField" promptText="Search by user" />
+                            <TextField fx:id="titleFilterField" promptText="Search by title" />
+                            <ComboBox fx:id="sortCombo" prefWidth="120" />
+                            <Button text="Search" onAction="#handleSearch" />
+                            <Button text="Favorites" onAction="#handleFavorites" />
+                            <Button text="Reset" onAction="#handleReset" />
+                        </HBox>
                         <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="edge-to-edge">
                             <VBox fx:id="feedbackContainer"
                                   spacing="15"
