@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.travelxp.models.Property;
-import com.travelxp.models.WeatherDTO;
 import com.travelxp.services.PropertyService;
 import com.travelxp.services.RecommendationService;
 
@@ -59,11 +58,7 @@ public class PropertyController {
 	@FXML private TextField longitudeField;
 	@FXML private CheckBox isActiveCheck;
 
-	/* weather display labels */
-	@FXML private javafx.scene.control.Label weatherLabel;
-	@FXML private javafx.scene.control.Label tempLabel;
-	@FXML private javafx.scene.control.Label humidityLabel;
-	@FXML private javafx.scene.control.Label windLabel;
+
 
 	/* filter/search controls */
 	@FXML private TextField searchField;
@@ -96,7 +91,6 @@ public class PropertyController {
 		propertyTable.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, selected) -> {
 			if (selected != null) {
 				populateForm(selected);
-				fetchAndDisplayWeather(selected);
 			}
 		});
 
@@ -278,52 +272,7 @@ public class PropertyController {
 		}
 	}
 
-	/**
-	 * Fetch weather data for the selected property and display it.
-	 * Runs asynchronously to avoid blocking the UI.
-	 */
-	private void fetchAndDisplayWeather(Property property) {
-		if (property.getLatitude() == null || property.getLongitude() == null) {
-			weatherLabel.setText("Weather: No coordinates");
-			tempLabel.setText("");
-			humidityLabel.setText("");
-			windLabel.setText("");
-			return;
-		}
 
-		// fetch weather in background thread
-		new Thread(() -> {
-			try {
-				WeatherDTO weather = new com.travelxp.services.WeatherService()
-						.getWeatherByCoordinates(property.getLatitude(), property.getLongitude());
-
-				// update UI on JavaFX thread
-				javafx.application.Platform.runLater(() -> {
-					weatherLabel.setText(String.format("%s - %s (%s)",
-							weather.getCity(),
-							weather.getCondition(),
-							weather.getDescription()));
-					tempLabel.setText(String.format("Temp: %.1f°C (feels like %.1f°C)",
-							weather.getTemperature(),
-							weather.getFeelsLike()));
-					humidityLabel.setText(String.format("Humidity: %d%%",
-							weather.getHumidity()));
-					windLabel.setText(String.format("Wind: %.1f m/s",
-							weather.getWindSpeed()));
-				});
-			} catch (IllegalStateException e) {
-				javafx.application.Platform.runLater(() ->
-					showAlert(Alert.AlertType.ERROR, "API Configuration",
-							"Weather API not configured", e.getMessage()));
-			} catch (IOException e) {
-				javafx.application.Platform.runLater(() ->
-					showAlert(Alert.AlertType.WARNING, "Weather Error",
-							"Could not fetch weather", e.getMessage()));
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-			}
-		}).start();
-	}
 
 	private void populateForm(Property property) {
 		ownerIdField.setText(String.valueOf(property.getOwnerId()));
