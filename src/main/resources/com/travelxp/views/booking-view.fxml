@@ -189,6 +189,17 @@
                         </VBox>
                      </content>
                   </ScrollPane>
+
+                  <HBox spacing="10" alignment="CENTER_LEFT" styleClass="card">
+                     <padding>
+                        <Insets top="10" right="15" bottom="10" left="15"/>
+                     </padding>
+                     <children>
+                        <Label text="Display Currency:" />
+                        <ComboBox fx:id="currencyCombo" prefWidth="120" />
+                        <Label fx:id="convertedPriceLabel" styleClass="text-muted" />
+                     </children>
+                  </HBox>
                </children>
             </VBox>
             <Button onAction="#toggleTheme" styleClass="theme-toggle-button" StackPane.alignment="TOP_RIGHT">

@@ -1,67 +1,71 @@
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\controllers\ActivityController.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\controllers\AdminDashboardController.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\controllers\BookingController.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\controllers\ChangePasswordController.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\controllers\CommentsViewController.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\controllers\DashboardController.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\controllers\EditProfileController.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\controllers\FeedbackController.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\controllers\GeminiChatController.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\controllers\LoginController.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\controllers\MessengerController.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\controllers\ModerationController.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\controllers\OfferController.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\controllers\ProfileController.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\controllers\PropertyController.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\controllers\RegisterController.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\controllers\ServiceController.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\controllers\TasksController.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\controllers\TripController.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\Main.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\models\Activity.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\models\Booking.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\models\Comment.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\models\Conversation.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\models\Feedback.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\models\Gamification.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\models\Message.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\models\Offer.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\models\Property.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\models\Service.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\models\Trip.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\models\TripMilestone.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\models\User.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\models\UserViewModel.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\repositories\ActivityRepository.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\repositories\CommentRepository.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\repositories\ConversationRepository.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\repositories\FeedbackRepository.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\repositories\MessageRepository.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\repositories\TripMilestoneRepository.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\repositories\TripRepository.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\repositories\UserRepository.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\services\ActivityService.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\services\BookingService.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\services\FaceRecognitionService.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\services\FeedbackService.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\services\GamificationService.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\services\GeminiService.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\services\MessagingService.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\services\OfferService.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\services\PropertyService.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\services\ServiceService.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\services\StripeService.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\services\TotpService.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\services\TripMilestoneService.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\services\TripService.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\services\UserService.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\UserSession.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\utils\DatabaseInitializer.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\utils\ImageUtil.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\utils\LanguageToolClient.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\utils\LibreTranslateClient.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\utils\MyDB.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\utils\PasswordUtil.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\utils\ProfanityFilter.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\utils\SentimentAnalyzer.java
-C:\Users\nafti\Downloads\ProjectJavaFx3A1-main\src\main\java\com\travelxp\utils\ThemeManager.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\ActivityController.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\AdminDashboardController.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\BookingController.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\ChangePasswordController.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\CommentsViewController.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\DashboardController.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\EditProfileController.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\FeedbackController.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\GeminiChatController.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\LoginController.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\MessengerController.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\ModerationController.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\OfferController.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\ProfileController.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\PropertyController.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\RegisterController.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\ServiceController.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\TasksController.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\TripController.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\Main.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\models\Activity.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\models\Booking.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\models\Comment.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\models\Conversation.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\models\Feedback.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\models\Gamification.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\models\Message.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\models\Offer.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\models\Property.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\models\Service.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\models\Trip.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\models\TripMilestone.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\models\User.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\models\UserViewModel.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\repositories\ActivityRepository.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\repositories\CommentRepository.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\repositories\ConversationRepository.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\repositories\FeedbackRepository.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\repositories\MessageRepository.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\repositories\TripMilestoneRepository.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\repositories\TripRepository.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\repositories\UserRepository.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\services\ActivityService.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\services\BookingService.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\services\CancellationPolicyEngine.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\services\CurrencyExchangeService.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\services\DynamicPricingEngine.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\services\EmailService.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\services\FaceRecognitionService.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\services\FeedbackService.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\services\GamificationService.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\services\GeminiService.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\services\MessagingService.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\services\OfferService.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\services\PropertyService.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\services\ServiceService.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\services\StripeService.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\services\TotpService.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\services\TripMilestoneService.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\services\TripService.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\services\UserService.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\UserSession.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\utils\DatabaseInitializer.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\utils\ImageUtil.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\utils\LanguageToolClient.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\utils\LibreTranslateClient.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\utils\MyDB.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\utils\PasswordUtil.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\utils\ProfanityFilter.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\utils\SentimentAnalyzer.java
+C:\Users\dhias\OneDrive\Desktop\Github Repository Stuff\Final Project (Hopefully)\ProjectJavaFx3A1\src\main\java\com\travelxp\utils\ThemeManager.java

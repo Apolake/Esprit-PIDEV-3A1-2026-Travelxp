@@ -27,6 +27,7 @@ com\travelxp\models\Conversation.class
 com\travelxp\controllers\RegisterController.class
 com\travelxp\services\PropertyService.class
 com\travelxp\repositories\ConversationRepository.class
+com\travelxp\services\DynamicPricingEngine$1.class
 com\travelxp\controllers\PropertyController.class
 com\travelxp\controllers\AdminDashboardController.class
 com\travelxp\controllers\CommentsViewController.class
