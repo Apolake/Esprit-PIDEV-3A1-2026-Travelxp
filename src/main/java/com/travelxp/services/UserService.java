@@ -1,12 +1,16 @@
 package com.travelxp.services;
 
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDate;
+
 import com.travelxp.models.User;
 import com.travelxp.utils.MyDB;
 import com.travelxp.utils.PasswordUtil;
-
-import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class UserService {
     private final Connection connection;
@@ -246,6 +250,53 @@ public class UserService {
         user.setBalance(rs.getDouble("balance"));
         user.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         user.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+        try {
+            user.setFaceRegistered(rs.getBoolean("face_registered"));
+        } catch (SQLException e) {
+            user.setFaceRegistered(false);
+        }
+        try {
+            user.setTotpEnabled(rs.getBoolean("totp_enabled"));
+            user.setTotpSecret(rs.getString("totp_secret"));
+        } catch (SQLException e) {
+            user.setTotpEnabled(false);
+            user.setTotpSecret(null);
+        }
         return user;
+    }
+
+    public boolean setFaceRegistered(int userId, boolean registered) throws SQLException {
+        String sql = "UPDATE users SET face_registered = ? WHERE id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setBoolean(1, registered);
+            pstmt.setInt(2, userId);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
+    public boolean setTotpSecret(int userId, String secret) throws SQLException {
+        String sql = "UPDATE users SET totp_secret = ? WHERE id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, secret);
+            pstmt.setInt(2, userId);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
+    public boolean setTotpEnabled(int userId, boolean enabled) throws SQLException {
+        String sql = "UPDATE users SET totp_enabled = ? WHERE id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setBoolean(1, enabled);
+            pstmt.setInt(2, userId);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
+    public boolean disableTotp(int userId) throws SQLException {
+        String sql = "UPDATE users SET totp_enabled = 0, totp_secret = NULL WHERE id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            return pstmt.executeUpdate() > 0;
+        }
     }
 }

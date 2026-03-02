@@ -39,6 +39,7 @@ com\travelxp\controllers\ModerationController$2.class
 com\travelxp\models\Service.class
 com\travelxp\models\Gamification.class
 com\travelxp\models\TripMilestone.class
+com\travelxp\services\TotpService.class
 com\travelxp\controllers\BookingController.class
 com\travelxp\repositories\TripMilestoneRepository.class
 com\travelxp\controllers\OfferController$1.class
@@ -46,6 +47,7 @@ com\travelxp\utils\MyDB.class
 com\travelxp\controllers\ModerationController$1.class
 com\travelxp\controllers\ActivityController.class
 com\travelxp\services\FeedbackService.class
+com\travelxp\services\FaceRecognitionService.class
 com\travelxp\services\ServiceService.class
 com\travelxp\models\Comment.class
 com\travelxp\repositories\ActivityRepository.class

@@ -42,6 +42,7 @@
             <VBox spacing="15.0">
                <children>
                   <Button fx:id="loginButton" maxWidth="Infinity" onAction="#handleLogin" text="Login" styleClass="accent" />
+                  <Button maxWidth="Infinity" onAction="#handleFaceLogin" text="Login with Face ID" styleClass="flat" />
                   <Button onAction="#handleRegisterRedirect" maxWidth="Infinity" styleClass="flat" text="Create New Account" />
                </children>
             </VBox>

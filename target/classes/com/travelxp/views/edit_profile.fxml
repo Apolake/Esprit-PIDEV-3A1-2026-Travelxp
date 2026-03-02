@@ -172,6 +172,16 @@
                                           <Label fx:id="imagePathLabel" text="No image selected" styleClass="text-muted" />
                                        </children>
                                     </HBox>
+                                    <HBox spacing="15.0" alignment="CENTER_LEFT">
+                                       <children>
+                                          <Button onAction="#handleFaceEnrollment" styleClass="flat" text="Register / Update Face ID" />
+                                       </children>
+                                    </HBox>
+                                    <HBox spacing="15.0" alignment="CENTER_LEFT">
+                                       <children>
+                                          <Button onAction="#handleTotpSetup" styleClass="flat" text="Setup / Manage 2FA (TOTP)" />
+                                       </children>
+                                    </HBox>
                                  </children>
                               </VBox>
                               

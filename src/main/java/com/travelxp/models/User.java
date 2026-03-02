@@ -15,6 +15,9 @@ public class User {
     private double balance;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private boolean faceRegistered;
+    private boolean totpEnabled;
+    private String totpSecret;
 
     public User() {}
 
@@ -62,4 +65,13 @@ public class User {
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public boolean isFaceRegistered() { return faceRegistered; }
+    public void setFaceRegistered(boolean faceRegistered) { this.faceRegistered = faceRegistered; }
+
+    public boolean isTotpEnabled() { return totpEnabled; }
+    public void setTotpEnabled(boolean totpEnabled) { this.totpEnabled = totpEnabled; }
+
+    public String getTotpSecret() { return totpSecret; }
+    public void setTotpSecret(String totpSecret) { this.totpSecret = totpSecret; }
 }

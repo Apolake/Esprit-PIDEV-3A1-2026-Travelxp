@@ -1,31 +1,55 @@
 package com.travelxp.controllers;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
+
+import org.bytedeco.opencv.opencv_core.Mat;
+import org.bytedeco.opencv.opencv_core.RectVector;
+
 import com.travelxp.Main;
 import com.travelxp.models.User;
+import com.travelxp.services.FaceRecognitionService;
+import com.travelxp.services.TotpService;
 import com.travelxp.services.UserService;
+
 import javafx.animation.Animation;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.Random;
-import java.util.regex.Pattern;
 
 public class EditProfileController {
 
@@ -234,9 +258,352 @@ public class EditProfileController {
     }
 
     @FXML
+    private void handleFaceEnrollment(ActionEvent event) {
+        try {
+            FaceRecognitionService faceService = new FaceRecognitionService();
+
+            Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.initOwner(((Node) event.getSource()).getScene().getWindow());
+            dialog.setTitle("Register Face ID");
+
+            ImageView webcamView = new ImageView();
+            webcamView.setFitWidth(640);
+            webcamView.setFitHeight(480);
+            webcamView.setPreserveRatio(true);
+
+            Label statusLabel = new Label("Position your face and capture 5 photos from slightly different angles.");
+            statusLabel.setStyle("-fx-font-size: 14px;");
+            statusLabel.setWrapText(true);
+
+            Label counterLabel = new Label("Photos: 0 / 5");
+            counterLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+
+            Button captureBtn = new Button("Capture Photo");
+            captureBtn.getStyleClass().add("accent");
+            captureBtn.setPrefWidth(150);
+            Button saveBtn = new Button("Save Face ID");
+            saveBtn.getStyleClass().addAll("accent");
+            saveBtn.setPrefWidth(150);
+            saveBtn.setDisable(true);
+            Button cancelBtn = new Button("Cancel");
+            cancelBtn.getStyleClass().add("flat");
+            cancelBtn.setPrefWidth(150);
+
+            HBox btns = new HBox(15, captureBtn, saveBtn, cancelBtn);
+            btns.setAlignment(Pos.CENTER);
+
+            VBox layout = new VBox(20, webcamView, statusLabel, counterLabel, btns);
+            layout.setAlignment(Pos.CENTER);
+            layout.setPadding(new Insets(30));
+            layout.setStyle("-fx-background-color: -color-bg-default;");
+
+            Scene dialogScene = new Scene(layout, 720, 680);
+            com.travelxp.utils.ThemeManager.applyTheme(dialogScene);
+            dialog.setScene(dialogScene);
+
+            faceService.startWebcam();
+
+            List<Mat> capturedFaces = new ArrayList<>();
+            final AtomicReference<Mat> lastFrame = new AtomicReference<>();
+
+            ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(r -> {
+                Thread t = new Thread(r, "webcam-enroll-thread");
+                t.setDaemon(true);
+                return t;
+            });
+
+            executor.scheduleAtFixedRate(() -> {
+                try {
+                    Mat frame = faceService.grabFrame();
+                    if (frame != null) {
+                        lastFrame.set(frame);
+                        Mat display = frame.clone();
+                        RectVector faces = faceService.detectFaces(display);
+                        faceService.drawFaceRects(display, faces);
+                        Image fxImage = FaceRecognitionService.matToImage(display);
+                        Platform.runLater(() -> webcamView.setImage(fxImage));
+                    }
+                } catch (Exception ex) {
+                    // Ignore frame grab errors during streaming
+                }
+            }, 0, 33, TimeUnit.MILLISECONDS);
+
+            captureBtn.setOnAction(e -> {
+                if (capturedFaces.size() >= 5) return;
+                Mat frame = lastFrame.get();
+                if (frame == null) {
+                    statusLabel.setText("Waiting for camera... Try again.");
+                    statusLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #e74c3c;");
+                    return;
+                }
+                Mat face = faceService.extractFace(frame);
+                if (face != null) {
+                    capturedFaces.add(face);
+                    counterLabel.setText("Photos: " + capturedFaces.size() + " / 5");
+                    if (capturedFaces.size() >= 5) {
+                        captureBtn.setDisable(true);
+                        saveBtn.setDisable(false);
+                        statusLabel.setText("All photos captured! Click 'Save Face ID' to finish.");
+                        statusLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #27ae60;");
+                    } else {
+                        statusLabel.setText("Photo " + capturedFaces.size() + " captured! Move your head slightly for the next one.");
+                        statusLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #27ae60;");
+                    }
+                } else {
+                    statusLabel.setText("No face detected. Look directly at the camera and try again.");
+                    statusLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #e74c3c;");
+                }
+            });
+
+            saveBtn.setOnAction(e -> {
+                try {
+                    faceService.enrollFace(currentUser.getId(), capturedFaces);
+                    userService.setFaceRegistered(currentUser.getId(), true);
+                    currentUser = userService.getUserById(currentUser.getId());
+                    Main.getSession().setUser(currentUser);
+
+                    executor.shutdownNow();
+                    faceService.stopWebcam();
+                    dialog.close();
+
+                    showAlert(Alert.AlertType.INFORMATION, "Success", "Face ID Registered",
+                        "Your Face ID has been registered successfully!\nYou can now use it to login.");
+                } catch (Exception ex) {
+                    statusLabel.setText("Error saving face data: " + ex.getMessage());
+                    statusLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #e74c3c;");
+                    ex.printStackTrace();
+                }
+            });
+
+            Runnable cleanup = () -> {
+                executor.shutdownNow();
+                faceService.stopWebcam();
+            };
+
+            cancelBtn.setOnAction(e -> { cleanup.run(); dialog.close(); });
+            dialog.setOnCloseRequest(e -> cleanup.run());
+
+            dialog.showAndWait();
+
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Face ID Error",
+                "Failed to initialize Face ID: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void handleLogout(ActionEvent event) {
         Main.setSession(null);
         changeScene(event, "/com/travelxp/views/login.fxml");
+    }
+
+    @FXML
+    private void handleTotpSetup(ActionEvent event) {
+        if (currentUser.isTotpEnabled()) {
+            // Already enabled — offer to disable
+            handleTotpDisable(event);
+        } else {
+            // Not enabled — start setup flow
+            handleTotpEnable(event);
+        }
+    }
+
+    private void handleTotpEnable(ActionEvent event) {
+        try {
+            TotpService totpService = new TotpService();
+            String secret = totpService.generateSecret();
+
+            Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.initOwner(((Node) event.getSource()).getScene().getWindow());
+            dialog.setTitle("Setup Two-Factor Authentication");
+            dialog.setResizable(false);
+
+            Label titleLabel = new Label("Setup Two-Factor Authentication");
+            titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+            Label instructionLabel = new Label(
+                "1. Scan the QR code below with your authenticator app\n" +
+                "   (Google Authenticator, Authy, Microsoft Authenticator, etc.)\n\n" +
+                "2. Enter the 6-digit code shown in the app to verify setup.");
+            instructionLabel.setStyle("-fx-font-size: 12px;");
+            instructionLabel.setWrapText(true);
+
+            ImageView qrView = new ImageView();
+            qrView.setFitWidth(250);
+            qrView.setFitHeight(250);
+            qrView.setPreserveRatio(true);
+
+            javafx.scene.image.Image qrImage = totpService.generateQrCodeImage(secret, currentUser.getEmail());
+            qrView.setImage(qrImage);
+
+            Label secretLabel = new Label("Manual key: " + secret);
+            secretLabel.setStyle("-fx-font-size: 11px; -fx-font-family: monospace;");
+            secretLabel.setWrapText(true);
+
+            Label codePrompt = new Label("Verification Code:");
+            codePrompt.setStyle("-fx-font-size: 13px;");
+
+            TextField codeField = new TextField();
+            codeField.setPromptText("000000");
+            codeField.setMaxWidth(180);
+            codeField.setStyle("-fx-font-size: 18px; -fx-alignment: center;");
+
+            Label errorLabel = new Label();
+            errorLabel.setStyle("-fx-text-fill: #e74c3c; -fx-font-size: 12px;");
+            errorLabel.setVisible(false);
+
+            Button verifyBtn = new Button("Enable 2FA");
+            verifyBtn.getStyleClass().add("accent");
+            verifyBtn.setPrefWidth(140);
+            verifyBtn.setDefaultButton(true);
+
+            Button cancelBtn = new Button("Cancel");
+            cancelBtn.getStyleClass().add("flat");
+            cancelBtn.setPrefWidth(140);
+
+            HBox btnBox = new HBox(15, verifyBtn, cancelBtn);
+            btnBox.setAlignment(Pos.CENTER);
+
+            VBox layout = new VBox(15, titleLabel, instructionLabel, qrView, secretLabel,
+                                   codePrompt, codeField, errorLabel, btnBox);
+            layout.setAlignment(Pos.CENTER);
+            layout.setPadding(new Insets(30));
+            layout.setStyle("-fx-background-color: -color-bg-default;");
+
+            Scene dialogScene = new Scene(layout, 450, 680);
+            com.travelxp.utils.ThemeManager.applyTheme(dialogScene);
+            dialog.setScene(dialogScene);
+
+            verifyBtn.setOnAction(e -> {
+                String code = codeField.getText().trim();
+                if (code.length() != 6 || !code.matches("\\d{6}")) {
+                    errorLabel.setText("Please enter a valid 6-digit code.");
+                    errorLabel.setVisible(true);
+                    return;
+                }
+                if (totpService.validateCode(secret, code)) {
+                    try {
+                        userService.setTotpSecret(currentUser.getId(), secret);
+                        userService.setTotpEnabled(currentUser.getId(), true);
+                        currentUser = userService.getUserById(currentUser.getId());
+                        Main.getSession().setUser(currentUser);
+                        dialog.close();
+                        showAlert(Alert.AlertType.INFORMATION, "Success", "2FA Enabled",
+                            "Two-Factor Authentication has been enabled!\nYou will need your authenticator code on every login.");
+                    } catch (Exception ex) {
+                        errorLabel.setText("Error saving: " + ex.getMessage());
+                        errorLabel.setVisible(true);
+                    }
+                } else {
+                    errorLabel.setText("Invalid code. Check your authenticator and try again.");
+                    errorLabel.setVisible(true);
+                    codeField.clear();
+                    codeField.requestFocus();
+                }
+            });
+
+            cancelBtn.setOnAction(e -> dialog.close());
+
+            Platform.runLater(codeField::requestFocus);
+            dialog.showAndWait();
+
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "2FA Setup Error",
+                "Failed to initialize 2FA setup: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void handleTotpDisable(ActionEvent event) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Disable 2FA");
+        confirm.setHeaderText("Disable Two-Factor Authentication?");
+        confirm.setContentText("Are you sure you want to disable 2FA? This will make your account less secure.");
+
+        confirm.showAndWait().ifPresent(response -> {
+            if (response == javafx.scene.control.ButtonType.OK) {
+                // Ask for current TOTP code to confirm
+                Stage dialog = new Stage();
+                dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.initOwner(((Node) event.getSource()).getScene().getWindow());
+                dialog.setTitle("Confirm Disable 2FA");
+                dialog.setResizable(false);
+
+                Label titleLabel = new Label("Confirm with Authenticator Code");
+                titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+
+                Label instructionLabel = new Label("Enter your current 6-digit authenticator code to disable 2FA.");
+                instructionLabel.setStyle("-fx-font-size: 13px;");
+                instructionLabel.setWrapText(true);
+
+                TextField codeField = new TextField();
+                codeField.setPromptText("000000");
+                codeField.setMaxWidth(180);
+                codeField.setStyle("-fx-font-size: 18px; -fx-alignment: center;");
+
+                Label errorLabel = new Label();
+                errorLabel.setStyle("-fx-text-fill: #e74c3c; -fx-font-size: 12px;");
+                errorLabel.setVisible(false);
+
+                Button disableBtn = new Button("Disable 2FA");
+                disableBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
+                disableBtn.setPrefWidth(140);
+                disableBtn.setDefaultButton(true);
+
+                Button cancelBtn = new Button("Cancel");
+                cancelBtn.getStyleClass().add("flat");
+                cancelBtn.setPrefWidth(140);
+
+                HBox btnBox = new HBox(15, disableBtn, cancelBtn);
+                btnBox.setAlignment(Pos.CENTER);
+
+                VBox layout = new VBox(20, titleLabel, instructionLabel, codeField, errorLabel, btnBox);
+                layout.setAlignment(Pos.CENTER);
+                layout.setPadding(new Insets(40));
+                layout.setStyle("-fx-background-color: -color-bg-default;");
+
+                Scene dialogScene = new Scene(layout, 400, 320);
+                com.travelxp.utils.ThemeManager.applyTheme(dialogScene);
+                dialog.setScene(dialogScene);
+
+                TotpService totpService = new TotpService();
+
+                disableBtn.setOnAction(e -> {
+                    String code = codeField.getText().trim();
+                    if (code.length() != 6 || !code.matches("\\d{6}")) {
+                        errorLabel.setText("Please enter a valid 6-digit code.");
+                        errorLabel.setVisible(true);
+                        return;
+                    }
+                    if (totpService.validateCode(currentUser.getTotpSecret(), code)) {
+                        try {
+                            userService.disableTotp(currentUser.getId());
+                            currentUser = userService.getUserById(currentUser.getId());
+                            Main.getSession().setUser(currentUser);
+                            dialog.close();
+                            showAlert(Alert.AlertType.INFORMATION, "Success", "2FA Disabled",
+                                "Two-Factor Authentication has been disabled.");
+                        } catch (Exception ex) {
+                            errorLabel.setText("Error: " + ex.getMessage());
+                            errorLabel.setVisible(true);
+                        }
+                    } else {
+                        errorLabel.setText("Invalid code. Please try again.");
+                        errorLabel.setVisible(true);
+                        codeField.clear();
+                        codeField.requestFocus();
+                    }
+                });
+
+                cancelBtn.setOnAction(e -> dialog.close());
+
+                Platform.runLater(codeField::requestFocus);
+                dialog.showAndWait();
+            }
+        });
     }
 
     @FXML
