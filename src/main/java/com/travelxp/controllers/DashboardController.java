@@ -64,6 +64,7 @@ public class DashboardController {
     private final TripService tripService = new TripService();
     private final Random random = new Random();
 
+
     @FXML
     public void initialize() {
         // Apply circular clip

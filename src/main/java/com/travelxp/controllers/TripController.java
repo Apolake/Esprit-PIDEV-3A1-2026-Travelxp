@@ -18,6 +18,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -48,6 +49,13 @@ import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.Node;
+import javafx.stage.Stage;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -70,6 +78,8 @@ import java.util.concurrent.CompletableFuture;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 
+import javafx.scene.Scene;
+import javafx.animation.TranslateTransition;
 
 public class TripController {
 
@@ -78,7 +88,7 @@ public class TripController {
     @FXML private ScrollPane userScrollPane;
     @FXML private GridPane adminForm;
     @FXML private Pane animatedBg;
-    
+
     @FXML private Button tripsNavBtn;
     @FXML private Button myTripsNavBtn;
 
@@ -102,6 +112,16 @@ public class TripController {
     @FXML private TextField budgetField;
     @FXML private ComboBox<String> statusCombo;
 
+    @FXML private AnchorPane aiDrawer;
+    @FXML private StackPane aiDrawerContent;
+    //ai
+
+    @FXML private Pane aiOverlay;
+
+    private boolean aiDrawerOpen = false;
+    private TripAIPanelController aiPanelController;
+
+
     private final TripService tripService = new TripService();
     private final ActivityService activityService = new ActivityService();
     private final UserService userService = new UserService();
@@ -113,6 +133,7 @@ public class TripController {
 
 
     private final WeatherService weatherService = new WeatherService();
+
 
 
     // Dynamic filter UI
@@ -127,6 +148,38 @@ public class TripController {
 
     private final EmailService emailService = new EmailService();
 
+
+
+    private void openTrips(ActionEvent event, boolean myTrips) {
+        try {
+
+            FXMLLoader loader =
+                    new FXMLLoader(getClass().getResource("/com/travelxp/views/trip-view.fxml"));
+
+            Parent root = loader.load();
+
+            TripController controller = loader.getController();
+            controller.setMyTripsMode(myTrips);
+
+            Stage stage = (Stage) ((Node) event.getSource())
+                    .getScene()
+                    .getWindow();
+
+            Scene scene = stage.getScene();
+
+            if (scene == null) {
+                scene = new Scene(root);
+                stage.setScene(scene);
+            } else {
+                scene.setRoot(root);
+            }
+
+            ThemeManager.applyTheme(scene);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     public void initialize() {
@@ -406,7 +459,7 @@ public class TripController {
             myTripsNavBtn.getStyleClass().remove("accent");
             if (!myTripsNavBtn.getStyleClass().contains("flat")) myTripsNavBtn.getStyleClass().add("flat");
         }
-        
+
         if (isMyTripsMode && myTripsNavBtn != null) {
             myTripsNavBtn.getStyleClass().remove("flat");
             myTripsNavBtn.getStyleClass().add("accent");
@@ -420,7 +473,7 @@ public class TripController {
         try {
             boolean isAdmin = Main.getSession().getUser().getRole().equals("ADMIN");
             List<Trip> trips;
-            
+
             if (isAdmin && !isMyTripsMode) {
                 trips = tripService.getAllTrips();
             } else if (isMyTripsMode) {
@@ -463,16 +516,19 @@ public class TripController {
 
         Label nameLab = new Label(t.getTripName());
         nameLab.getStyleClass().add("title-4");
-        
+
         Label routeLab = new Label(t.getOrigin() + " ➔ " + t.getDestination());
         routeLab.getStyleClass().add("text-muted");
 
         double displayCost = isMyTripsMode ? t.getTotalExpenses() : (t.getBudgetAmount() != null ? t.getBudgetAmount() : 0.0);
         String prefix = isMyTripsMode ? "My Expenses: $" : "Entry Cost: $";
-        
+
         Label costLab = new Label(prefix + String.format("%.2f", displayCost));
         costLab.getStyleClass().add("accent");
         costLab.setStyle("-fx-font-weight: bold;");
+
+
+
 
         VBox activitiesBox = new VBox(5);
         if (isMyTripsMode) {
@@ -495,16 +551,16 @@ public class TripController {
 
         HBox actions = new HBox(10);
         actions.setPadding(new Insets(10, 0, 0, 0));
-        
+
         if (isMyTripsMode) {
             Button manageBtn = new Button("Activities");
             manageBtn.getStyleClass().add("secondary-button");
             manageBtn.setOnAction(e -> handleManageActivities(t));
-            
+
             Button cancelBtn = new Button("Cancel Trip");
             cancelBtn.getStyleClass().add("danger-button");
             cancelBtn.setOnAction(e -> handleCancelTrip(t));
-            
+
             actions.getChildren().addAll(manageBtn, cancelBtn);
         } else {
             Button participateBtn = new Button("Participate");
@@ -514,6 +570,10 @@ public class TripController {
             HBox.setHgrow(participateBtn, Priority.ALWAYS);
             actions.getChildren().add(participateBtn);
         }
+        Button aiBtn = new Button("AI Assistant");
+        aiBtn.getStyleClass().add("secondary-button");
+        aiBtn.setOnAction(e -> openTripAI(t));
+        actions.getChildren().add(aiBtn);
 
         Button exportPdfBtn = new Button("Export PDF");
         exportPdfBtn.getStyleClass().add("export-pdf-btn");
@@ -576,8 +636,78 @@ public class TripController {
         card.getChildren().addAll(nameLab, routeLab, costLab, activitiesBox, actions, exportRow, qrBtn, qrBox);
         return card;
     }
+    //ai method
+    private void openTripAI(Trip trip) {
+        try {
+            if (aiPanelController == null) {
 
+                var url = getClass().getResource("/com/travelxp/views/trip-ai-panel.fxml");
+                if (url == null) {
+                    showAlert(Alert.AlertType.ERROR,
+                            "AI Panel",
+                            "FXML Not Found",
+                            "Could not find: /com/travelxp/views/trip-ai-panel.fxml\n" +
+                                    "Make sure the file exists under src/main/resources/com/travelxp/views/");
+                    return;
+                }
 
+                FXMLLoader loader = new FXMLLoader(url);
+                Parent panel = loader.load();
+                aiPanelController = loader.getController();
+
+                aiDrawerContent.getChildren().setAll(panel);
+            }
+
+            aiPanelController.initWithTrip(trip);
+            openAIDrawerAnimated();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "AI Panel", "Failed to open AI panel", ex.getMessage());
+        }
+    }
+
+    private void openAIDrawerAnimated() {
+        if (aiDrawer == null) return;
+        if (aiDrawerOpen) return;
+
+        aiDrawerOpen = true;
+
+        aiOverlay.setVisible(true);
+        aiOverlay.setManaged(true);
+
+        aiDrawer.setVisible(true);
+        aiDrawer.setManaged(true);
+        aiOverlay.setMouseTransparent(false);
+
+        // Start hidden to the right
+        aiDrawer.setTranslateX(aiDrawer.getPrefWidth());
+
+        TranslateTransition tt = new TranslateTransition(Duration.millis(220), aiDrawer);
+        tt.setToX(0);
+        tt.play();
+    }
+
+    @FXML
+    private void closeAIDrawer() {
+        if (aiDrawer == null) return;
+        if (!aiDrawerOpen) return;
+
+        aiDrawerOpen = false;
+
+        TranslateTransition tt = new TranslateTransition(Duration.millis(220), aiDrawer);
+        tt.setToX(aiDrawer.getPrefWidth());
+        tt.setOnFinished(e -> {
+            aiDrawer.setVisible(false);
+            aiDrawer.setManaged(false);
+
+            aiOverlay.setVisible(false);
+            aiOverlay.setManaged(false);
+            aiOverlay.setMouseTransparent(true);
+        });
+        tt.play();
+    }
+//endai
 
     private void handleExportTripPdf(Trip trip) {
         FileChooser fileChooser = new FileChooser();
@@ -892,7 +1022,7 @@ public class TripController {
         confirm.setTitle("Cancel Trip");
         confirm.setHeaderText("Cancel your participation in " + trip.getTripName() + "?");
         confirm.setContentText("You will be refunded: $" + String.format("%.2f", trip.getTotalExpenses()));
-        
+
         confirm.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.OK) {
                 try {
@@ -1200,12 +1330,20 @@ public class TripController {
             dialog.showAndWait();
         } catch (SQLException e) {}
     }
+    @FXML
+    private void handleBrowseTrips(ActionEvent event) {
+        openTrips(event, false);
+    }
 
+    @FXML
+    private void handleMyTrips(ActionEvent event) {
+        openTrips(event, true);
+    }
     @FXML
     private void handleAddTrip() {
         try {
             Trip t = new Trip();
-            t.setUserId(null); 
+            t.setUserId(null);
             t.setTripName(nameField.getText());
             t.setOrigin(originField.getText());
             t.setDestination(destinationField.getText());
@@ -1266,30 +1404,11 @@ public class TripController {
     @FXML private void handleBrowseProperties(ActionEvent event) {
         changeScene(event, Main.getSession().getUser().getRole().equals("ADMIN") ? "/com/travelxp/views/admin-property-view.fxml" : "/com/travelxp/views/property-view.fxml");
     }
-    @FXML private void handleBrowseTrips(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/travelxp/views/trip-view.fxml"));
-            Parent root = loader.load();
-            TripController controller = loader.getController();
-            controller.setMyTripsMode(false);
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.getScene().setRoot(root);
-            ThemeManager.applyTheme(stage.getScene());
-        } catch (IOException e) { e.printStackTrace(); }
-    }
+
     @FXML private void handleMyBookings(ActionEvent event) {
         changeScene(event, Main.getSession().getUser().getRole().equals("ADMIN") ? "/com/travelxp/views/admin-booking-view.fxml" : "/com/travelxp/views/booking-view.fxml");
     }
-    @FXML private void handleMyTrips(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/travelxp/views/trip-view.fxml"));
-            Parent root = loader.load();
-            TripController controller = loader.getController();
-            controller.setMyTripsMode(true);
-            Stage stage = (Stage) (event == null ? (pageTitle != null ? pageTitle.getScene().getWindow() : null) : ((Node) event.getSource()).getScene().getWindow());
-            if (stage != null) { stage.getScene().setRoot(root); ThemeManager.applyTheme(stage.getScene()); }
-        } catch (IOException e) { e.printStackTrace(); }
-    }
+
     @FXML private void handleEditProfile(ActionEvent event) { changeScene(event, "/com/travelxp/views/edit_profile.fxml"); }
     @FXML private void handleChangePassword(ActionEvent event) { changeScene(event, "/com/travelxp/views/change_password.fxml"); }
     @FXML private void handleFeedback(ActionEvent event) { changeScene(event, "/com/travelxp/views/feedback-view.fxml"); }
