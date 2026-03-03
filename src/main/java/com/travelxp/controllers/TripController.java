@@ -1,11 +1,11 @@
 package com.travelxp.controllers;
 
+import com.itextpdf.text.pdf.*;
 import com.travelxp.Main;
 import com.travelxp.models.Activity;
 import com.travelxp.models.Trip;
-import com.travelxp.services.ActivityService;
-import com.travelxp.services.TripService;
-import com.travelxp.services.UserService;
+import com.travelxp.services.*;
+import com.travelxp.utils.EmailTemplates;
 import com.travelxp.utils.ThemeManager;
 import javafx.animation.Animation;
 import javafx.animation.TranslateTransition;
@@ -18,7 +18,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -28,11 +30,56 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+
+import com.itextpdf.text.*;
+import javafx.stage.FileChooser;
+import java.io.File;
+import java.io.FileOutputStream;
+
+
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.Node;
+import javafx.stage.Stage;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+
+
+import java.util.concurrent.CompletableFuture;
+
+
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
+
+import javafx.scene.Scene;
+import javafx.animation.TranslateTransition;
 
 public class TripController {
 
@@ -41,7 +88,7 @@ public class TripController {
     @FXML private ScrollPane userScrollPane;
     @FXML private GridPane adminForm;
     @FXML private Pane animatedBg;
-    
+
     @FXML private Button tripsNavBtn;
     @FXML private Button myTripsNavBtn;
 
@@ -65,6 +112,16 @@ public class TripController {
     @FXML private TextField budgetField;
     @FXML private ComboBox<String> statusCombo;
 
+    @FXML private AnchorPane aiDrawer;
+    @FXML private StackPane aiDrawerContent;
+    //ai
+
+    @FXML private Pane aiOverlay;
+
+    private boolean aiDrawerOpen = false;
+    private TripAIPanelController aiPanelController;
+
+
     private final TripService tripService = new TripService();
     private final ActivityService activityService = new ActivityService();
     private final UserService userService = new UserService();
@@ -72,6 +129,57 @@ public class TripController {
     private final Random random = new Random();
 
     private boolean isMyTripsMode = false;
+
+
+
+    private final WeatherService weatherService = new WeatherService();
+
+
+
+    // Dynamic filter UI
+    private TextField searchField;
+    private ComboBox<String> statusFilterCombo;
+    private TextField minBudgetField;
+    private TextField maxBudgetField;
+    private Button clearFiltersBtn;
+
+    // Filtering engine
+    private FilteredList<Trip> filteredTrips;
+
+    private final EmailService emailService = new EmailService();
+
+
+
+    private void openTrips(ActionEvent event, boolean myTrips) {
+        try {
+
+            FXMLLoader loader =
+                    new FXMLLoader(getClass().getResource("/com/travelxp/views/trip-view.fxml"));
+
+            Parent root = loader.load();
+
+            TripController controller = loader.getController();
+            controller.setMyTripsMode(myTrips);
+
+            Stage stage = (Stage) ((Node) event.getSource())
+                    .getScene()
+                    .getWindow();
+
+            Scene scene = stage.getScene();
+
+            if (scene == null) {
+                scene = new Scene(root);
+                stage.setScene(scene);
+            } else {
+                scene.setRoot(root);
+            }
+
+            ThemeManager.applyTheme(scene);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     public void initialize() {
@@ -107,7 +215,198 @@ public class TripController {
 
         javafx.application.Platform.runLater(this::loadTrips);
         Platform.runLater(this::startBackgroundAnimation);
+
+        Platform.runLater(() -> {
+            buildAndInjectFilterBar();
+            setupFilteringEngine();
+            loadTrips(); // keep your loadTrips but we will adjust it
+        });
+
     }
+
+
+    private void buildAndInjectFilterBar() {
+
+        // 1) Build components
+        searchField = new TextField();
+        searchField.setPromptText("Search (name / origin / destination / status)");
+
+        statusFilterCombo = new ComboBox<>();
+        statusFilterCombo.setPromptText("Status");
+        statusFilterCombo.setItems(FXCollections.observableArrayList(
+                "ALL", "PLANNED", "ONGOING", "COMPLETED", "CANCELLED"
+        ));
+        statusFilterCombo.getSelectionModel().select("ALL");
+
+        minBudgetField = new TextField();
+        minBudgetField.setPromptText("Min budget");
+        minBudgetField.setPrefWidth(110);
+
+        maxBudgetField = new TextField();
+        maxBudgetField.setPromptText("Max budget");
+        maxBudgetField.setPrefWidth(110);
+
+        clearFiltersBtn = new Button("Clear");
+        clearFiltersBtn.getStyleClass().add("secondary-button"); // optional
+        clearFiltersBtn.setOnAction(e -> clearFilters());
+
+        // optional: restrict budget fields to numbers (safe)
+        minBudgetField.textProperty().addListener((obs, ov, nv) -> {
+            if (!nv.matches("\\d*(\\.\\d*)?")) minBudgetField.setText(ov);
+        });
+        maxBudgetField.textProperty().addListener((obs, ov, nv) -> {
+            if (!nv.matches("\\d*(\\.\\d*)?")) maxBudgetField.setText(ov);
+        });
+
+        HBox bar = new HBox(10, searchField, statusFilterCombo, minBudgetField, maxBudgetField, clearFiltersBtn);
+        bar.setPadding(new Insets(10));
+        bar.setStyle("-fx-background-color: transparent;"); // keep your theme clean
+
+        // 2) Inject into layout based on mode
+        boolean isAdmin = Main.getSession().getUser().getRole().equals("ADMIN");
+
+        if (isAdmin) {
+            // Admin mode: try to place above tripTable
+            injectAboveNode(bar, tripTable);
+        } else {
+            // User mode: place above the scrollPane
+            injectAboveNode(bar, userScrollPane);
+        }
+    }
+
+    private void injectAboveNode(Node bar, Node targetNode) {
+        if (targetNode == null) return;
+
+        Parent parent = targetNode.getParent();
+        if (parent == null) return;
+
+        if (parent instanceof VBox vbox) {
+            int idx = vbox.getChildren().indexOf(targetNode);
+            if (idx >= 0) vbox.getChildren().add(idx, bar);
+            else vbox.getChildren().add(0, bar);
+            return;
+        }
+
+        if (parent instanceof BorderPane bp) {
+            // If target is center, we can wrap center in VBox
+            Node center = bp.getCenter();
+            if (center == targetNode) {
+                VBox wrapper = new VBox(8, bar, targetNode);
+                wrapper.setPadding(new Insets(0));
+                bp.setCenter(wrapper);
+                return;
+            }
+        }
+
+        if (parent instanceof AnchorPane ap) {
+            // Wrap target in VBox at same anchors (simple)
+            VBox wrapper = new VBox(8, bar, targetNode);
+            AnchorPane.setTopAnchor(wrapper, AnchorPane.getTopAnchor(targetNode));
+            AnchorPane.setBottomAnchor(wrapper, AnchorPane.getBottomAnchor(targetNode));
+            AnchorPane.setLeftAnchor(wrapper, AnchorPane.getLeftAnchor(targetNode));
+            AnchorPane.setRightAnchor(wrapper, AnchorPane.getRightAnchor(targetNode));
+
+            int idx = ap.getChildren().indexOf(targetNode);
+            ap.getChildren().remove(targetNode);
+            ap.getChildren().add(idx, wrapper);
+            return;
+        }
+
+        // Fallback: cannot inject safely
+        System.out.println("Could not inject filter bar: unsupported parent layout " + parent.getClass());
+    }
+
+    private void setupFilteringEngine() {
+
+        filteredTrips = new FilteredList<>(tripData, t -> true);
+
+        // Admin TableView uses sorted list
+        if (tripTable != null) {
+            SortedList<Trip> sorted = new SortedList<>(filteredTrips);
+            sorted.comparatorProperty().bind(tripTable.comparatorProperty());
+            tripTable.setItems(sorted);
+        }
+
+        // listeners -> apply filters
+        if (searchField != null) searchField.textProperty().addListener((o, a, b) -> applyFilters());
+        if (statusFilterCombo != null) statusFilterCombo.valueProperty().addListener((o, a, b) -> applyFilters());
+        if (minBudgetField != null) minBudgetField.textProperty().addListener((o, a, b) -> applyFilters());
+        if (maxBudgetField != null) maxBudgetField.textProperty().addListener((o, a, b) -> applyFilters());
+    }
+
+    private void applyFilters() {
+        if (filteredTrips == null) return;
+
+        String q = (searchField != null && searchField.getText() != null)
+                ? searchField.getText().trim().toLowerCase()
+                : "";
+
+        String status = (statusFilterCombo != null && statusFilterCombo.getValue() != null)
+                ? statusFilterCombo.getValue()
+                : "ALL";
+
+        Double minBudget = parseDoubleOrNull(minBudgetField != null ? minBudgetField.getText() : null);
+        Double maxBudget = parseDoubleOrNull(maxBudgetField != null ? maxBudgetField.getText() : null);
+
+        filteredTrips.setPredicate(trip -> {
+
+            // 1) search
+            boolean matchesText = true;
+            if (!q.isEmpty()) {
+                String name = safe(trip.getTripName());
+                String origin = safe(trip.getOrigin());
+                String dest = safe(trip.getDestination());
+                String st = safe(trip.getStatus());
+
+                matchesText =
+                        name.toLowerCase().contains(q) ||
+                                origin.toLowerCase().contains(q) ||
+                                dest.toLowerCase().contains(q) ||
+                                st.toLowerCase().contains(q);
+            }
+
+            // 2) status filter
+            boolean matchesStatus = true;
+            if (status != null && !"ALL".equalsIgnoreCase(status)) {
+                matchesStatus = status.equalsIgnoreCase(safe(trip.getStatus()));
+            }
+
+            // 3) budget range filter
+            double budget = (trip.getBudgetAmount() != null) ? trip.getBudgetAmount() : 0.0;
+
+            boolean matchesBudget = true;
+            if (minBudget != null) matchesBudget = budget >= minBudget;
+            if (matchesBudget && maxBudget != null) matchesBudget = budget <= maxBudget;
+
+            return matchesText && matchesStatus && matchesBudget;
+        });
+
+        refreshUserCardsFromFiltered();
+    }
+
+    private String safe(String s) {
+        return s == null ? "" : s;
+    }
+
+    private Double parseDoubleOrNull(String s) {
+        if (s == null) return null;
+        s = s.trim();
+        if (s.isEmpty()) return null;
+        try { return Double.parseDouble(s); }
+        catch (Exception e) { return null; }
+    }
+
+    private void refreshUserCardsFromFiltered() {
+        if (userTripsContainer == null) return;
+
+        userTripsContainer.getChildren().clear();
+
+        for (Trip t : filteredTrips) {
+            userTripsContainer.getChildren().add(createTripCard(t));
+        }
+    }
+
+
 
     private void startBackgroundAnimation() {
         if (animatedBg == null) return;
@@ -160,7 +459,7 @@ public class TripController {
             myTripsNavBtn.getStyleClass().remove("accent");
             if (!myTripsNavBtn.getStyleClass().contains("flat")) myTripsNavBtn.getStyleClass().add("flat");
         }
-        
+
         if (isMyTripsMode && myTripsNavBtn != null) {
             myTripsNavBtn.getStyleClass().remove("flat");
             myTripsNavBtn.getStyleClass().add("accent");
@@ -174,7 +473,7 @@ public class TripController {
         try {
             boolean isAdmin = Main.getSession().getUser().getRole().equals("ADMIN");
             List<Trip> trips;
-            
+
             if (isAdmin && !isMyTripsMode) {
                 trips = tripService.getAllTrips();
             } else if (isMyTripsMode) {
@@ -186,7 +485,9 @@ public class TripController {
             }
 
             tripData.setAll(trips);
-            if (tripTable != null) tripTable.setItems(tripData);
+
+            // apply filters after loading data
+            applyFilters();
 
             if (userTripsContainer != null) {
                 userTripsContainer.getChildren().clear();
@@ -199,6 +500,14 @@ public class TripController {
         }
     }
 
+    private void clearFilters() {
+        if (searchField != null) searchField.clear();
+        if (statusFilterCombo != null) statusFilterCombo.getSelectionModel().select("ALL");
+        if (minBudgetField != null) minBudgetField.clear();
+        if (maxBudgetField != null) maxBudgetField.clear();
+        applyFilters();
+    }
+
     private VBox createTripCard(Trip t) {
         VBox card = new VBox(10);
         card.getStyleClass().add("card");
@@ -207,16 +516,19 @@ public class TripController {
 
         Label nameLab = new Label(t.getTripName());
         nameLab.getStyleClass().add("title-4");
-        
+
         Label routeLab = new Label(t.getOrigin() + " ➔ " + t.getDestination());
         routeLab.getStyleClass().add("text-muted");
 
         double displayCost = isMyTripsMode ? t.getTotalExpenses() : (t.getBudgetAmount() != null ? t.getBudgetAmount() : 0.0);
         String prefix = isMyTripsMode ? "My Expenses: $" : "Entry Cost: $";
-        
+
         Label costLab = new Label(prefix + String.format("%.2f", displayCost));
         costLab.getStyleClass().add("accent");
         costLab.setStyle("-fx-font-weight: bold;");
+
+
+
 
         VBox activitiesBox = new VBox(5);
         if (isMyTripsMode) {
@@ -239,16 +551,16 @@ public class TripController {
 
         HBox actions = new HBox(10);
         actions.setPadding(new Insets(10, 0, 0, 0));
-        
+
         if (isMyTripsMode) {
             Button manageBtn = new Button("Activities");
             manageBtn.getStyleClass().add("secondary-button");
             manageBtn.setOnAction(e -> handleManageActivities(t));
-            
+
             Button cancelBtn = new Button("Cancel Trip");
             cancelBtn.getStyleClass().add("danger-button");
             cancelBtn.setOnAction(e -> handleCancelTrip(t));
-            
+
             actions.getChildren().addAll(manageBtn, cancelBtn);
         } else {
             Button participateBtn = new Button("Participate");
@@ -258,17 +570,459 @@ public class TripController {
             HBox.setHgrow(participateBtn, Priority.ALWAYS);
             actions.getChildren().add(participateBtn);
         }
+        Button aiBtn = new Button("AI Assistant");
+        aiBtn.getStyleClass().add("secondary-button");
+        aiBtn.setOnAction(e -> openTripAI(t));
+        actions.getChildren().add(aiBtn);
 
-        card.getChildren().addAll(nameLab, routeLab, costLab, activitiesBox, actions);
+        Button exportPdfBtn = new Button("Export PDF");
+        exportPdfBtn.getStyleClass().add("export-pdf-btn");
+        exportPdfBtn.setMaxWidth(Double.MAX_VALUE);
+        exportPdfBtn.setOnAction(e -> handleExportTripPdf(t));
+        HBox.setHgrow(exportPdfBtn, Priority.ALWAYS);
+
+        // If you want export to be alone in its own row (cleaner):
+        VBox exportRow = new VBox(exportPdfBtn);
+        exportRow.setPadding(new Insets(6, 0, 0, 0));
+
+
+        // --- QR AREA (inside the card) ---
+        ImageView cardQrImg = new ImageView();
+        cardQrImg.setFitWidth(160);
+        cardQrImg.setFitHeight(160);
+        cardQrImg.setPreserveRatio(true);
+        cardQrImg.setSmooth(true);
+        cardQrImg.setVisible(false);
+        cardQrImg.setManaged(false); // so it doesn't take space when hidden
+
+        VBox qrBox = new VBox(8);
+        qrBox.setPadding(new Insets(10, 0, 0, 0));
+        qrBox.setVisible(false);
+        qrBox.setManaged(false);
+
+        Label qrLabel = new Label("Trip QR Code");
+        qrLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 12px;");
+
+        Button qrBtn = new Button("Show QR");
+        qrBtn.getStyleClass().add("secondary-button");
+        qrBtn.setMaxWidth(Double.MAX_VALUE);
+
+        qrBtn.setOnAction(e -> {
+            try {
+                String qrText = buildTripQrText(t);
+                String fileName = "trip_qr_" + t.getId() + ".png";
+                File qrFile = generateQRCode(qrText, 260, 260, fileName);
+
+                if (qrFile != null && qrFile.exists()) {
+                    cardQrImg.setImage(new Image(qrFile.toURI().toString()));
+
+                    qrBox.setVisible(true);
+                    qrBox.setManaged(true);
+                    cardQrImg.setVisible(true);
+                    cardQrImg.setManaged(true);
+
+                    qrBtn.setText("Refresh QR");
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "QR Code", "Generation Failed", "Could not generate QR Code.");
+                }
+            } catch (Exception ex) {
+                showAlert(Alert.AlertType.ERROR, "QR Code", "Error", ex.getMessage());
+            }
+        });
+
+        qrBox.getChildren().addAll(qrLabel, cardQrImg);
+
+        // Then add exportRow to the card instead of adding exportPdfBtn inside actions
+        card.getChildren().addAll(nameLab, routeLab, costLab, activitiesBox, actions, exportRow, qrBtn, qrBox);
         return card;
     }
+    //ai method
+    private void openTripAI(Trip trip) {
+        try {
+            if (aiPanelController == null) {
+
+                var url = getClass().getResource("/com/travelxp/views/trip-ai-panel.fxml");
+                if (url == null) {
+                    showAlert(Alert.AlertType.ERROR,
+                            "AI Panel",
+                            "FXML Not Found",
+                            "Could not find: /com/travelxp/views/trip-ai-panel.fxml\n" +
+                                    "Make sure the file exists under src/main/resources/com/travelxp/views/");
+                    return;
+                }
+
+                FXMLLoader loader = new FXMLLoader(url);
+                Parent panel = loader.load();
+                aiPanelController = loader.getController();
+
+                aiDrawerContent.getChildren().setAll(panel);
+            }
+
+            aiPanelController.initWithTrip(trip);
+            openAIDrawerAnimated();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "AI Panel", "Failed to open AI panel", ex.getMessage());
+        }
+    }
+
+    private void openAIDrawerAnimated() {
+        if (aiDrawer == null) return;
+        if (aiDrawerOpen) return;
+
+        aiDrawerOpen = true;
+
+        aiOverlay.setVisible(true);
+        aiOverlay.setManaged(true);
+
+        aiDrawer.setVisible(true);
+        aiDrawer.setManaged(true);
+        aiOverlay.setMouseTransparent(false);
+
+        // Start hidden to the right
+        aiDrawer.setTranslateX(aiDrawer.getPrefWidth());
+
+        TranslateTransition tt = new TranslateTransition(Duration.millis(220), aiDrawer);
+        tt.setToX(0);
+        tt.play();
+    }
+
+    @FXML
+    private void closeAIDrawer() {
+        if (aiDrawer == null) return;
+        if (!aiDrawerOpen) return;
+
+        aiDrawerOpen = false;
+
+        TranslateTransition tt = new TranslateTransition(Duration.millis(220), aiDrawer);
+        tt.setToX(aiDrawer.getPrefWidth());
+        tt.setOnFinished(e -> {
+            aiDrawer.setVisible(false);
+            aiDrawer.setManaged(false);
+
+            aiOverlay.setVisible(false);
+            aiOverlay.setManaged(false);
+            aiOverlay.setMouseTransparent(true);
+        });
+        tt.play();
+    }
+//endai
+
+    private void handleExportTripPdf(Trip trip) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Trip PDF");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+
+        String safeName = (trip.getTripName() == null ? "trip" : trip.getTripName().replaceAll("[\\\\/:*?\"<>|]", "_"));
+        fileChooser.setInitialFileName("Trip_" + safeName + ".pdf");
+
+        Stage stage = (Stage) (pageTitle != null ? pageTitle.getScene().getWindow() : null);
+        File selectedFile = fileChooser.showSaveDialog(stage);
+        if (selectedFile == null) return;
+
+        try {
+            // A4 + margins
+            Document document = new Document(PageSize.A4, 48, 48, 60, 55);
+
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(selectedFile));
+            writer.setPageEvent(new TripPdfFooterEvent()); // footer + page number
+            document.open();
+
+            // Colors (Luxury + clean)
+            BaseColor primary = new BaseColor(17, 24, 39);     // #111827
+            BaseColor accent = new BaseColor(212, 175, 55);    // Gold-ish
+            BaseColor softGray = new BaseColor(243, 244, 246); // #F3F4F6
+            BaseColor border = new BaseColor(229, 231, 235);   // #E5E7EB
+            BaseColor headerBg = new BaseColor(17, 24, 39);    // dark header
+
+            // Fonts
+            Font h1 = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 20, primary);
+            Font h2 = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 13, primary);
+            Font label = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, new BaseColor(75, 85, 99)); // gray-600
+            Font value = FontFactory.getFont(FontFactory.HELVETICA, 11, primary);
+            Font small = FontFactory.getFont(FontFactory.HELVETICA, 9, new BaseColor(107, 114, 128)); // gray-500
+
+            // Header (brand + title)
+            PdfPTable top = new PdfPTable(2);
+            top.setWidthPercentage(100);
+            top.setWidths(new float[]{70, 30});
+
+            PdfPCell brand = new PdfPCell();
+            brand.setBorder(Rectangle.NO_BORDER);
+            Paragraph brandP = new Paragraph();
+            brandP.add(new Chunk("TravelXP", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16, accent)));
+            brandP.add(new Chunk("  |  Trip Report", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16, primary)));
+            brand.addElement(brandP);
+
+            PdfPCell meta = new PdfPCell();
+            meta.setBorder(Rectangle.NO_BORDER);
+            meta.setHorizontalAlignment(Element.ALIGN_RIGHT);
+
+            String genAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+            Paragraph metaP = new Paragraph("Generated: " + genAt, small);
+            metaP.setAlignment(Element.ALIGN_RIGHT);
+            meta.addElement(metaP);
+
+            top.addCell(brand);
+            top.addCell(meta);
+            document.add(top);
+
+            // Divider line
+            Paragraph line = new Paragraph(" ");
+            line.setSpacingBefore(8);
+            line.setSpacingAfter(10);
+            document.add(line);
+
+            // Trip title
+            Paragraph tripTitle = new Paragraph(nvl(trip.getTripName()), h1);
+            tripTitle.setSpacingAfter(8f);
+            document.add(tripTitle);
+
+            // Route + status line
+            Paragraph route = new Paragraph(
+                    nvl(trip.getOrigin()) + "  ➜  " + nvl(trip.getDestination()) + "   •   Status: " + nvl(trip.getStatus()),
+                    FontFactory.getFont(FontFactory.HELVETICA, 11, new BaseColor(55, 65, 81))
+            );
+            route.setSpacingAfter(14f);
+            document.add(route);
+
+            // Summary box (2 columns)
+            PdfPTable summary = new PdfPTable(2);
+            summary.setWidthPercentage(100);
+            summary.setSpacingAfter(16f);
+            summary.setWidths(new float[]{50, 50});
+
+            PdfPCell box = new PdfPCell();
+            box.setColspan(2);
+            box.setPadding(12f);
+            box.setBackgroundColor(softGray);
+            box.setBorderColor(border);
+            box.setBorderWidth(1f);
+
+            PdfPTable inner = new PdfPTable(2);
+            inner.setWidthPercentage(100);
+            inner.setWidths(new float[]{35, 65});
+
+            addKV(inner, "Trip Name", nvl(trip.getTripName()), label, value);
+            addKV(inner, "Start Date", trip.getStartDate() != null ? trip.getStartDate().toString() : "-", label, value);
+            addKV(inner, "End Date", trip.getEndDate() != null ? trip.getEndDate().toString() : "-", label, value);
+            addKV(inner, "Entry/Budget", trip.getBudgetAmount() != null ? money(trip.getBudgetAmount()) : "-", label, value);
+
+            if (isMyTripsMode) {
+                addKV(inner, "My Total Expenses", money(trip.getTotalExpenses()), label, value);
+                addKV(inner, "XP Earned", String.valueOf(trip.getTotalXpEarned()), label, value);
+            }
+
+            box.addElement(new Paragraph("Trip Summary", h2));
+            box.addElement(new Paragraph(" ", small));
+            box.addElement(inner);
+
+            summary.addCell(box);
+            document.add(summary);
+
+            // Activities header
+            Paragraph actsTitle = new Paragraph("Activities", h2);
+            actsTitle.setSpacingAfter(8f);
+            document.add(actsTitle);
+
+            List<Activity> activities;
+            try {
+                activities = activityService.getActivitiesByTripId(trip.getId());
+            } catch (SQLException ex) {
+                activities = new ArrayList<>();
+            }
+
+            if (activities.isEmpty()) {
+                Paragraph empty = new Paragraph("No activities found for this trip.", small);
+                empty.setSpacingAfter(12f);
+                document.add(empty);
+            } else {
+                PdfPTable actTable = new PdfPTable(4);
+                actTable.setWidthPercentage(100);
+                actTable.setSpacingBefore(4f);
+                actTable.setSpacingAfter(14f);
+                actTable.setWidths(new float[]{45, 18, 17, 20});
+
+                addHeaderCellNice(actTable, "Title", headerBg);
+                addHeaderCellNice(actTable, "Date", headerBg);
+                addHeaderCellNice(actTable, "Cost", headerBg);
+                addHeaderCellNice(actTable, "Status", headerBg);
+
+                double totalCost = 0.0;
+                int doneCount = 0;
+
+                for (int i = 0; i < activities.size(); i++) {
+                    Activity a = activities.get(i);
+                    BaseColor rowBg = (i % 2 == 0) ? BaseColor.WHITE : new BaseColor(249, 250, 251); // zebra
+
+                    String titleTxt = nvl(a.getTitle());
+                    String dateTxt = a.getActivityDate() != null ? a.getActivityDate().toString() : "-";
+                    double costVal = a.getCostAmount() != null ? a.getCostAmount() : 0.0;
+                    String costTxt = money(costVal);
+                    String statusTxt = nvl(a.getStatus());
+
+                    if ("DONE".equalsIgnoreCase(statusTxt)) doneCount++;
+                    totalCost += costVal;
+
+                    addBodyCell(actTable, titleTxt, rowBg);
+                    addBodyCell(actTable, dateTxt, rowBg);
+                    addBodyCell(actTable, costTxt, rowBg);
+                    addBodyCell(actTable, statusTxt, rowBg);
+                }
+
+                document.add(actTable);
+
+                // Totals line
+                PdfPTable totals = new PdfPTable(3);
+                totals.setWidthPercentage(100);
+                totals.setWidths(new float[]{34, 33, 33});
+
+                totals.addCell(makeStatCell("Total Activities", String.valueOf(activities.size()), softGray, primary));
+                totals.addCell(makeStatCell("Joined (DONE)", String.valueOf(doneCount), softGray, primary));
+                totals.addCell(makeStatCell("Activities Total Cost", money(totalCost), softGray, primary));
+
+                document.add(totals);
+            }
+
+            document.close();
+            showAlert(Alert.AlertType.INFORMATION, "Export", "PDF Generated", "Saved to:\n" + selectedFile.getAbsolutePath());
+
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Export Error", "PDF Failed", e.getMessage());
+        }
+    }
+
+    private void addKV(PdfPTable table, String k, String v, Font keyFont, Font valFont) {
+        PdfPCell c1 = new PdfPCell(new Phrase(k, keyFont));
+        PdfPCell c2 = new PdfPCell(new Phrase(v, valFont));
+
+        c1.setBorder(Rectangle.NO_BORDER);
+        c2.setBorder(Rectangle.NO_BORDER);
+
+        c1.setPaddingTop(4f);
+        c1.setPaddingBottom(6f);
+        c2.setPaddingTop(4f);
+        c2.setPaddingBottom(6f);
+
+        table.addCell(c1);
+        table.addCell(c2);
+    }
+
+    private void addHeaderCellNice(PdfPTable table, String text, BaseColor bg) {
+        Font font = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, BaseColor.WHITE);
+        PdfPCell cell = new PdfPCell(new Phrase(text, font));
+        cell.setBackgroundColor(bg);
+        cell.setPadding(9f);
+        cell.setBorderColor(new BaseColor(31, 41, 55));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table.addCell(cell);
+    }
+
+    private void addBodyCell(PdfPTable table, String text, BaseColor bg) {
+        Font font = FontFactory.getFont(FontFactory.HELVETICA, 10, new BaseColor(17, 24, 39));
+        PdfPCell cell = new PdfPCell(new Phrase(text, font));
+        cell.setBackgroundColor(bg);
+        cell.setPadding(8f);
+        cell.setBorderColor(new BaseColor(229, 231, 235));
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        table.addCell(cell);
+    }
+
+    private PdfPCell makeStatCell(String label, String value, BaseColor bg, BaseColor textColor) {
+        PdfPCell cell = new PdfPCell();
+        cell.setBackgroundColor(bg);
+        cell.setBorderColor(new BaseColor(229, 231, 235));
+        cell.setPadding(10f);
+
+        Font f1 = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 9, new BaseColor(107, 114, 128));
+        Font f2 = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, textColor);
+
+        Paragraph p = new Paragraph();
+        p.add(new Chunk(label + "\n", f1));
+        p.add(new Chunk(value, f2));
+
+        cell.addElement(p);
+        return cell;
+    }
+
+    private String money(double val) {
+        DecimalFormat df = new DecimalFormat("$0.00");
+        return df.format(val);
+    }
+
+    private String nvl(String s) {
+        return (s == null || s.isBlank()) ? "-" : s;
+    }
+
+    private static class TripPdfFooterEvent extends PdfPageEventHelper {
+        private final Font footerFont = FontFactory.getFont(FontFactory.HELVETICA, 9, new BaseColor(107, 114, 128));
+
+        @Override
+        public void onEndPage(PdfWriter writer, Document document) {
+            PdfContentByte cb = writer.getDirectContent();
+
+            String left = "TravelXP";
+            String right = "Page " + writer.getPageNumber();
+
+            float y = document.bottom() - 18;
+
+            ColumnText.showTextAligned(cb, Element.ALIGN_LEFT,
+                    new Phrase(left, footerFont),
+                    document.left(), y, 0);
+
+            ColumnText.showTextAligned(cb, Element.ALIGN_RIGHT,
+                    new Phrase(right, footerFont),
+                    document.right(), y, 0);
+        }
+    }
+
+
+
+
+
+    // QRCode Generation Functions
+
+
+    private String buildTripQrText(Trip trip) {
+        return "TravelXP - Trip\n"
+                + "Trip ID: " + trip.getId() + "\n"
+                + "Name: " + nvl(trip.getTripName()) + "\n"
+                + "Route: " + nvl(trip.getOrigin()) + " -> " + nvl(trip.getDestination()) + "\n"
+                + "Start: " + (trip.getStartDate() != null ? trip.getStartDate() : "-") + "\n"
+                + "End: " + (trip.getEndDate() != null ? trip.getEndDate() : "-") + "\n"
+                + "Status: " + nvl(trip.getStatus());
+    }
+
+    public static File generateQRCode(String data, int width, int height, String fileName) {
+        try {
+            Map<EncodeHintType, Object> hints = new HashMap<>();
+            hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+            hints.put(EncodeHintType.MARGIN, 1); // nicer QR (small white margin)
+
+            BitMatrix bitMatrix = new MultiFormatWriter()
+                    .encode(data, BarcodeFormat.QR_CODE, width, height, hints);
+
+            Path path = Paths.get(System.getProperty("java.io.tmpdir"), fileName);
+            MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
+
+            return path.toFile();
+        } catch (WriterException | IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    //End QRCode
+
 
     private void handleCancelTrip(Trip trip) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Cancel Trip");
         confirm.setHeaderText("Cancel your participation in " + trip.getTripName() + "?");
         confirm.setContentText("You will be refunded: $" + String.format("%.2f", trip.getTotalExpenses()));
-        
+
         confirm.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.OK) {
                 try {
@@ -298,6 +1052,60 @@ public class TripController {
             }
         } catch (SQLException e) { e.printStackTrace(); }
 
+
+        showDestinationWeatherThenOpenDialog(template);
+    }
+
+
+    private void showDestinationWeatherThenOpenDialog(Trip template) {
+        String destination = template.getDestination();
+
+        // Optional: if destination is empty, just continue
+        if (destination == null || destination.isBlank()) {
+            openParticipateDialog(template);
+            return;
+        }
+
+        CompletableFuture
+                .supplyAsync(() -> {
+                    try {
+                        return weatherService.getCurrentWeatherByCity(destination);
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                })
+                .thenAccept(weather -> Platform.runLater(() -> {
+                    Alert a = new Alert(Alert.AlertType.INFORMATION);
+                    a.setTitle("Destination Weather");
+                    a.setHeaderText("Current weather in " + weather.location);
+
+                    String content =
+                            "Condition: " + weather.condition + "\n" +
+                                    "Temperature: " + String.format("%.1f", weather.temperatureC) + " °C\n" +
+                                    "Wind: " + String.format("%.1f", weather.windKmh) + " km/h\n" +
+                                    "Code: " + weather.weatherCode;
+
+                    a.setContentText(content);
+
+                    a.showAndWait(); // after OK -> continue
+                    openParticipateDialog(template);
+                }))
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> {
+                        // if weather fails, do NOT block the participate flow
+                        showAlert(Alert.AlertType.WARNING,
+                                "Weather",
+                                "Could not fetch weather",
+                                "Destination: " + destination + "\nReason: " + ex.getCause().getMessage());
+
+                        openParticipateDialog(template);
+                    });
+                    return null;
+                });
+    }
+
+
+    private void openParticipateDialog(Trip template) {
         Dialog<Double> dialog = new Dialog<>();
         dialog.setTitle("Participate: " + template.getTripName());
         dialog.setHeaderText("Join this trip and select activities.");
@@ -357,6 +1165,11 @@ public class TripController {
                 myTrip.setBudgetAmount(baseEntry);
                 tripService.addTrip(myTrip);
                 tripService.addTripParticipant(template.getId(), userId);
+
+
+                //send_SMS();
+
+
                 for (CheckBox cb : checkBoxes) {
                     Activity ta = (Activity) cb.getUserData();
                     Activity ma = new Activity();
@@ -369,8 +1182,52 @@ public class TripController {
                 }
                 showAlert(Alert.AlertType.INFORMATION, "Success", "Joined Trip", "Trip added to your journeys!");
                 setMyTripsMode(true);
+
+                String userEmail = Main.getSession().getUser().getEmail(); // make sure this exists
+                String fullName = Main.getSession().getUser().getUsername(); // or username
+
+                String subject = "TravelXP - Participation Confirmed";
+                String body = EmailTemplates.tripConfirmationHtml(fullName, template, totalCost);
+
+                CompletableFuture.runAsync(() -> {
+                    try {
+                        emailService.sendEmail(userEmail, subject, body);
+                        Platform.runLater(() ->
+                                showAlert(Alert.AlertType.INFORMATION, "Email", "Confirmation Sent", "Email sent to: " + userEmail)
+                        );
+                    } catch (Exception ex) {
+                        Platform.runLater(() ->
+                                showAlert(Alert.AlertType.WARNING, "Email", "Could not send email",
+                                        "Participation succeeded, but email failed.\nReason: " + ex.getMessage())
+                        );
+                    }
+                });
+
             } catch (SQLException e) { showAlert(Alert.AlertType.ERROR, "Error", "Failed to join", e.getMessage()); }
         });
+    }
+
+    void send_SMS(){
+        // Initialisation de la bibliothèque Twilio avec les informations de votre compte
+        String ACCOUNT_SID = "AC784cfbd82e1605c281e334ef318b2dad";
+        String AUTH_TOKEN = "c5c65a010e4c1623e22f9c7e9174d836";
+
+        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+
+        String recipientNumber = "+21655206757";
+        String message = "Dear Customer,\n\n"
+                + "We are pleased to inform you that your participation in the selected trip has been successfully confirmed.\n"
+                + "Your booking and selected activities have been added to your account.\n\n"
+                + "If you need any further information or assistance, please contact the administration.\n\n"
+                + "Thank you for choosing TravelXP. We look forward to providing you with an amazing experience.\n\n"
+                + "Best regards,\n"
+                + "The TravelXP Team";
+
+        com.twilio.rest.api.v2010.account.Message twilioMessage = Message.creator(
+                new com.twilio.type.PhoneNumber(recipientNumber),
+                new PhoneNumber("+17164033215"),message).create();
+
+        System.out.println("SMS envoyé : " + twilioMessage.getSid());
     }
 
     private void handleManageActivities(Trip trip) {
@@ -473,12 +1330,20 @@ public class TripController {
             dialog.showAndWait();
         } catch (SQLException e) {}
     }
+    @FXML
+    private void handleBrowseTrips(ActionEvent event) {
+        openTrips(event, false);
+    }
 
+    @FXML
+    private void handleMyTrips(ActionEvent event) {
+        openTrips(event, true);
+    }
     @FXML
     private void handleAddTrip() {
         try {
             Trip t = new Trip();
-            t.setUserId(null); 
+            t.setUserId(null);
             t.setTripName(nameField.getText());
             t.setOrigin(originField.getText());
             t.setDestination(destinationField.getText());
@@ -539,30 +1404,11 @@ public class TripController {
     @FXML private void handleBrowseProperties(ActionEvent event) {
         changeScene(event, Main.getSession().getUser().getRole().equals("ADMIN") ? "/com/travelxp/views/admin-property-view.fxml" : "/com/travelxp/views/property-view.fxml");
     }
-    @FXML private void handleBrowseTrips(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/travelxp/views/trip-view.fxml"));
-            Parent root = loader.load();
-            TripController controller = loader.getController();
-            controller.setMyTripsMode(false);
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.getScene().setRoot(root);
-            ThemeManager.applyTheme(stage.getScene());
-        } catch (IOException e) { e.printStackTrace(); }
-    }
+
     @FXML private void handleMyBookings(ActionEvent event) {
         changeScene(event, Main.getSession().getUser().getRole().equals("ADMIN") ? "/com/travelxp/views/admin-booking-view.fxml" : "/com/travelxp/views/booking-view.fxml");
     }
-    @FXML private void handleMyTrips(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/travelxp/views/trip-view.fxml"));
-            Parent root = loader.load();
-            TripController controller = loader.getController();
-            controller.setMyTripsMode(true);
-            Stage stage = (Stage) (event == null ? (pageTitle != null ? pageTitle.getScene().getWindow() : null) : ((Node) event.getSource()).getScene().getWindow());
-            if (stage != null) { stage.getScene().setRoot(root); ThemeManager.applyTheme(stage.getScene()); }
-        } catch (IOException e) { e.printStackTrace(); }
-    }
+
     @FXML private void handleEditProfile(ActionEvent event) { changeScene(event, "/com/travelxp/views/edit_profile.fxml"); }
     @FXML private void handleChangePassword(ActionEvent event) { changeScene(event, "/com/travelxp/views/change_password.fxml"); }
     @FXML private void handleFeedback(ActionEvent event) { changeScene(event, "/com/travelxp/views/feedback-view.fxml"); }

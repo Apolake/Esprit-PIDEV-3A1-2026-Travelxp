@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.travelxp.controllers.TripAIPanelController"
+      spacing="10">
+
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <Label fx:id="tripSummaryLabel"
+           text="Trip Summary"
+           wrapText="true"
+           style="-fx-font-size: 12px; -fx-text-fill: rgba(0,0,0,0.70);" />
+
+    <Separator/>
+
+    <ScrollPane fx:id="chatScroll" fitToWidth="true" VBox.vgrow="ALWAYS">
+        <content>
+            <VBox fx:id="chatBox" spacing="8">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+            </VBox>
+        </content>
+    </ScrollPane>
+
+    <HBox spacing="8" alignment="CENTER_LEFT">
+        <TextField fx:id="userInputField"
+                   promptText="Ask about planning, budget, packing..."
+                   HBox.hgrow="ALWAYS"
+                   onAction="#handleSend"/>
+        <Button fx:id="sendBtn" text="Send" onAction="#handleSend"/>
+    </HBox>
+
+</VBox>

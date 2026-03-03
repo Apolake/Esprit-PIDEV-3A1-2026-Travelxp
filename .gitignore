@@ -2,8 +2,10 @@
 .idea/
 *.iml
 
-# Maven build
-/target/
+# Maven
+target/
+
+# Java
 *.class
 
 # OS

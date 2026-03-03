@@ -73,6 +73,7 @@ public class DashboardController {
     private final StripeService stripeService = new StripeService();
     private final Random random = new Random();
 
+
     @FXML
     public void initialize() {
         // Apply circular clip
