@@ -15,7 +15,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -26,8 +25,7 @@ import com.travelxp.models.PlaceDTO;
  *
  * Supports Google Places (default) and Foursquare (when provider="FOURSQUARE").
  * The service reads API keys from environment variables:
- *  - GOOGLE_PLACES_API_KEY for Google
- *  - FOURSQUARE_API_KEY for Foursquare
+ *  
  */
 public class PlacesService {
 
@@ -37,12 +35,19 @@ public class PlacesService {
     private final String provider; // "GOOGLE" or "FOURSQUARE"
     private final String apiKey;
 
-    public PlacesService() {
     // simple in-memory cache keyed by request parameters
     private final ConcurrentMap<String, CacheEntry> cache = new ConcurrentHashMap<>();
     private volatile long cacheTtlMillis = 10 * 60 * 1000; // 10 minutes by default
-    private final ConcurrentMap<String, CacheEntry> cache = new ConcurrentHashMap<>(); // simple in-memory cache keyed by request parameters
-    private volatile long cacheTtlMillis = 10 * 60 * 1000; // 10 minutes by default
+
+    public PlacesService() {
+        String prov = System.getenv("PLACES_PROVIDER");
+        if (prov == null || prov.isBlank()) {
+            prov = "GOOGLE";
+        }
+        this.provider = prov.toUpperCase();
+
+        if ("FOURSQUARE".equals(this.provider)) {
+            this.apiKey = System.getenv("FOURSQUARE_API_KEY");
         } else {
             this.apiKey = System.getenv("GOOGLE_PLACES_API_KEY");
         }
@@ -50,27 +55,18 @@ public class PlacesService {
     }
 
     /**
-     * Fetch nearby places for the supplied categories.
+     * Fetch nearby places and return a paginated slice.
+     * Page index is zero-based. If pageSize <= 0, returns full list.
      *
      * @param lat property latitude
      * @param lon property longitude
-    /**
-     * Backwards-compatible fetch method (returns full list).
-     */
-    public List<PlaceDTO> fetchNearbyPlaces(double lat, double lon, List<String> categories, int radiusMeters) throws IOException, InterruptedException {
-        return fetchNearbyPlaces(lat, lon, categories, radiusMeters, 0, 0);
-    }
-
      * @param categories list of category identifiers (e.g., restaurant, hospital, tourist_attraction, airport)
      * @param radiusMeters search radius in meters
+     * @param page zero-based page index
+     * @param pageSize number of results per page
      */
-    public List<PlaceDTO> fetchNearbyPlaces(double lat, double lon, List<String> categories, int radiusMeters) throws IOException, InterruptedException {
-        if (apiKey == null || apiKey.isBlank()) {
-    /**
-     * Fetch nearby places and return a paginated slice.
-     * Page index is zero-based. If pageSize <= 0, returns full list.
-     */
-    public List<PlaceDTO> fetchNearbyPlaces(double lat, double lon, List<String> categories, int radiusMeters, int page, int pageSize) throws IOException, InterruptedException {
+    public List<PlaceDTO> fetchNearbyPlaces(double lat, double lon, List<String> categories,
+                                            int radiusMeters, int page, int pageSize) throws IOException, InterruptedException {
         String key = buildCacheKey(lat, lon, categories, radiusMeters);
         List<PlaceDTO> all;
         CacheEntry entry = cache.get(key);
@@ -86,7 +82,14 @@ public class PlacesService {
         int to = Math.min(from + pageSize, all.size());
         return new ArrayList<>(all.subList(from, to));
     }
-        }
+
+    /**
+     * Backwards-compatible fetch method (returns full list).
+     */
+    public List<PlaceDTO> fetchNearbyPlaces(double lat, double lon, List<String> categories,
+                                            int radiusMeters) throws IOException, InterruptedException {
+        return fetchNearbyPlaces(lat, lon, categories, radiusMeters, 0, 0);
+    }
     private List<PlaceDTO> fetchAllNearbyPlaces(double lat, double lon, List<String> categories, int radiusMeters) throws IOException, InterruptedException {
         if (apiKey == null || apiKey.isBlank()) {
             throw new IllegalStateException("Places API key is not set. Set GOOGLE_PLACES_API_KEY or FOURSQUARE_API_KEY environment variable.");
@@ -198,8 +201,11 @@ public class PlacesService {
         CacheEntry(List<PlaceDTO> places, long fetchedAt) { this.places = places == null ? Collections.emptyList() : new ArrayList<>(places); this.fetchedAt = fetchedAt; }
         boolean isExpired(long ttl) { return System.currentTimeMillis() - fetchedAt > ttl; }
     }
+
+    /**
+     * Compute an attractiveness score for a property based on nearby places.
      * Weights: restaurants (0.5), attractions (0.3), airport distance (0.2).
-     * This produces a score in [0,1].
+     * Returns a value in [0,1].
      */
     public double computeAttractivenessScore(double propLat, double propLon, List<PlaceDTO> places) {
         int restaurants = 0;

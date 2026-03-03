@@ -1,19 +1,30 @@
-C:\Users\Otaku\Desktop\New folder (3)\src\main\java\com\travelxp\controllers\AdminDashboardController.java
-C:\Users\Otaku\Desktop\New folder (3)\src\main\java\com\travelxp\controllers\ChangePasswordController.java
-C:\Users\Otaku\Desktop\New folder (3)\src\main\java\com\travelxp\controllers\DashboardController.java
-C:\Users\Otaku\Desktop\New folder (3)\src\main\java\com\travelxp\controllers\EditProfileController.java
-C:\Users\Otaku\Desktop\New folder (3)\src\main\java\com\travelxp\controllers\LoginController.java
-C:\Users\Otaku\Desktop\New folder (3)\src\main\java\com\travelxp\controllers\ProfileController.java
-C:\Users\Otaku\Desktop\New folder (3)\src\main\java\com\travelxp\controllers\RegisterController.java
-C:\Users\Otaku\Desktop\New folder (3)\src\main\java\com\travelxp\controllers\TasksController.java
-C:\Users\Otaku\Desktop\New folder (3)\src\main\java\com\travelxp\Main.java
-C:\Users\Otaku\Desktop\New folder (3)\src\main\java\com\travelxp\models\Gamification.java
-C:\Users\Otaku\Desktop\New folder (3)\src\main\java\com\travelxp\models\User.java
-C:\Users\Otaku\Desktop\New folder (3)\src\main\java\com\travelxp\models\UserViewModel.java
-C:\Users\Otaku\Desktop\New folder (3)\src\main\java\com\travelxp\services\GamificationService.java
-C:\Users\Otaku\Desktop\New folder (3)\src\main\java\com\travelxp\services\UserService.java
-C:\Users\Otaku\Desktop\New folder (3)\src\main\java\com\travelxp\UserSession.java
-C:\Users\Otaku\Desktop\New folder (3)\src\main\java\com\travelxp\utils\MyDB.java
-C:\Users\Otaku\Desktop\New folder (3)\src\main\java\com\travelxp\utils\PasswordUtil.java
-C:\Users\Otaku\Desktop\New folder (3)\src\main\java\com\travelxp\utils\ThemeManager.java
-C:\Users\Otaku\Desktop\New folder (3)\src\main\java\module-info.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\AdminDashboardController.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\ChangePasswordController.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\DashboardController.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\EditProfileController.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\LoginController.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\MapController.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\OfferController.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\ProfileController.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\PropertyController.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\RegisterController.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\controllers\TasksController.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\Main.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\models\Gamification.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\models\Offer.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\models\PlaceDTO.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\models\Property.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\models\User.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\models\UserViewModel.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\services\GamificationService.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\services\MapService.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\services\OfferService.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\services\PlacesService.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\services\PropertyService.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\services\RecommendationService.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\services\UserService.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\UserSession.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\utils\MyDB.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\utils\PasswordUtil.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\com\travelxp\utils\ThemeManager.java
+C:\Users\youss\Documents\GitHub\ProjectJavaFx3A1\src\main\java\module-info.java
