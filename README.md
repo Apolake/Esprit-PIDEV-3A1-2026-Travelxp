@@ -684,9 +684,9 @@ flowchart TD
 
 ## Screenshots
 
-> 📸 _Add your application screenshots below. A recommended layout is provided:_
 
-<!--
+
+
 ### 🔐 Login & Authentication
 | Login | Face ID | TOTP Setup |
 |:---:|:---:|:---:|
@@ -705,8 +705,8 @@ flowchart TD
 ### 🛠️ Admin Panel
 | User Management | Properties | Moderation |
 |:---:|:---:|:---:|
-| ![Admin](screenshots/admin.png) | ![Properties](screenshots/admin-properties.png) | ![Moderation](screenshots/moderation.png) |
--->
+| ![Admin](screenshots/admin.png) | ![Properties](screenshots/admin-properties.png) | ![Offers](screenshots/moderation.png) |
+
 
 ---
 
