@@ -16,7 +16,6 @@
   <img src="https://img.shields.io/badge/Stripe-Payments-635BFF?logo=stripe&logoColor=white" alt="Stripe"/>
   <img src="https://img.shields.io/badge/Gemini_AI-2.5_Flash-4285F4?logo=googlegemini&logoColor=white" alt="Gemini AI"/>
   <img src="https://img.shields.io/badge/OpenCV-Face_ID-5C3EE8?logo=opencv&logoColor=white" alt="OpenCV"/>
-  <img src="https://img.shields.io/badge/License-MIT-green" alt="License"/>
 </p>
 
 <p align="center">
