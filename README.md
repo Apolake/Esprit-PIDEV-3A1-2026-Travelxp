@@ -327,8 +327,7 @@ Incremental migrations are stored in the `database lifeline/` directory and shou
 
 This project was developed as part of the **PIDEV 3A1** coursework at **[ESPRIT](https://esprit.tn/)** (2025–2026).
 
-<!-- Add team members below -->
-<!-- 
+
 | Name | GitHub |
 |------|--------|
 | Member 1 | [@github](https://github.com/Apolake) |
@@ -336,7 +335,7 @@ This project was developed as part of the **PIDEV 3A1** coursework at **[ESPRIT]
 | Member 3 | [@github](https://github.com/navTace) |
 | Member 4 | [@github](https://github.com/ysfltm) |
 | Member 5 | [@github](https://github.com/omarhlal49) |
--->
+
 
 ---
 
