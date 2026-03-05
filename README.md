@@ -330,11 +330,11 @@ This project was developed as part of the **PIDEV 3A1** coursework at **[ESPRIT]
 
 | Name | GitHub |
 |------|--------|
-| Member 1 | [@github](https://github.com/Apolake) |
-| Member 2 | [@github](https://github.com/Dhia-Raddaoui) |
-| Member 3 | [@github](https://github.com/navTace) |
-| Member 4 | [@github](https://github.com/ysfltm) |
-| Member 5 | [@github](https://github.com/omarhlal49) |
+| Yassine Raddadi | [@github](https://github.com/Apolake) |
+| Dhia Raddaoui | [@github](https://github.com/Dhia-Raddaoui) |
+| Anas Nafti | [@github](https://github.com/navTace) |
+| Youssef Litaiem | [@github](https://github.com/ysfltm) |
+| Omar Ehlal | [@github](https://github.com/omarhlal49) |
 
 
 ---
